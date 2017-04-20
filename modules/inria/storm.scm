@@ -11,9 +11,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages mpi)
   #:use-module (gnu packages algebra)
-  #:use-module (gnu packages maths)
   #:use-module (gnu packages gcc)
-  #:use-module (gnu packages python)
   #:use-module (ice-9 match))
 
 (define %starpu-home-page

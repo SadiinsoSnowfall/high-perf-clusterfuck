@@ -1,0 +1,20 @@
+Do not make any assumptions on the runtime support library used by
+the Fortran compiler.  Adding -lgfortran or similar is normally not
+needed anyway, unless we're linking statically.
+
+--- chameleon-0.9.1/cmake_modules/morse/find/FindLAPACKE.cmake	2017-04-20 12:17:13.554546382 +0200
++++ chameleon-0.9.1/cmake_modules/morse/find/FindLAPACKE.cmake	2017-04-20 12:17:16.370525452 +0200
+@@ -302,12 +302,6 @@ if (LAPACK_FOUND)
+             if (LAPACK_LINKER_FLAGS)
+                 list(APPEND REQUIRED_LDFLAGS "${LAPACK_LINKER_FLAGS}")
+             endif()
+-            # Fortran
+-            if (CMAKE_Fortran_COMPILER MATCHES ".+gfortran.*")
+-                list(APPEND REQUIRED_LIBS "-lgfortran")
+-            elseif (CMAKE_Fortran_COMPILER MATCHES ".+ifort.*")
+-                list(APPEND REQUIRED_LIBS "-lifcore")
+-            endif()
+             # m
+             if(UNIX OR WIN32)
+                 list(APPEND REQUIRED_LIBS "-lm")
+

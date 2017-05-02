@@ -12,6 +12,7 @@
   #:use-module (gnu packages mpi)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages gcc)
+  #:use-module (inria simgrid)
   #:use-module (ice-9 match))
 
 (define %starpu-home-page
@@ -60,4 +61,12 @@
                (base32
                 "0xwd9yh0fr7yv122x0kayrdw586pffkhqd3krv1g7xvvpvwi631f"))))))
 
-;; TODO: Add variants with MPI and SimGrid support.
+(define-public starpu+simgrid
+  (package
+    (inherit starpu)
+    (name "starpu-simgrid")
+    (inputs `(("simgrid" ,simgrid)
+              ,@(package-inputs starpu)))
+    (arguments `(#:configure-flags '("--enable-simgrid")))))
+
+;; TODO: Add variants with MPI support.

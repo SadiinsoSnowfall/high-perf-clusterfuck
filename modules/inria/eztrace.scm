@@ -39,3 +39,33 @@ files that can be interpreted by visualization tools such as
 @uref{http://vite.gforge.inria.fr/, ViTE}.")
     (license license:cecill-c)                    ;FIXME: really CECILL-B
     (home-page "http://eztrace.gforge.inria.fr/")))
+
+(define-public litl
+  (package
+    (name "litl")
+    (version "0.1.8")
+    (source (origin
+              ;; XXX: Prior to Guix commit
+              ;; 7b9ac883ea62a816afbfa747c1377dc273c15c20, downloading this
+              ;; file would fail because of a TLS 'server_name'
+              ;; misconfiguration on that web site.
+              (uri
+               "https://fusionforge.int-evry.fr/frs/download.php/file/16/litl-0.1.8.tar.gz")
+              (method url-fetch)
+              (sha256
+               (base32
+                "0rbrqm164p3cf8q49bdwvry1i70awx5iyyksvr6acmzb9rkzw34v"))))
+    (build-system gnu-build-system)
+    (arguments
+     ;; Tests expect to be run sequentially: 'test_litl_write' creates a file
+     ;; that 'test_litl_read' reads.
+     '(#:parallel-tests? #f))
+    (synopsis "Collect events during the execution of a program")
+    (description
+     "This project aims at providing an alternative solution to the already
+existing FxT library, which is used to record events during the execution of
+scientific applications, that would deliver nearly the same performance and
+would solve the scalability issues such as scalability and the number of
+threads.")
+    (home-page "https://fusionforge.int-evry.fr/projects/litl/")
+    (license license:bsd-2)))

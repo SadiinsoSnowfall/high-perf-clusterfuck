@@ -35,6 +35,7 @@
                (base32
                 "09nbns7wq4nhw8771jfd6rdz0zxdrh2c3fvanv4hvinnrhwp5xlr"))))
     (build-system gnu-build-system)
+    (outputs '("debug" "out"))
     (arguments
      '(#:configure-flags '("--with-fxt")
        #:phases (modify-phases %standard-phases

@@ -9,6 +9,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages compression)
+  #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config))
 
 (define-public eztrace
@@ -69,3 +70,25 @@ would solve the scalability issues such as scalability and the number of
 threads.")
     (home-page "https://fusionforge.int-evry.fr/projects/litl/")
     (license license:bsd-2)))
+
+(define-public fxt
+  (package
+    (name "fxt")
+    (version "0.3.3")
+    (source (origin
+              (uri (string-append "mirror://savannah/fkt/fxt-"
+                                  version ".tar.gz"))
+              (method url-fetch)
+              (sha256
+               (base32
+                "09m6sq2qv995pv6qjrwi7582lllrbhv44qkf95a2l96c259flvrz"))))
+    (build-system gnu-build-system)
+    (native-inputs
+     `(("perl" ,perl)))
+    (home-page "https://savannah.nongnu.org/projects/fkt")
+    (synopsis "Efficient recording of program execution traces")
+    (description
+     "FxT is a fast tracing engine that can be used either in user land, in
+kernel land, or both.  It can record developer-specified events in compact
+\"traces\", with minimal run-time overhead.")
+    (license license:gpl2+)))

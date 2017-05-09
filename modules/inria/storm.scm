@@ -12,6 +12,7 @@
   #:use-module (gnu packages mpi)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages gcc)
+  #:use-module (inria eztrace)
   #:use-module (inria simgrid)
   #:use-module (ice-9 match))
 
@@ -35,7 +36,8 @@
                 "09nbns7wq4nhw8771jfd6rdz0zxdrh2c3fvanv4hvinnrhwp5xlr"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:phases (modify-phases %standard-phases
+     '(#:configure-flags '("--with-fxt")
+       #:phases (modify-phases %standard-phases
                   (add-before 'check 'set-home
                     (lambda _
                       ;; Some of the tests under tools/ expect $HOME to be
@@ -45,6 +47,7 @@
     (native-inputs `(("pkg-config" ,pkg-config)))
     (inputs `(("fftw" ,fftw)
               ("fftwf" ,fftwf)
+              ("fxt" ,fxt)
               ("hwloc" ,hwloc)))
     (synopsis "Run-time system for heterogeneous computing")
     (description

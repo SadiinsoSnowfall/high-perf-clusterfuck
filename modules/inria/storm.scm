@@ -46,7 +46,13 @@
     (inputs `(("fftw" ,fftw)
               ("hwloc" ,hwloc)))
     (synopsis "Run-time system for heterogeneous computing")
-    (description "Blah...")
+    (description
+     "StarPU is a run-time system that offers support for heterogeneous
+multicore machines.  While many efforts are devoted to design efficient
+computation kernels for those architectures (e.g. to implement BLAS kernels
+on GPUs), StarPU not only takes care of offloading such kernels (and
+implementing data coherency across the machine), but it also makes sure the
+kernels are executed as efficiently as possible.")
     (license lgpl2.1+)))
 
 

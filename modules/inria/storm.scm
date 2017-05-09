@@ -44,6 +44,7 @@
                       #t)))))
     (native-inputs `(("pkg-config" ,pkg-config)))
     (inputs `(("fftw" ,fftw)
+              ("fftwf" ,fftwf)
               ("hwloc" ,hwloc)))
     (synopsis "Run-time system for heterogeneous computing")
     (description

@@ -21,15 +21,23 @@
               (method url-fetch)
               (sha256
                (base32
-                "0hnf9kgfqck4ik40wm54yyny6h2gi8pm7jlcb3a4ix54zwz492vf"))))
+                "0hnf9kgfqck4ik40wm54yyny6h2gi8pm7jlcb3a4ix54zwz492vf"))
+              (modules '((guix build utils)))
+
+              ;; Remove bundled libraries.
+              ;; FIXME: There's few more under extlib/.
+              (snippet '(delete-file-recursively "extlib/litl"))))
     (build-system gnu-build-system)
-    ;; FIXME: A bunch of libraries are bundled under extlib/.
     (arguments
-     '(#:configure-flags '("LDFLAGS=-liberty")    ;for bfd
+     '(#:configure-flags (list "LDFLAGS=-liberty" ;for bfd
+                               (string-append "--with-litl="
+                                              (assoc-ref %build-inputs
+                                                         "litl")))
 
        ;; FIXME: There are test failures in bundled libraries.
        #:tests? #f))
-    (inputs `(("gfortran" ,gfortran)
+    (inputs `(("litl" ,litl)
+              ("gfortran" ,gfortran)
               ("libiberty" ,libiberty)            ;for bfd
               ("zlib" ,zlib)))                    ;for bfd
     (synopsis "Collect program execution traces")
@@ -46,10 +54,6 @@ files that can be interpreted by visualization tools such as
     (name "litl")
     (version "0.1.8")
     (source (origin
-              ;; XXX: Prior to Guix commit
-              ;; 7b9ac883ea62a816afbfa747c1377dc273c15c20, downloading this
-              ;; file would fail because of a TLS 'server_name'
-              ;; misconfiguration on that web site.
               (uri
                "https://fusionforge.int-evry.fr/frs/download.php/file/16/litl-0.1.8.tar.gz")
               (method url-fetch)

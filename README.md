@@ -13,6 +13,17 @@ yet.
 Please send inquiries to
 [Ludovic Courtès](mailto:ludovic.courtes@inria.fr).
 
+## Getting started
+
+All of this won’t be of any use to you until you have
+[Guix](https://gnu.org/s/guix) on your system.  See the
+[installation instructions here](https://www.gnu.org/software/guix/manual/html_node/Binary-Installation.html).
+
+If you’d like to use Guix on a cluster that doesn’t have it yet, stay
+tuned: we’re working on ways to make it usable without the `root`
+privileges that the
+[build daemon currently requires](https://www.gnu.org/software/guix/manual/html_node/Build-Environment-Setup.html).
+
 ## How does it work?
 
 The package recipes in this repo _extend_

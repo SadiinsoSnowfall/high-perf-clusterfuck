@@ -64,13 +64,13 @@ kernels are executed as efficiently as possible.")
 (define-public starpu
   (package
     (inherit starpu-1.1)
-    (version "1.2.1")
+    (version "1.2.2")
     (source (origin
               (method url-fetch)
               (uri (starpu-url version))
               (sha256
                (base32
-                "0xwd9yh0fr7yv122x0kayrdw586pffkhqd3krv1g7xvvpvwi631f"))))))
+                "0mrhgsir1pv0mjvl9md0p7y16wvrm9iplh7j6i35g3map45rjxqn"))))))
 
 (define-public starpu+simgrid
   (package

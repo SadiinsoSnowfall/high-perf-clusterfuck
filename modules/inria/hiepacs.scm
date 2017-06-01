@@ -6,6 +6,7 @@
 (define-module (inria hiepacs)
   #:use-module (inria storm)
   #:use-module (guix)
+  #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system cmake)
   #:use-module (gnu packages)
@@ -70,3 +71,54 @@ tasks on the processing units.  A run-time system such as StarPU is able to
 manage automatically data transfers between not shared memory
 area (CPUs-GPUs, distributed nodes).")
     (license license:cecill-c)))
+
+(define-public maphys
+  (package
+    (name "maphys")
+    (version "0.9.5.1")
+    (home-page "https://gitlab.inria.fr/solverstack/maphys")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit version)
+
+                    ;; We need the submodule in 'cmake_modules/morse'.
+                    (recursive? #t)))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "0qrm5zm0bi0g3d8gbk4bvjr094k9m2pzq4xbki0xbfm5dr7xlzf9"))
+              (patches (search-patches "inria/patches/maphys-installation-directories.patch"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:configure-flags '("-DMAPHYS_SDS_MUMPS=ON"
+                           "-DMAPHYS_SDS_PASTIX=OFF")
+
+       ;; FIXME: Tests segfault.
+       #:tests? #f))
+    (inputs `(("hwloc" ,hwloc)
+              ("openmpi" ,openmpi)
+              ("scalapack" ,scalapack)
+              ("openblas" ,openblas)
+              ("lapack" ,lapack)
+              ("scotch" ,pt-scotch)
+              ("mumps" ,mumps)
+              ("metis" ,metis)))
+    (native-inputs `(("gforgran" ,gfortran)
+                     ("pkg-config" ,pkg-config)))
+    (synopsis "Massively Parallel Hybrid Solver")
+    (description
+     "MaPHyS (Massively Parallel Hybrid Solver) is a parallel linear solver
+that couples direct and iterative approaches.  The underlying idea is to
+apply to general unstructured linear systems domain decomposition ideas
+developed for the solution of linear systems arising from PDEs.  The
+interface problem, associated with the so called Schur complement system, is
+solved using a block preconditioner with overlap between the blocks that is
+referred to as Algebraic Additive Schwarz.  To cope with the possible lack of
+coarse grid mechanism that enables one to keep constant the number of
+iterations when the number of blocks is increased, the solver exploits two
+levels of parallelism (between the blocks and within the treatment of the
+blocks).  This enables it to exploit a large number of processors with a
+moderate number of blocks which ensures a reasonable convergence behavior.")
+    (license #f)))                        ;XXX: license needs to be clarified

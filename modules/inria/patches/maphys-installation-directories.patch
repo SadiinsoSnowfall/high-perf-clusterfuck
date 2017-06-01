@@ -1,0 +1,66 @@
+Install architecture-dependent files in $libdir, and install GFortran
+.mod files to include, etc.
+
+diff --git a/examples/CMakeLists.txt b/examples/CMakeLists.txt
+index 3fb0f9b..762cefb 100644
+--- a/examples/CMakeLists.txt
++++ b/examples/CMakeLists.txt
+@@ -41,7 +41,7 @@ foreach(_file ${MAPHYS_EXAMPLES})
+   get_filename_component(_name_exe ${_file} NAME_WE)
+   add_executable(${_name_exe} ${_file})
+   target_link_libraries(${_name_exe} maphys mph_toolkit packcg packgmres slatec ${MAPHYS_EXTRA_LIBRARIES})
+-  install(TARGETS ${_name_exe} DESTINATION ${CMAKE_INSTALL_PREFIX}/examples)
++  install(TARGETS ${_name_exe} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/maphys/examples)
+ endforeach()
+ 
+ # install input files for examples
+@@ -61,7 +61,7 @@ set(MAPHYS_EXAMPLES_INPUT_FILES
+     template.in
+     young1c.mtx
+     )
+-install(FILES ${MAPHYS_EXAMPLES_INPUT_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/examples)
++install(FILES ${MAPHYS_EXAMPLES_INPUT_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/maphys/examples)
+ 
+ # Add tests to CTest
+ file(COPY ${MAPHYS_EXAMPLES_INPUT_FILES} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+diff --git a/gendistsys/CMakeLists.txt b/gendistsys/CMakeLists.txt
+index 125be7e..0659e95 100644
+--- a/gendistsys/CMakeLists.txt
++++ b/gendistsys/CMakeLists.txt
+@@ -11,7 +11,7 @@ foreach(_file ${MAPHYS_TESTGENDIST})
+   get_filename_component(_name_exe ${_file} NAME_WE)
+   add_executable(${_name_exe} ${_file})
+   target_link_libraries(${_name_exe} maphys mph_toolkit ${MAPHYS_EXTRA_LIBRARIES})
+-  install(TARGETS ${_name_exe} DESTINATION ${CMAKE_INSTALL_PREFIX}/gendistsys)
++  install(TARGETS ${_name_exe} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/maphys/gendistsys)
+ endforeach()
+ 
+ # install input files for gendistsys
+@@ -21,4 +21,4 @@ set(MAPHYS_TESTGENDIST_INPUT_FILES
+   gds.in
+   )
+ 
+-install(FILES ${MAPHYS_TESTGENDIST_INPUT_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/gendistsys)
++install(FILES ${MAPHYS_TESTGENDIST_INPUT_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/maphys/gendistsys)
+diff --git a/lib/CMakeLists.txt b/lib/CMakeLists.txt
+index d164106..4d1936f 100644
+--- a/lib/CMakeLists.txt
++++ b/lib/CMakeLists.txt
+@@ -25,7 +25,7 @@
+ 
+ 
+ set (CMAKE_Fortran_MODULE_DIRECTORY
+-  ${PROJECT_BINARY_DIR}/modules CACHE PATH "Single Directory for all fortran modules."
++  ${PROJECT_BINARY_DIR}/include CACHE PATH "Single Directory for all fortran modules."
+   )
+ 
+ # Define the list of sources
+@@ -217,7 +217,7 @@ install(TARGETS maphys
+ # Copy the fortran module files
+       
+ install ( CODE
+-  "EXECUTE_PROCESS (COMMAND \"${CMAKE_COMMAND}\" -E copy_directory \"${CMAKE_Fortran_MODULE_DIRECTORY}/\${BUILD_TYPE}\" \"${CMAKE_INSTALL_PREFIX}/modules\")"
++  "EXECUTE_PROCESS (COMMAND \"${CMAKE_COMMAND}\" -E copy_directory \"${CMAKE_Fortran_MODULE_DIRECTORY}/\${BUILD_TYPE}\" \"${CMAKE_INSTALL_PREFIX}/include\")"
+   )
+ 
+ ###

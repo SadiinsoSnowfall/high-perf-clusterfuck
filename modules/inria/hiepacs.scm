@@ -122,3 +122,76 @@ levels of parallelism (between the blocks and within the treatment of the
 blocks).  This enables it to exploit a large number of processors with a
 moderate number of blocks which ensures a reasonable convergence behavior.")
     (license #f)))                        ;XXX: license needs to be clarified
+
+(define-public pastix
+  (let ((commit "2f30ff07a45fefa35b117783c3d9d0913cc75552"))
+    (package
+      (name "pastix")
+      (version "6.0.0")
+      (home-page "https://gitlab.inria.fr/solverstack/pastix")
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url home-page)
+                      (commit commit)
+
+                      ;; We need the submodule in 'cmake_modules/morse'.
+                      (recursive? #t)))
+                (file-name (string-append name "-" version "-checkout"))
+                (sha256
+                 (base32
+                  "106rf402cvfdhc2yfywhjqbbx8ghn3rmxkrjqgmsbrnarbxhiki9"))))
+      (build-system cmake-build-system)
+      (arguments
+       '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON"
+                             "-DPASTIX_WITH_STARPU=ON")
+
+         #:phases (modify-phases %standard-phases
+                    (add-before 'check 'prepare-test-environment
+                      (lambda _
+                        ;; StarPU expects $HOME to be writable.
+                        (setenv "HOME" (getcwd))
+
+                        ;; The Python-driven tests want to dlopen PaSTiX
+                        ;; libraries (via ctypes) so we need to help them.
+                        (let* ((libraries   (find-files "." "\\.so$"))
+                               (directories (map (compose canonicalize-path
+                                                          dirname)
+                                                 libraries)))
+                          (setenv "LD_LIBRARY_PATH"
+                                  (string-join directories ":"))
+
+                          ;; 'ctypes.util.find_library' tries to link with
+                          ;; -lpastix.
+                          (setenv "LIBRARY_PATH"
+                                  (string-append (getenv "LIBRARY_PATH") ":"
+                                                 (getenv "LD_LIBRARY_PATH")))
+                          #t))))))
+      (native-inputs
+       `(("pkg-config" ,pkg-config)
+         ("gfortran" ,gfortran)))
+      (inputs
+       `(("gfortran:lib" ,gfortran "lib")         ;for 'gcc … -lgfortran'
+         ("hwloc" ,hwloc)
+         ("openblas" ,openblas)
+         ("lapack" ,lapack)       ;must be built with '-DLAPACKE_WITH_TMG=ON'
+         ("scotch" ,scotch)
+
+         ;; The following are optional dependencies.
+         ("metis" ,metis)
+         ("starpu" ,starpu)
+
+         ;; Python bindings and Python tests.
+         ("python" ,python-wrapper)
+         ("python-numpy" ,python-numpy)
+         ("python-scipy" ,python-scipy)))
+      (synopsis "Sparse matrix direct solver")
+      (description
+       "PaStiX (Parallel Sparse matriX package) is a scientific library that
+provides a high performance parallel solver for very large sparse linear
+systems based on direct methods.  Numerical algorithms are implemented in
+single or double precision (real or complex) using LLt, LDLt and LU with
+static pivoting (for non symmetric matrices having a symmetric pattern).
+This solver also provides some low-rank compression methods to reduce the
+memory footprint and/or the time-to-solution.")
+      (license license:cecill))))

@@ -49,7 +49,7 @@
     (inputs `(("fftw" ,fftw)
               ("fftwf" ,fftwf)
               ("fxt" ,fxt)
-              ("hwloc" ,hwloc)))
+              ("hwloc" ,hwloc "lib")))
     (synopsis "Run-time system for heterogeneous computing")
     (description
      "StarPU is a run-time system that offers support for heterogeneous

@@ -56,7 +56,7 @@
               ("blas" ,openblas)
               ("lapack" ,lapack)
               ("mpi" ,openmpi)
-              ("hwloc" ,hwloc)))
+              ("hwloc" ,hwloc "lib")))
     (native-inputs `(("pkg-config" ,pkg-config)
                      ("gfortran" ,gfortran)
                      ("python" ,python-2)))
@@ -97,7 +97,7 @@ area (CPUs-GPUs, distributed nodes).")
 
        ;; FIXME: Tests segfault.
        #:tests? #f))
-    (inputs `(("hwloc" ,hwloc)
+    (inputs `(("hwloc" ,hwloc "lib")
               ("openmpi" ,openmpi)
               ("scalapack" ,scalapack)
               ("openblas" ,openblas)
@@ -172,7 +172,7 @@ moderate number of blocks which ensures a reasonable convergence behavior.")
          ("gfortran" ,gfortran)))
       (inputs
        `(("gfortran:lib" ,gfortran "lib")         ;for 'gcc … -lgfortran'
-         ("hwloc" ,hwloc)
+         ("hwloc" ,hwloc "lib")
          ("openblas" ,openblas)
          ("lapack" ,lapack)       ;must be built with '-DLAPACKE_WITH_TMG=ON'
          ("scotch" ,scotch)

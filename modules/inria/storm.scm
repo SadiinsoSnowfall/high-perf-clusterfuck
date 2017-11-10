@@ -12,6 +12,7 @@
   #:use-module (gnu packages mpi)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages gcc)
+  #:use-module (gnu packages maths)
   #:use-module (inria eztrace)
   #:use-module (inria simgrid)
   #:use-module (ice-9 match))
@@ -64,13 +65,18 @@ kernels are executed as efficiently as possible.")
 (define-public starpu
   (package
     (inherit starpu-1.1)
-    (version "1.2.2")
+    (version "1.2.3")
     (source (origin
               (method url-fetch)
               (uri (starpu-url version))
               (sha256
                (base32
-                "0mrhgsir1pv0mjvl9md0p7y16wvrm9iplh7j6i35g3map45rjxqn"))))))
+                "1ny69l1cjgj38cp7xny79ay30dlvzh4h07mr3hn7a5xd2zd3jp99"))))
+    (native-inputs
+     ;; Some tests require bc and Gnuplot.
+     `(("bc" ,bc)
+       ("gnuplot" ,gnuplot)
+       ,@(package-native-inputs starpu-1.1)))))
 
 (define-public starpu+simgrid
   (package

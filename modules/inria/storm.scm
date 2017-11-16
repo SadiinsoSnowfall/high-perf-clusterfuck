@@ -39,6 +39,11 @@
     (outputs '("debug" "out"))
     (arguments
      '(#:configure-flags '("--with-fxt")
+
+       ;; Various files are created in parallel and non-atomically, notably
+       ;; in ~/.cache/starpu.
+       #:parallel-tests? #f
+
        #:phases (modify-phases %standard-phases
                   (add-before 'check 'set-home
                     (lambda _

@@ -1,7 +1,7 @@
 ;;; This module extends GNU Guix and is licensed under the same terms, those
 ;;; of the GNU GPL version 3 or (at your option) any later version.
 ;;;
-;;; Copyright © 2017 Inria
+;;; Copyright © 2017, 2018 Inria
 
 (define-module (inria storm)
   #:use-module (guix)
@@ -50,7 +50,24 @@
                       ;; Some of the tests under tools/ expect $HOME to be
                       ;; writable.
                       (setenv "HOME" (getcwd))
-                      #t)))))
+                      #t))
+                  (replace 'check
+                    (lambda args
+                      ;; To ease debugging, display the build log upon
+                      ;; failure.
+                      (let ((check (assoc-ref %standard-phases 'check)))
+                        (or (apply check args)
+                            (begin
+                              (display "\n\nTest suite failed, dumping logs.\n\n"
+                                       (current-error-port))
+                              (for-each (lambda (file)
+                                          (format #t "--- ~a~%" file)
+                                          (call-with-input-file file
+                                            (lambda (port)
+                                              (dump-port port
+                                                         (current-error-port)))))
+                                        (find-files "." "^test-suite\\.log$"))
+                              #f))))))))
     (native-inputs `(("pkg-config" ,pkg-config)))
     (inputs `(("fftw" ,fftw)
               ("fftwf" ,fftwf)

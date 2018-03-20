@@ -38,16 +38,22 @@
     (build-system gnu-build-system)
     (outputs '("debug" "out"))
     (arguments
-     '(;; Various files are created in parallel and non-atomically, notably
+     '(#:configure-flags '("--enable-quick-check") ;make tests less expensive
+
+       ;; Various files are created in parallel and non-atomically, notably
        ;; in ~/.cache/starpu.
        #:parallel-tests? #f
 
        #:phases (modify-phases %standard-phases
-                  (add-before 'check 'set-home
+                  (add-before 'check 'pre-check
                     (lambda _
                       ;; Some of the tests under tools/ expect $HOME to be
                       ;; writable.
                       (setenv "HOME" (getcwd))
+
+                      ;; Increase the timeout for individual tests in case
+                      ;; we're building on a slow machine.
+                      (setenv "STARPU_TIMEOUT_ENV" "1200")
                       #t))
                   (replace 'check
                     (lambda args
@@ -103,7 +109,10 @@ kernels are executed as efficiently as possible.")
     (name "starpu-simgrid")
     (inputs `(("simgrid" ,simgrid)
               ,@(package-inputs starpu)))
-    (arguments `(#:configure-flags '("--enable-simgrid")))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments starpu)
+       ((#:configure-flags flags '())
+        `(cons "--enable-simgrid" ,flags))))))
 
 (define-public starpu+fxt
   ;; When FxT support is enabled, performance is degraded, hence the separate
@@ -114,7 +123,8 @@ kernels are executed as efficiently as possible.")
     (inputs `(("fxt" ,fxt)
               ,@(package-inputs starpu)))
     (arguments
-     `(#:configure-flags '("--with-fxt")
-       ,@(package-arguments starpu)))))
+     (substitute-keyword-arguments (package-arguments starpu)
+       ((#:configure-flags flags '())
+        `(cons "--with-fxt" ,flags))))))
 
 ;; TODO: Add variants with MPI support.

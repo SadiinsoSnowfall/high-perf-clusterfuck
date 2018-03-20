@@ -55,6 +55,11 @@
                       ;; Increase the timeout for individual tests in case
                       ;; we're building on a slow machine.
                       (setenv "STARPU_TIMEOUT_ENV" "1200")
+
+                      ;; Allow us to dump core during the test suite so GDB
+                      ;; can report backtraces.
+                      (let ((MiB (* 1024 1024)))
+                        (setrlimit 'core (* 300 MiB) (* 500 MiB)))
                       #t))
                   (replace 'check
                     (lambda args

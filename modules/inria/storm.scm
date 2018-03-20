@@ -12,6 +12,7 @@
   #:use-module (gnu packages mpi)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages gcc)
+  #:use-module (gnu packages gdb)
   #:use-module (gnu packages maths)
   #:use-module (inria eztrace)
   #:use-module (inria simgrid)
@@ -72,7 +73,9 @@
                                                          (current-error-port)))))
                                         (find-files "." "^test-suite\\.log$"))
                               #f))))))))
-    (native-inputs `(("pkg-config" ,pkg-config)))
+    (native-inputs
+     `(("pkg-config" ,pkg-config)
+       ("gdb" ,gdb)))                             ;used upon test failure
     (inputs `(("fftw" ,fftw)
               ("fftwf" ,fftwf)
               ("hwloc" ,hwloc "lib")))

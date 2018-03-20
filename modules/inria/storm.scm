@@ -38,9 +38,7 @@
     (build-system gnu-build-system)
     (outputs '("debug" "out"))
     (arguments
-     '(#:configure-flags '("--with-fxt")
-
-       ;; Various files are created in parallel and non-atomically, notably
+     '(;; Various files are created in parallel and non-atomically, notably
        ;; in ~/.cache/starpu.
        #:parallel-tests? #f
 
@@ -71,7 +69,6 @@
     (native-inputs `(("pkg-config" ,pkg-config)))
     (inputs `(("fftw" ,fftw)
               ("fftwf" ,fftwf)
-              ("fxt" ,fxt)
               ("hwloc" ,hwloc "lib")))
     (synopsis "Run-time system for heterogeneous computing")
     (description
@@ -107,5 +104,17 @@ kernels are executed as efficiently as possible.")
     (inputs `(("simgrid" ,simgrid)
               ,@(package-inputs starpu)))
     (arguments `(#:configure-flags '("--enable-simgrid")))))
+
+(define-public starpu+fxt
+  ;; When FxT support is enabled, performance is degraded, hence the separate
+  ;; package.
+  (package
+    (inherit starpu)
+    (name "starpu-fxt")
+    (inputs `(("fxt" ,fxt)
+              ,@(package-inputs starpu)))
+    (arguments
+     `(#:configure-flags '("--with-fxt")
+       ,@(package-arguments starpu)))))
 
 ;; TODO: Add variants with MPI support.

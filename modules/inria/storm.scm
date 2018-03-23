@@ -66,7 +66,7 @@
                       ;; To ease debugging, display the build log upon
                       ;; failure.
                       (let ((check (assoc-ref %standard-phases 'check)))
-                        (or (apply check args)
+                        (or (apply check #:make-flags '("-k") args)
                             (begin
                               (display "\n\nTest suite failed, dumping logs.\n\n"
                                        (current-error-port))

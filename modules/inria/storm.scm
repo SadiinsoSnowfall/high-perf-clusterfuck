@@ -7,13 +7,16 @@
   #:use-module (guix)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system cmake)
+  #:use-module (guix git-download)
   #:use-module (guix licenses)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages mpi)
+  #:use-module (gnu packages glib)
   #:use-module (gnu packages algebra)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages gdb)
   #:use-module (gnu packages maths)
+  #:use-module (gnu packages autotools)
   #:use-module (inria eztrace)
   #:use-module (inria simgrid)
   #:use-module (ice-9 match))
@@ -94,22 +97,36 @@ implementing data coherency across the machine), but it also makes sure the
 kernels are executed as efficiently as possible.")
     (license lgpl2.1+)))
 
-
 (define-public starpu
   (package
     (inherit starpu-1.1)
-    (version "1.2.3")
+    (name "starpu")
+    (version "1.2.4")
     (source (origin
-              (method url-fetch)
-              (uri (starpu-url version))
+              (method git-fetch)
+              (uri (git-reference
+                    (url (string-append "https://scm.gforge.inria.fr/"
+                                        "anonscm/git/" name "/" name ".git"))
+                    (commit "e539a11b5d03cbeb5d54c5cb8007084aa6d0e980")))
               (sha256
                (base32
-                "1ny69l1cjgj38cp7xny79ay30dlvzh4h07mr3hn7a5xd2zd3jp99"))))
+                "1aqxqnrbilb9pzfdy2mpnmww2lnv6i53w17m6fjw04bsihzwfi4h"))))
     (native-inputs
      ;; Some tests require bc and Gnuplot.
      `(("bc" ,bc)
        ("gnuplot" ,gnuplot)
-       ,@(package-native-inputs starpu-1.1)))))
+       ("intltool" ,intltool)
+       ("automake" ,automake)
+       ("autoconf" ,autoconf)
+       ("libtool" ,libtool)
+       ,@(package-native-inputs starpu-1.1)))
+    (arguments
+     (substitute-keyword-arguments (package-arguments starpu-1.1)
+       ((#:phases phases)
+        `(modify-phases ,phases
+            (add-after 'unpack 'run-autogen
+              (lambda _
+                (system* "sh" "autogen.sh")))))))))
 
 (define-public starpu+simgrid
   (package

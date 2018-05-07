@@ -1,0 +1,126 @@
+# Stage
+# 1. Lint: Check packages definition
+# 2. Build: Build packages
+stages:
+  - lint
+  - build
+
+# Init guix module path in current env
+before_script:
+  - export GUIX_PACKAGE_PATH=$PWD/modules
+
+##########################
+# Stage 1: Lint packages #
+##########################
+lint_simgrid:
+  stage: lint
+  script:
+    - guix lint simgrid
+
+lint_litl:
+  stage: lint
+  script:
+    - guix lint litl
+
+lint_fxt:
+  stage: lint
+  script:
+    - guix lint fxt
+
+lint_eztrace:
+  stage: lint
+  script:
+    - guix lint eztrace
+
+lint_starpu-1.1:
+  stage: lint
+  script:
+    - guix lint starpu@1.1
+
+lint_starpu:
+  stage: lint
+  script:
+    - guix lint starpu
+
+lint_starpu-simgrid:
+  stage: lint
+  script:
+    - guix lint starpu-simgrid
+
+lint_starpu-fxt:
+  stage: lint
+  script:
+    - guix lint starpu-fxt
+
+lint_chameleon:
+  stage: lint
+  script:
+    - guix lint chameleon
+
+lint_maphys:
+  stage: lint
+  script:
+    - guix lint maphys
+
+lint_pastix:
+  stage: lint
+  script:
+    - guix lint pastix
+
+###########################
+# Stage 2: Build packages #
+###########################
+build_simgrid:
+  stage: build
+  script:
+    - guix build simgrid
+
+build_litl:
+  stage: build
+  script:
+    - guix build litl
+
+build_fxt:
+  stage: build
+  script:
+    - guix build fxt
+
+build_eztrace:
+  stage: build
+  script:
+    - guix build eztrace
+
+build_starpu-1.1:
+  stage: build
+  script:
+    - guix build starpu@1.1
+
+build_starpu:
+  stage: build
+  script:
+    - guix build starpu
+
+build_starpu-simgrid:
+  stage: build
+  script:
+    - guix build starpu-simgrid
+
+build_starpu-fxt:
+  stage: build
+  script:
+    - guix build starpu-fxt
+
+build_chameleon:
+  stage: build
+  script:
+    - guix build chameleon
+
+build_maphys:
+  stage: build
+  script:
+    - guix build maphys
+
+build_pastix:
+  stage: build
+  script:
+    - guix build pastix

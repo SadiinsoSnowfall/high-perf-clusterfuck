@@ -33,7 +33,7 @@ them visible to the `guix` command-line tools, simply drop them in
 
 ```
 $ git clone https://gitlab.inria.fr/guix-hpc/guix-hpc.git
-$ export GUIX_PACKAGE_PATH=$PWD/guix-hpc/modules
+$ export GUIX_PACKAGE_PATH=$PWD/guix-hpc
 $ guix package -i starpu
 The following package will be installed:
    starpu	1.2.1	/gnu/store/rkbcfj1prdn5i0ama1qli5zw37ajv1ac-starpu-1.2.1
@@ -42,6 +42,22 @@ The following derivations will be built:
    /gnu/store/8ppai259g8xjzk42q3pygjfaqin2b29n-profile.drv
    /gnu/store/xv5r6sxybz441jfgzn0skj7gm2p37dfa-starpu-1.2.1.drv
 ```
+
+If you use Guix > 0.15.0, or if you `pull`ed it in early September 2018
+or later, you can instead use the _channel_ mechanism.  To do that,
+create a `~/.config/guix/channels.scm` file with the following
+snippet:
+
+```
+(cons (channel
+        (name 'guix-hpc)
+        (url "https://gitlab.inria.fr/guix-hpc/guix-hpc.git"))
+      %default-channels)
+```
+
+That way, `guix pull` will systematically pull not only Guix, but also
+Guix-HPC; the `GUIX_PACKAGE_PATH` environment variable becomes
+unnecessary.
 
 ## More information
 

@@ -7,7 +7,7 @@ stages:
 
 # Init guix module path in current env
 before_script:
-  - export GUIX_PACKAGE_PATH=$PWD/modules
+  - export GUIX_PACKAGE_PATH="$PWD"
 
 ##########################
 # Stage 1: Lint packages #

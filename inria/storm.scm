@@ -100,33 +100,18 @@ kernels are executed as efficiently as possible.")
 (define-public starpu
   (package
     (inherit starpu-1.1)
-    (name "starpu")
-    (version "1.2.4")
+    (version "1.2.5")
     (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url (string-append "https://scm.gforge.inria.fr/"
-                                        "anonscm/git/" name "/" name ".git"))
-                    (commit "e539a11b5d03cbeb5d54c5cb8007084aa6d0e980")))
+              (method url-fetch)
+              (uri (starpu-url "1.2.5"))
               (sha256
                (base32
-                "1aqxqnrbilb9pzfdy2mpnmww2lnv6i53w17m6fjw04bsihzwfi4h"))))
+                "1sfs5cnrda2nacgvmljbc91mrh1n9s7s3i90h0fawk7fr7jyl8hz"))))
     (native-inputs
      ;; Some tests require bc and Gnuplot.
      `(("bc" ,bc)
        ("gnuplot" ,gnuplot)
-       ("intltool" ,intltool)
-       ("automake" ,automake)
-       ("autoconf" ,autoconf)
-       ("libtool" ,libtool)
-       ,@(package-native-inputs starpu-1.1)))
-    (arguments
-     (substitute-keyword-arguments (package-arguments starpu-1.1)
-       ((#:phases phases)
-        `(modify-phases ,phases
-            (add-after 'unpack 'run-autogen
-              (lambda _
-                (system* "sh" "autogen.sh")))))))))
+       ,@(package-native-inputs starpu-1.1)))))
 
 (define-public starpu+simgrid
   (package

@@ -146,30 +146,29 @@ kernels are executed as efficiently as possible.")
 ;;               ,@(package-inputs starpu)))))
 
 ;; TODO: build fails, fatal error: boost/intrusive_ptr.hpp: No such file or directory
-;; (define-public starpu+simgrid
-;;   (package
-;;     (inherit starpu)
-;;     (name "starpu-simgrid")
-;;     (inputs `(("simgrid" ,simgrid)
-;;               ,@(package-inputs starpu)))
-;;     (arguments
-;;      (substitute-keyword-arguments (package-arguments starpu)
-;;        ((#:configure-flags flags '())
-;;         `(cons "--enable-simgrid" ,flags))))))
+(define-public starpu+simgrid
+  (package
+    (inherit starpu-1.2)
+    (name "starpu-simgrid")
+    (inputs `(("simgrid" ,simgrid)
+              ,@(package-inputs starpu-1.2)))
+    (arguments
+     (substitute-keyword-arguments (package-arguments starpu-1.2)
+       ((#:configure-flags flags '())
+        `(cons "--enable-simgrid" ,flags))))))
 
-;; TODO: tests fail
-;; (define-public starpu+fxt
-;;   ;; When FxT support is enabled, performance is degraded, hence the separate
-;;   ;; package.
-;;   (package
-;;     (inherit starpu)
-;;     (name "starpu-fxt")
-;;     (inputs `(("fxt" ,fxt)
-;;               ,@(package-inputs starpu)))
-;;     (arguments
-;;      (substitute-keyword-arguments (package-arguments starpu)
-;;        ((#:configure-flags flags '())
-;;         `(cons "--with-fxt" ,flags))))))
+(define-public starpu+fxt
+  ;; When FxT support is enabled, performance is degraded, hence the separate
+  ;; package.
+  (package
+    (inherit starpu-1.2)
+    (name "starpu-fxt")
+    (inputs `(("fxt" ,fxt)
+              ,@(package-inputs starpu-1.2)))
+    (arguments
+     (substitute-keyword-arguments (package-arguments starpu-1.2)
+       ((#:configure-flags flags '())
+        `(cons "--with-fxt" ,flags))))))
 
 (define-public starpu-git
   (package

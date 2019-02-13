@@ -4,7 +4,6 @@
 ;;; Copyright © 2017, 2019 Inria
 
 (define-module (inria hiepacs)
-  #:use-module (inria storm)
   #:use-module (guix)
   #:use-module (guix git-download)
   #:use-module ((guix licenses) #:prefix license:)
@@ -16,35 +15,41 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz))
+  #:use-module (inria storm)
+  #:use-module (inria storm-pm2)
+  #:use-module (guix utils)
+  #:use-module (srfi srfi-1))
 
 (define-public chameleon
   (package
     (name "chameleon")
-    (version "0.9.1")
+    (version "1f74f316e4481ba7fe28b5101c410229bc06a6a3")
+    (home-page "https://gitlab.inria.fr/solverstack/chameleon")
+    (synopsis "Dense linear algebra solver")
+    (description
+     "Chameleon is a dense linear algebra solver relying on sequential
+task-based algorithms where sub-tasks of the overall algorithms are submitted
+to a run-time system.  Such a system is a layer between the application and
+the hardware which handles the scheduling and the effective execution of
+tasks on the processing units.  A run-time system such as StarPU is able to
+manage automatically data transfers between not shared memory
+area (CPUs-GPUs, distributed nodes).")
+    (license license:cecill-c)
     (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "http://morse.gforge.inria.fr/chameleon/"
-                    version "/chameleon-" version ".tar.gz"))
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit version)
+
+                    ;; We need the submodule in 'cmake_modules/morse_cmake'.
+                    (recursive? #t)))
+              (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "0875bngwzxgycm44p7nndzsy9xcbc58rn08vq08041kzpnwhzk3x"))
-              (patches (search-patches "inria/patches/chameleon-lapacke.patch"))))
+                "1640xglaq4ah5jiv339p560fvxkkpjscf22bz9s0ligqjc0hyp4j"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:configure-flags
-       (let ((blas (assoc-ref %build-inputs "blas"))
-             (lapack (assoc-ref %build-inputs "lapack")))
-         (list "-DMORSE_VERBOSE_FIND_PACKAGE=ON"
-               (string-append "-DBLAS_DIR=" blas)
-               (string-append "-DLAPACK_DIR=" blas)))
-
-       ;; Sometimes morse/precision_generator/Conversion.py would be called
-       ;; too early, leading to:
-       ;;
-       ;;    from subs import subs;
-       ;; EOFError: EOF read where object expected
-       #:parallel-build? #f
+     '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON")
 
        ;; FIXME: Test too long for gitlab-runner CI
        #:tests? #f
@@ -56,25 +61,24 @@
                        ;; to be writable.
                        (setenv "HOME" (getcwd))
                        #t)))))
-    (inputs `(("starpu" ,starpu)
-              ("blas" ,openblas)
-              ("lapack" ,lapack)
-              ("mpi" ,openmpi)
-              ("hwloc" ,hwloc "lib")))
+    (propagated-inputs `(("starpu" ,starpu)
+                         ("lapack" ,openblas)))
     (native-inputs `(("pkg-config" ,pkg-config)
                      ("gfortran" ,gfortran)
-                     ("python" ,python-2)))
-    (home-page "https://project.inria.fr/chameleon/")
-    (synopsis "Dense linear algebra solver")
-    (description
-     "Chameleon is a dense linear algebra solver relying on sequential
-task-based algorithms where sub-tasks of the overall algorithms are submitted
-to a run-time system.  Such a system is a layer between the application and
-the hardware which handles the scheduling and the effective execution of
-tasks on the processing units.  A run-time system such as StarPU is able to
-manage automatically data transfers between not shared memory
-area (CPUs-GPUs, distributed nodes).")
-    (license license:cecill-c)))
+                     ("python" ,python-2)))))
+
+;; TODO: fix starpu+openmpi first
+;; (define-public chameleon+openmpi
+;;   (package
+;;     (inherit chameleon)
+;;     (name "chameleon-openmpi")
+;;     (propagated-inputs `(("mpi" ,openmpi)
+;;                          ("starpu" ,starpu+openmpi)
+;;                          ,@(delete `("starpu" ,starpu) (package-propagated-inputs chameleon))))
+;;     (arguments
+;;      (substitute-keyword-arguments (package-arguments chameleon)
+;;        ((#:configure-flags flags '())
+;;         `(cons "-DCHAMELEON_USE_MPI=ON" ,flags))))))
 
 (define-public maphys
   (package

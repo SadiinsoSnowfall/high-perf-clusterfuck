@@ -14,7 +14,7 @@
   #:use-module (gnu packages mpi)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
-  #:use-module (gnu packages python-xyz))
+  #:use-module (gnu packages python-xyz)
   #:use-module (inria storm)
   #:use-module (inria storm-pm2)
   #:use-module (guix utils)

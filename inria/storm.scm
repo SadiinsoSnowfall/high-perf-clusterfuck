@@ -104,13 +104,13 @@ kernels are executed as efficiently as possible.")
 (define-public starpu-1.2
   (package
     (inherit starpu-1.1)
-    (version "1.2.6")
+    (version "1.2.8")
     (source (origin
               (method url-fetch)
-              (uri (starpu-url "1.2.6"))
+              (uri (starpu-url "1.2.8"))
               (sha256
                (base32
-                "0k4n1n8zwdmw7idjzb4hyd1bhi9iyslsbb126xcfvdkpcxksfrzb"))))
+                "1yvmbax76lz4jg35xigab1i442xvvc77pwijy86x4j7jr3xnsrmn"))))
     (native-inputs
      ;; Some tests require bc and Gnuplot.
      `(("bc" ,bc)

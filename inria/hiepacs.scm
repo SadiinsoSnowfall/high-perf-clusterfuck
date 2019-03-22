@@ -23,7 +23,7 @@
 (define-public chameleon
   (package
     (name "chameleon")
-    (version "1f74f316e4481ba7fe28b5101c410229bc06a6a3")
+    (version "0.9.2")
     (home-page "https://gitlab.inria.fr/solverstack/chameleon")
     (synopsis "Dense linear algebra solver")
     (description
@@ -36,17 +36,11 @@ manage automatically data transfers between not shared memory
 area (CPUs-GPUs, distributed nodes).")
     (license license:cecill-c)
     (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url home-page)
-                    (commit version)
-
-                    ;; We need the submodule in 'cmake_modules/morse_cmake'.
-                    (recursive? #t)))
-              (file-name (string-append name "-" version "-checkout"))
+              (method url-fetch)
+              (uri "https://gitlab.inria.fr/solverstack/chameleon/uploads/60df876daea9498a260c4e5bcf41b84c/chameleon-0.9.2.tar.gz")
               (sha256
                (base32
-                "1640xglaq4ah5jiv339p560fvxkkpjscf22bz9s0ligqjc0hyp4j"))))
+                "1qpygqv83zjl6fp6phka9gjc91m5j60798qlgi89cr2mppf7avki"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON")
@@ -66,6 +60,24 @@ area (CPUs-GPUs, distributed nodes).")
     (native-inputs `(("pkg-config" ,pkg-config)
                      ("gfortran" ,gfortran)
                      ("python" ,python-2)))))
+
+(define-public chameleon-git
+  (package
+    (inherit chameleon)
+    (name "chameleon-git")
+    (version "118a951f5344af01a30f3d0e26180273ecc7c2e6")
+    (home-page "https://gitlab.inria.fr/solverstack/chameleon")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit version)
+                    ;; We need the submodule in 'CMakeModules/morse_cmake'.
+                    (recursive? #t)))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "0ykybcykzx1nbk54xkxvc1wjs39v9xyzy813r25bfl9xm47p42jx"))))))
 
 ;; TODO: fix starpu+openmpi first
 ;; (define-public chameleon+openmpi

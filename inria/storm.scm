@@ -29,7 +29,7 @@
   (string-append %starpu-home-page "/files/starpu-"
                  version "/starpu-" version ".tar.gz"))
 
-(define %starpu-commit "1c35b01a4cdb79709adf275a48f5a4442bd1d875")
+(define %starpu-commit "d17cb263f609205a9052e0b50a869384cea77f35")
 (define %starpu-git "https://scm.gforge.inria.fr/anonscm/git/starpu/starpu.git")
 
 (define-public starpu-1.1
@@ -117,45 +117,49 @@ kernels are executed as efficiently as possible.")
        ("gnuplot" ,gnuplot)
        ,@(package-native-inputs starpu-1.1)))))
 
-
 (define-public starpu
   (package
-    (inherit starpu-1.2)
-    (version "1.3.0rc1")
-    (source (origin
-              (method url-fetch)
-              (uri "http://starpu.gforge.inria.fr/files/starpu-1.3.0rc1/starpu-1.3.0.tar.gz")
-              (sha256
-               (base32
-                "12c84p0f4krf0bmfmdcfngp90qcpfzc8z4cq0pv98m0gy7asgzhy"))))
-   (arguments
-    (substitute-keyword-arguments (package-arguments starpu-1.2)
-      ((#:phases phases '())
-       (append phases '((add-after 'patch-source-shebangs 'fix-hardcoded-paths
-                          (lambda _
-                            (substitute* "min-dgels/base/make.inc"
-                              (("/bin/sh")  (which "sh")))
-                            #t)))))))))
+    (inherit starpu-1.2)))
 
-;; TODO: build fails, implicit declaration of function ‘MPI_Type_hvector’
-;; (define-public starpu+openmpi
-;;   (package
-;;     (inherit starpu)
-;;     (name "starpu-openmpi")
-;;     (inputs `(("mpi" ,openmpi)
-;;               ,@(package-inputs starpu)))))
+;; TODO: build fails
+;;(define-public starpu
+;;  (package
+;;    (inherit starpu-1.2)
+;;    (version "1.3.0rc2")
+;;    (source (origin
+;;              (method url-fetch)
+;;              (uri "http://starpu.gforge.inria.fr/files/starpu-1.3.0rc2/starpu-1.3.0rc2.tar.gz")
+;;              (sha256
+;;               (base32
+;;                "1p228bipgp3qbg991a5qbilq739hr9pgzcyqxy468gqzjnj9xfav"))))
+;;   (arguments
+;;    (substitute-keyword-arguments (package-arguments starpu-1.2)
+;;      ((#:phases phases '())
+;;       (append phases '((add-after 'patch-source-shebangs 'fix-hardcoded-paths
+;;                          (lambda _
+;;                            (substitute* "min-dgels/base/make.inc"
+;;                              (("/bin/sh")  (which "sh")))
+;;                            #t)))))))))
+
+;; TODO: build fails, starpu-git should work instead
+;;(define-public starpu+openmpi
+;;  (package
+;;    (inherit starpu)
+;;    (name "starpu-openmpi")
+;;    (inputs `(("mpi" ,openmpi)
+;;              ,@(package-inputs starpu)))))
 
 ;; TODO: build fails, fatal error: boost/intrusive_ptr.hpp: No such file or directory
-(define-public starpu+simgrid
-  (package
-    (inherit starpu-1.2)
-    (name "starpu-simgrid")
-    (inputs `(("simgrid" ,simgrid)
-              ,@(package-inputs starpu-1.2)))
-    (arguments
-     (substitute-keyword-arguments (package-arguments starpu-1.2)
-       ((#:configure-flags flags '())
-        `(cons "--enable-simgrid" ,flags))))))
+;;(define-public starpu+simgrid
+;;  (package
+;;    (inherit starpu-1.2)
+;;    (name "starpu-simgrid")
+;;    (inputs `(("simgrid" ,simgrid)
+;;              ,@(package-inputs starpu-1.2)))
+;;    (arguments
+;;     (substitute-keyword-arguments (package-arguments starpu-1.2)
+;;       ((#:configure-flags flags '())
+;;        `(cons "--enable-simgrid" ,flags))))))
 
 (define-public starpu+fxt
   ;; When FxT support is enabled, performance is degraded, hence the separate
@@ -182,12 +186,27 @@ kernels are executed as efficiently as possible.")
                   (commit %starpu-commit)))
             (file-name (git-file-name name version))
             (sha256
-             (base32 "0iqwyr5hd8i3h365r5vrnzjjyb3pf6kx7gyr3cph2jzj1d63cp2f"))))
+             (base32 "1gcsvz7xvxj99p3jnhq52p5v20jy1wwry8zk69kfr5pg13x1kr55"))))
    (native-inputs
     `(("libtool" ,libtool)
       ("autoconf" ,autoconf)
       ("automake" ,automake)
-      ,@(package-native-inputs starpu)))))
+      ,@(package-native-inputs starpu)))
+   (arguments
+    (substitute-keyword-arguments (package-arguments starpu-1.2)
+      ((#:phases phases '())
+       (append phases '((add-after 'patch-source-shebangs 'fix-hardcoded-paths
+                          (lambda _
+                            (substitute* "min-dgels/base/make.inc"
+                              (("/bin/sh")  (which "sh")))
+                            #t)))))))))
+
+(define-public starpu+openmpi
+  (package
+    (inherit starpu-git)
+    (name "starpu-openmpi")
+    (inputs `(("mpi" ,openmpi)
+              ,@(package-inputs starpu)))))
 
 (define-public starpu+nmad
   (package

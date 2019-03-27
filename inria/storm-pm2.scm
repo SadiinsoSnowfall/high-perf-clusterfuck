@@ -22,8 +22,8 @@
   #:use-module (ice-9 match))
 
 (define %pm2-home-page "http://pm2.gforge.inria.fr/")
-(define %pm2-revision 27924)
-(define %padicotm-revision 5179)
+(define %pm2-revision 28005)
+(define %padicotm-revision 5233)
 (define %pm2-svn "https://scm.gforge.inria.fr/anonscm/svn/pm2/trunk")
 (define %padicotm-svn "https://scm.gforge.inria.fr/anonscm/svn/padico/PadicoTM/trunk")
 (define %patch-path "inria/patches/autogen_building-tools.patch")
@@ -34,26 +34,26 @@
    (version (number->string %padicotm-revision))
    (home-page (string-append %pm2-home-page "/PadicoTM"))
    (source (origin
-	    (method svn-fetch)
-	    (uri (svn-reference
-		  (url (string-append %padicotm-svn "/PadicoTM/Puk"))
-		  (revision %padicotm-revision)))
-	    (sha256
-	     (base32 "1cv20rqn210l59fq4h8i3plkinasfw3n433rsqr8gj509qfj24ag"))
-	    (patches (search-patches %patch-path))))
+            (method svn-fetch)
+            (uri (svn-reference
+                  (url (string-append %padicotm-svn "/PadicoTM/Puk"))
+                  (revision %padicotm-revision)))
+            (sha256
+             (base32 "1cv20rqn210l59fq4h8i3plkinasfw3n433rsqr8gj509qfj24ag"))
+            (patches (search-patches %patch-path))))
    (build-system gnu-build-system)
    (arguments
     '(#:out-of-source? #t
       #:configure-flags '("--enable-optimize"
-			  "--disable-debug"
-			  "--disable-trace")
+                          "--disable-debug"
+                          "--disable-trace")
       #:phases (modify-phases %standard-phases
-	         (add-after 'unpack 'fix-hardcoded-paths
-		   (lambda _
-		     (substitute* "building-tools/common_vars.mk.in"
-		       (("/bin/sh")  (which "sh")))
-		     #t))
-		 (delete 'check))))
+                 (add-after 'unpack 'fix-hardcoded-paths
+                   (lambda _
+                     (substitute* "building-tools/common_vars.mk.in"
+                       (("/bin/sh")  (which "sh")))
+                     #t))
+                 (delete 'check))))
    (native-inputs
     `(("pkg-config" ,pkg-config)
       ("autoconf", autoconf)
@@ -70,26 +70,26 @@
    (version (number->string %pm2-revision))
    (home-page (string-append %pm2-home-page "/pioman"))
    (source (origin
-	    (method svn-fetch)
-	    (uri (svn-reference
-		  (url (string-append %pm2-svn "/pioman"))
-		  (revision %pm2-revision)))
-	    (sha256
-	     (base32 "1jhdxsg262h62pb3k0y4srz6ag4nfzh15y05ifc9wrcnhqzcyqnm"))
-	    (patches (search-patches %patch-path))))
+            (method svn-fetch)
+            (uri (svn-reference
+                  (url (string-append %pm2-svn "/pioman"))
+                  (revision %pm2-revision)))
+            (sha256
+             (base32 "1jhdxsg262h62pb3k0y4srz6ag4nfzh15y05ifc9wrcnhqzcyqnm"))
+            (patches (search-patches %patch-path))))
    (build-system gnu-build-system)
    (arguments
     '(#:out-of-source? #t
       #:configure-flags '("--enable-optimize"
-			  "--disable-debug"
-			  "--with-pthread")
+                          "--disable-debug"
+                          "--with-pthread")
       #:phases (modify-phases %standard-phases
-	         (add-after 'unpack 'fix-hardcoded-paths
-		   (lambda _
-		     (substitute* "building-tools/common_vars.mk.in"
-		       (("/bin/sh")  (which "sh")))
-		     #t))
-		 (delete 'check))))
+                 (add-after 'unpack 'fix-hardcoded-paths
+                   (lambda _
+                     (substitute* "building-tools/common_vars.mk.in"
+                       (("/bin/sh")  (which "sh")))
+                     #t))
+                 (delete 'check))))
    (native-inputs
     `(("pkg-config" ,pkg-config)
       ("autoconf" ,autoconf)
@@ -107,27 +107,27 @@
    (version (number->string %padicotm-revision))
    (home-page (string-append %pm2-home-page "/PadicoTM"))
    (source (origin
-	    (method svn-fetch)
-	    (uri (svn-reference
-		  (url (string-append %padicotm-svn "/PadicoTM/PadicoTM"))
-		  (revision %padicotm-revision)))
-	    (sha256
-	     (base32 "0g1wggawjzf843l1m2bgw01c7ljb6p95haby77fl26434w25sl6a"))
-	    (patches (search-patches %patch-path))))
+            (method svn-fetch)
+            (uri (svn-reference
+                  (url (string-append %padicotm-svn "/PadicoTM/PadicoTM"))
+                  (revision %padicotm-revision)))
+            (sha256
+             (base32 "0g1wggawjzf843l1m2bgw01c7ljb6p95haby77fl26434w25sl6a"))
+            (patches (search-patches %patch-path))))
    (build-system gnu-build-system)
    (arguments
     '(#:out-of-source? #t
       #:configure-flags '("--enable-optimize"
-			  "--disable-debug"
-			  "--with-pioman"
-			  "--without-pukabi")
+                          "--disable-debug"
+                          "--with-pioman"
+                          "--without-pukabi")
       #:phases (modify-phases %standard-phases
-	         (add-after 'unpack 'fix-hardcoded-paths
-		   (lambda _
-		     (substitute* "building-tools/common_vars.mk.in"
-		       (("/bin/sh")  (which "sh")))
-		     #t))
-		 (delete 'check))))
+                 (add-after 'unpack 'fix-hardcoded-paths
+                   (lambda _
+                     (substitute* "building-tools/common_vars.mk.in"
+                       (("/bin/sh")  (which "sh")))
+                     #t))
+                 (delete 'check))))
    (native-inputs
     `(("pkg-config" ,pkg-config)
       ("autoconf" ,autoconf)
@@ -160,29 +160,29 @@
    (version (number->string %pm2-revision))
    (home-page (string-append %pm2-home-page "/NewMadeleine"))
    (source (origin
-	    (method svn-fetch)
-	    (uri (svn-reference
-		  (url (string-append %pm2-svn "/nmad"))
-		  (revision %pm2-revision)))
-	    (sha256
-	     (base32 "0kg4205y0k4ww1rzr97kkf1gfs4xwf1b1v317ypl0iv4y3rv604y"))
-	    (patches (search-patches %patch-path))))
+            (method svn-fetch)
+            (uri (svn-reference
+                  (url (string-append %pm2-svn "/nmad"))
+                  (revision %pm2-revision)))
+            (sha256
+             (base32 "0kg4205y0k4ww1rzr97kkf1gfs4xwf1b1v317ypl0iv4y3rv604y"))
+            (patches (search-patches %patch-path))))
    (build-system gnu-build-system)
    (arguments
     '(#:out-of-source? #t
       #:configure-flags '("--enable-optimize"
-			  "--disable-debug"
-			  "--with-pioman"
-			  "--without-pukabi"
-			  "--enable-mpi"
-			  "--disable-sampling")
+                          "--disable-debug"
+                          "--with-pioman"
+                          "--without-pukabi"
+                          "--enable-mpi"
+                          "--disable-sampling")
       #:phases (modify-phases %standard-phases
-		 (add-after 'unpack 'fix-hardcoded-paths
-		   (lambda _
-		     (substitute* "building-tools/common_vars.mk.in"
-		       (("/bin/sh")  (which "sh")))
-		     #t))
-		 (delete 'check))))
+                 (add-after 'unpack 'fix-hardcoded-paths
+                   (lambda _
+                     (substitute* "building-tools/common_vars.mk.in"
+                       (("/bin/sh")  (which "sh")))
+                     #t))
+                 (delete 'check))))
    (native-inputs
     `(("pkg-config" ,pkg-config)
       ("autoconf" ,autoconf)

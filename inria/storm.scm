@@ -206,7 +206,7 @@ kernels are executed as efficiently as possible.")
     (inherit starpu-git)
     (name "starpu-openmpi")
     (inputs `(("mpi" ,openmpi)
-              ,@(package-inputs starpu)))))
+              ,@(package-inputs starpu-git)))))
 
 (define-public starpu+nmad
   (package

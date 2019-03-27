@@ -39,7 +39,7 @@
                   (url (string-append %padicotm-svn "/PadicoTM/Puk"))
                   (revision %padicotm-revision)))
             (sha256
-             (base32 "1cv20rqn210l59fq4h8i3plkinasfw3n433rsqr8gj509qfj24ag"))
+             (base32 "1hdbrrjzjnn6a0wvqvmx79zdq5r9l0xw2nn270ym617b7k48x6i9"))
             (patches (search-patches %patch-path))))
    (build-system gnu-build-system)
    (arguments

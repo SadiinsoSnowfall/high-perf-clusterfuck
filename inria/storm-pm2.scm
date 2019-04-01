@@ -23,7 +23,7 @@
 
 (define %pm2-home-page "http://pm2.gforge.inria.fr/")
 (define %pm2-revision 28005)
-(define %padicotm-revision 5233)
+(define %padicotm-revision 5235)
 (define %pm2-svn "https://scm.gforge.inria.fr/anonscm/svn/pm2/trunk")
 (define %padicotm-svn "https://scm.gforge.inria.fr/anonscm/svn/padico/PadicoTM/trunk")
 (define %patch-path "inria/patches/autogen_building-tools.patch")
@@ -39,7 +39,7 @@
                   (url (string-append %padicotm-svn "/PadicoTM/Puk"))
                   (revision %padicotm-revision)))
             (sha256
-             (base32 "1hdbrrjzjnn6a0wvqvmx79zdq5r9l0xw2nn270ym617b7k48x6i9"))
+             (base32 "1w53lcjrcc5rbp4i9v9axllz82ihk80w2hx4vdd97fbs7mzbawld"))
             (patches (search-patches %patch-path))))
    (build-system gnu-build-system)
    (arguments
@@ -75,7 +75,7 @@
                   (url (string-append %pm2-svn "/pioman"))
                   (revision %pm2-revision)))
             (sha256
-             (base32 "1jhdxsg262h62pb3k0y4srz6ag4nfzh15y05ifc9wrcnhqzcyqnm"))
+             (base32 "0f77cs4il25zys76h9ngiiifcjr0y2qjz8v3jdvasynmi1dqzkk2"))
             (patches (search-patches %patch-path))))
    (build-system gnu-build-system)
    (arguments
@@ -112,7 +112,7 @@
                   (url (string-append %padicotm-svn "/PadicoTM/PadicoTM"))
                   (revision %padicotm-revision)))
             (sha256
-             (base32 "0g1wggawjzf843l1m2bgw01c7ljb6p95haby77fl26434w25sl6a"))
+             (base32 "140ywhgda84a6wdls8sm7csw5jrryg2mbcqlw8l97x6636r54dbv"))
             (patches (search-patches %patch-path))))
    (build-system gnu-build-system)
    (arguments
@@ -165,7 +165,7 @@
                   (url (string-append %pm2-svn "/nmad"))
                   (revision %pm2-revision)))
             (sha256
-             (base32 "0kg4205y0k4ww1rzr97kkf1gfs4xwf1b1v317ypl0iv4y3rv604y"))
+             (base32 "01h1k0riyq0w5m7rzd1p0l8qprz8h8p2fm6gsfwvj7vzq1hp0ihv"))
             (patches (search-patches %patch-path))))
    (build-system gnu-build-system)
    (arguments

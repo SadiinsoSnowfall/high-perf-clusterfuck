@@ -48,7 +48,8 @@ area (CPUs-GPUs, distributed nodes).")
                 "03sjykh24ms4h2vzylkxcc6v7nshl3w0dhyyrv9grzckmxvmvzij"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON")
+     '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON"
+                           "-DCHAMELEON_USE_MPI=ON")
 
        ;; FIXME: Test too long for gitlab-runner CI
        #:tests? #f
@@ -60,23 +61,12 @@ area (CPUs-GPUs, distributed nodes).")
                        ;; to be writable.
                        (setenv "HOME" (getcwd))
                        #t)))))
-    (propagated-inputs `(("starpu" ,starpu)
+    (propagated-inputs `(("mpi" ,openmpi)
+                         ("starpu" ,starpu)
                          ("lapack" ,openblas)))
     (native-inputs `(("pkg-config" ,pkg-config)
                      ("gfortran" ,gfortran)
                      ("python" ,python-2)))))
-
-(define-public chameleon+openmpi
-  (package
-    (inherit chameleon)
-    (name "chameleon-openmpi")
-    (propagated-inputs `(("mpi" ,openmpi)
-                         ("starpu" ,starpu+openmpi)
-                         ,@(delete `("starpu" ,starpu) (package-propagated-inputs chameleon))))
-    (arguments
-     (substitute-keyword-arguments (package-arguments chameleon)
-       ((#:configure-flags flags '())
-        `(cons "-DCHAMELEON_USE_MPI=ON" ,flags))))))
 
 (define-public maphys
   (package

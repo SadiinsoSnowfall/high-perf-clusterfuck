@@ -16,14 +16,14 @@
 (define-public simgrid
   (package
     (name "simgrid")
-    (version "3.15")
+    (version "3.21")
     (source (origin
               (method url-fetch)
               (uri
-               "http://gforge.inria.fr/frs/download.php/file/36621/SimGrid-3.15.tar.gz")
+               "https://gforge.inria.fr/frs/download.php/file/37758/SimGrid-3.21.tar.gz")
               (sha256
                (base32
-                "1s595wc4z8hkvim3ypfdxy16pply6ckjg10v84cc0lx9pz6i3r6i"))))
+                "1866q13rr8lvs589a9n58rbqixi3ha6d3mgqnsi3kp8n201fk9nj"))))
     (build-system cmake-build-system)
     (arguments
      '(;; Have the RUNPATH of executables point to $libdir, where
@@ -40,7 +40,7 @@
      `(("perl" ,perl)
        ("python" ,python-wrapper)
        ("doxygen" ,doxygen)))
-    (inputs
+    (propagated-inputs
      `(("boost" ,boost)))
     ;; XXX: 'smpicc' and 'smpicxx' retain references to GCC.
     (home-page "http://simgrid.gforge.inria.fr/")

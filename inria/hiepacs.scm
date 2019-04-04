@@ -36,11 +36,16 @@ manage automatically data transfers between not shared memory
 area (CPUs-GPUs, distributed nodes).")
     (license license:cecill-c)
     (source (origin
-              (method url-fetch)
-              (uri "https://gitlab.inria.fr/solverstack/chameleon/uploads/60df876daea9498a260c4e5bcf41b84c/chameleon-0.9.2.tar.gz")
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit "d2b4cab3a6b860f068979ecc2a532a3249060ba8")
+                    ;; We need the submodule in 'CMakeModules/morse_cmake'.
+                    (recursive? #t)))
+              (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "1qpygqv83zjl6fp6phka9gjc91m5j60798qlgi89cr2mppf7avki"))))
+                "03sjykh24ms4h2vzylkxcc6v7nshl3w0dhyyrv9grzckmxvmvzij"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON")
@@ -61,36 +66,17 @@ area (CPUs-GPUs, distributed nodes).")
                      ("gfortran" ,gfortran)
                      ("python" ,python-2)))))
 
-(define-public chameleon-git
+(define-public chameleon+openmpi
   (package
     (inherit chameleon)
-    (name "chameleon-git")
-    (version "118a951f5344af01a30f3d0e26180273ecc7c2e6")
-    (home-page "https://gitlab.inria.fr/solverstack/chameleon")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url home-page)
-                    (commit version)
-                    ;; We need the submodule in 'CMakeModules/morse_cmake'.
-                    (recursive? #t)))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "0ykybcykzx1nbk54xkxvc1wjs39v9xyzy813r25bfl9xm47p42jx"))))))
-
-;; TODO: fix starpu+openmpi first
-;; (define-public chameleon+openmpi
-;;   (package
-;;     (inherit chameleon)
-;;     (name "chameleon-openmpi")
-;;     (propagated-inputs `(("mpi" ,openmpi)
-;;                          ("starpu" ,starpu+openmpi)
-;;                          ,@(delete `("starpu" ,starpu) (package-propagated-inputs chameleon))))
-;;     (arguments
-;;      (substitute-keyword-arguments (package-arguments chameleon)
-;;        ((#:configure-flags flags '())
-;;         `(cons "-DCHAMELEON_USE_MPI=ON" ,flags))))))
+    (name "chameleon-openmpi")
+    (propagated-inputs `(("mpi" ,openmpi)
+                         ("starpu" ,starpu+openmpi)
+                         ,@(delete `("starpu" ,starpu) (package-propagated-inputs chameleon))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments chameleon)
+       ((#:configure-flags flags '())
+        `(cons "-DCHAMELEON_USE_MPI=ON" ,flags))))))
 
 (define-public maphys
   (package

@@ -17,6 +17,7 @@
   #:use-module (gnu packages gdb)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages python)
   #:use-module (inria storm-pm2)
   #:use-module (inria eztrace)
   #:use-module (inria simgrid)
@@ -29,7 +30,6 @@
   (string-append %starpu-home-page "/files/starpu-"
                  version "/starpu-" version ".tar.gz"))
 
-(define %starpu-commit "d17cb263f609205a9052e0b50a869384cea77f35")
 (define %starpu-git "https://scm.gforge.inria.fr/anonscm/git/starpu/starpu.git")
 
 (define-public starpu-1.1
@@ -38,11 +38,13 @@
     (version "1.1.7")
     (home-page %starpu-home-page)
     (source (origin
-              (method url-fetch)
-              (uri (starpu-url version))
-              (sha256
-               (base32
-                "09nbns7wq4nhw8771jfd6rdz0zxdrh2c3fvanv4hvinnrhwp5xlr"))))
+             (method git-fetch)
+             (uri (git-reference
+                   (url %starpu-git)
+                   (commit "341044b67809892cf4a388e482766beb50256907")))
+             (file-name (string-append name "-" version "-checkout"))
+             (sha256
+              (base32 "18m99yl03ps3drmd6vchrz6xchw8hs5syzi1nsy0mniy1gyz7glw"))))
     (build-system gnu-build-system)
     (outputs '("debug" "out"))
     (arguments
@@ -87,7 +89,10 @@
                               #f))))))))
     (native-inputs
      `(("pkg-config" ,pkg-config)
-       ("gdb" ,gdb)))                             ;used upon test failure
+       ("gdb" ,gdb)
+       ("libtool" ,libtool)
+       ("autoconf" ,autoconf)
+       ("automake" ,automake)))                             ;used upon test failure
     (inputs `(("fftw" ,fftw)
               ("fftwf" ,fftwf)))
     (propagated-inputs  `(("hwloc" ,hwloc "lib")))
@@ -104,93 +109,35 @@ kernels are executed as efficiently as possible.")
 (define-public starpu-1.2
   (package
     (inherit starpu-1.1)
+    (name "starpu")
     (version "1.2.8")
     (source (origin
-              (method url-fetch)
-              (uri (starpu-url "1.2.8"))
-              (sha256
-               (base32
-                "1yvmbax76lz4jg35xigab1i442xvvc77pwijy86x4j7jr3xnsrmn"))))
+             (method git-fetch)
+             (uri (git-reference
+                   (url %starpu-git)
+                   (commit "97c426c6e283fba8c44d0437b762faf1da8e116a")))
+             (file-name (git-file-name name version))
+             (sha256
+              (base32 "0qp4pfvx5igw1ay01mq81693gsh1jc2lb0v6y5f50il6qm1mq1j7"))))
     (native-inputs
      ;; Some tests require bc and Gnuplot.
      `(("bc" ,bc)
        ("gnuplot" ,gnuplot)
        ,@(package-native-inputs starpu-1.1)))))
 
-(define-public starpu
-  starpu-1.2)
-
-;; TODO: build fails
-;;(define-public starpu
-;;  (package
-;;    (inherit starpu-1.2)
-;;    (version "1.3.0rc2")
-;;    (source (origin
-;;              (method url-fetch)
-;;              (uri "http://starpu.gforge.inria.fr/files/starpu-1.3.0rc2/starpu-1.3.0rc2.tar.gz")
-;;              (sha256
-;;               (base32
-;;                "1p228bipgp3qbg991a5qbilq739hr9pgzcyqxy468gqzjnj9xfav"))))
-;;   (arguments
-;;    (substitute-keyword-arguments (package-arguments starpu-1.2)
-;;      ((#:phases phases '())
-;;       (append phases '((add-after 'patch-source-shebangs 'fix-hardcoded-paths
-;;                          (lambda _
-;;                            (substitute* "min-dgels/base/make.inc"
-;;                              (("/bin/sh")  (which "sh")))
-;;                            #t)))))))))
-
-;; TODO: build fails, starpu-git should work instead
-;;(define-public starpu+openmpi
-;;  (package
-;;    (inherit starpu)
-;;    (name "starpu-openmpi")
-;;    (inputs `(("mpi" ,openmpi)
-;;              ,@(package-inputs starpu)))))
-
-;; TODO: build fails, fatal error: boost/intrusive_ptr.hpp: No such file or directory
-;;(define-public starpu+simgrid
-;;  (package
-;;    (inherit starpu-1.2)
-;;    (name "starpu-simgrid")
-;;    (inputs `(("simgrid" ,simgrid)
-;;              ,@(package-inputs starpu-1.2)))
-;;    (arguments
-;;     (substitute-keyword-arguments (package-arguments starpu-1.2)
-;;       ((#:configure-flags flags '())
-;;        `(cons "--enable-simgrid" ,flags))))))
-
-(define-public starpu+fxt
-  ;; When FxT support is enabled, performance is degraded, hence the separate
-  ;; package.
+(define-public starpu-1.3
   (package
     (inherit starpu-1.2)
-    (name "starpu-fxt")
-    (inputs `(("fxt" ,fxt)
-              ,@(package-inputs starpu-1.2)))
-    (arguments
-     (substitute-keyword-arguments (package-arguments starpu-1.2)
-       ((#:configure-flags flags '())
-        `(cons "--with-fxt" ,flags))))))
-
-(define-public starpu-git
-  (package
-   (inherit starpu)
-   (name "starpu-git")
-   (version %starpu-commit)
-   (source (origin
-            (method git-fetch)
-            (uri (git-reference
-                  (url %starpu-git)
-                  (commit %starpu-commit)))
-            (file-name (git-file-name name version))
-            (sha256
-             (base32 "1gcsvz7xvxj99p3jnhq52p5v20jy1wwry8zk69kfr5pg13x1kr55"))))
-   (native-inputs
-    `(("libtool" ,libtool)
-      ("autoconf" ,autoconf)
-      ("automake" ,automake)
-      ,@(package-native-inputs starpu)))
+    (name "starpu")
+    (version "1.3.1")
+    (source (origin
+             (method git-fetch)
+             (uri (git-reference
+                   (url %starpu-git)
+                   (commit "11c6bafadb072e0e5777101e06b57e594f671093")))
+             (file-name (git-file-name name version))
+             (sha256
+              (base32 "1s212xgn5vdj6c79zwnq03c2dpipwwfaz7dhfz324jfs5cjyk89f"))))
    (arguments
     (substitute-keyword-arguments (package-arguments starpu-1.2)
       ((#:phases phases '())
@@ -200,25 +147,44 @@ kernels are executed as efficiently as possible.")
                               (("/bin/sh")  (which "sh")))
                             #t)))))))))
 
+(define-public starpu
+  starpu-1.3)
+
+(define-public starpu+fxt
+  ;; When FxT support is enabled, performance is degraded, hence the separate
+  ;; package.
+  (package
+    (inherit starpu)
+    (name "starpu-fxt")
+    (inputs `(("fxt" ,fxt)
+              ,@(package-inputs starpu)))
+    (arguments
+     (substitute-keyword-arguments (package-arguments starpu)
+       ((#:configure-flags flags '())
+        `(cons "--with-fxt" ,flags))))
+    ;; some tests require python.
+    (native-inputs
+     `(("python" ,python-2)
+       ,@(package-native-inputs starpu)))))
+
 (define-public starpu+openmpi
   (package
-    (inherit starpu-git)
+    (inherit starpu)
     (name "starpu-openmpi")
     (inputs `(("mpi" ,openmpi)
-              ,@(package-inputs starpu-git)))))
+              ,@(package-inputs starpu)))))
 
 (define-public starpu+nmad
   (package
-   (inherit starpu-git)
+   (inherit starpu)
    (name "starpu-nmad")
-   (version %starpu-commit)
    (arguments
-    (substitute-keyword-arguments (package-arguments starpu-git)
+    (substitute-keyword-arguments (package-arguments starpu)
       ((#:configure-flags flags '())
        `(cons "--enable-nmad" ,flags))))
    (inputs
     `(("nmad" ,nmad)
-      ,@(package-inputs starpu-git)))))
+      ,@(package-inputs starpu)))))
 
 (define-public starpu+madmpi
   (package
@@ -230,3 +196,14 @@ kernels are executed as efficiently as possible.")
                                    `(delete "--enable-nmad" ,flags))))
    (inputs `(("nmad" ,nmad-mini)
              ,@(delete `("nmad" ,nmad) (package-inputs starpu+nmad))))))
+
+(define-public starpu+simgrid
+  (package
+    (inherit starpu)
+    (name "starpu-simgrid")
+    (inputs `(("simgrid" ,simgrid)
+              ,@(package-inputs starpu)))
+    (arguments
+     (substitute-keyword-arguments (package-arguments starpu)
+       ((#:configure-flags flags '())
+        `(cons "--enable-simgrid" ,flags))))))

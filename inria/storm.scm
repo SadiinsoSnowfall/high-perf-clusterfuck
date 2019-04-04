@@ -95,7 +95,8 @@
        ("automake" ,automake)))                             ;used upon test failure
     (inputs `(("fftw" ,fftw)
               ("fftwf" ,fftwf)))
-    (propagated-inputs  `(("hwloc" ,hwloc "lib")))
+    (propagated-inputs  `(("hwloc" ,hwloc "lib")
+                          ("mpi" ,openmpi)))
     (synopsis "Run-time system for heterogeneous computing")
     (description
      "StarPU is a run-time system that offers support for heterogeneous
@@ -167,13 +168,6 @@ kernels are executed as efficiently as possible.")
      `(("python" ,python-2)
        ,@(package-native-inputs starpu)))))
 
-(define-public starpu+openmpi
-  (package
-    (inherit starpu)
-    (name "starpu-openmpi")
-    (inputs `(("mpi" ,openmpi)
-              ,@(package-inputs starpu)))))
-
 (define-public starpu+nmad
   (package
    (inherit starpu)
@@ -185,17 +179,6 @@ kernels are executed as efficiently as possible.")
    (inputs
     `(("nmad" ,nmad)
       ,@(package-inputs starpu)))))
-
-(define-public starpu+madmpi
-  (package
-   (inherit starpu+nmad)
-   (name "starpu-madmpi")
-   (arguments
-    (substitute-keyword-arguments (package-arguments starpu+nmad)
-                                  ((#:configure-flags flags '())
-                                   `(delete "--enable-nmad" ,flags))))
-   (inputs `(("nmad" ,nmad-mini)
-             ,@(delete `("nmad" ,nmad) (package-inputs starpu+nmad))))))
 
 (define-public starpu+simgrid
   (package

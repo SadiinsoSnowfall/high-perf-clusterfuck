@@ -1,13 +1,23 @@
 # Stage
+# 0. Guix update: call guix pull to get an up-to-date guix
 # 1. Lint: Check packages definition
 # 2. Build: Build packages
 stages:
+  - update
   - lint
   - build
 
 # Init guix module path in current env
 before_script:
   - export GUIX_PACKAGE_PATH="$PWD"
+
+##########################
+# Stage 0: Guix update   #
+##########################
+update:
+  stage: update
+  script:
+    - guix pull
 
 ##########################
 # Stage 1: Lint packages #

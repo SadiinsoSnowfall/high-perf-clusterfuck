@@ -22,6 +22,7 @@
   #:use-module (inria eztrace)
   #:use-module (inria mpi)
   #:use-module (inria simgrid)
+  #:use-module (srfi srfi-1)
   #:use-module (ice-9 match))
 
 (define %starpu-home-page

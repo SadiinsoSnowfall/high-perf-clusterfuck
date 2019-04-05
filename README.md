@@ -55,6 +55,29 @@ The following derivations will be built:
    /gnu/store/xv5r6sxybz441jfgzn0skj7gm2p37dfa-starpu-1.2.1.drv
 ```
 
+## Pre-built binaries
+
+Pre-built binaries for Guix-HPC packages are served from
+`https://guix-hpc.bordeaux.inria.fr`.  To benefit from them, you must:
+
+  1. Add `https://guix-hpc.bordeaux.inria.fr` to the list of
+     `--substitute-urls` option [of
+     `guix-daemon`](https://www.gnu.org/software/guix/manual/en/html_node/Invoking-guix_002ddaemon.html#daemon_002dsubstitute_002durls)
+     or that [of client
+     tools](https://www.gnu.org/software/guix/manual/en/html_node/Common-Build-Options.html#client_002dsubstitute_002durls).
+
+  2. [Authorize](https://www.gnu.org/software/guix/manual/en/html_node/Substitute-Server-Authorization.html)
+     the key used to sign substitutes:
+
+	 ```
+	 (public-key
+	  (ecc
+	   (curve Ed25519)
+	   (q #89FBA276A976A8DE2A69774771A92C8C879E0F24614AAAAE23119608707B3F06#)))
+	 ```
+
+Enjoy!
+
 ## More information
 
 The Guix manual contains useful information:

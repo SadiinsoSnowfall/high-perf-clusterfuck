@@ -9,21 +9,11 @@
   #:use-module (guix build-system cmake)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix utils)
+  #:use-module (inria mpi)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mpi))
-
-(define-public openmpi-with-mpi1-compat
-  ;; In Open MPI 4 the deprecated MPI1 functions are disabled by default.
-  ;; This variant enables them.
-  (package
-    (inherit openmpi)
-    (name "openmpi-mpi1-compat")
-    (arguments
-     (substitute-keyword-arguments (package-arguments openmpi)
-       ((#:configure-flags flags ''())
-        `(cons "--enable-mpi1-compatibility" ,flags))))))
 
 (define-public pampa
   (let ((commit "2d2d89ec91c514dbf5a63cf6b746e168eece36fe")

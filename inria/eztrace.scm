@@ -1,7 +1,7 @@
 ;;; This module extends GNU Guix and is licensed under the same terms, those
 ;;; of the GNU GPL version 3 or (at your option) any later version.
 ;;;
-;;; Copyright © 2017 Inria
+;;; Copyright © 2017, 2019 Inria
 
 (define-module (inria eztrace)
   #:use-module (guix)
@@ -15,24 +15,28 @@
 (define-public eztrace
   (package
     (name "eztrace")
-    (version "1.1-4")
+    (version "1.1-7")
     (source (origin
-              (uri "https://gforge.inria.fr/frs/download.php/file/36126/eztrace-1.1-4.tar.gz")
+              (uri "https://gforge.inria.fr/frs/download.php/file/37155/eztrace-1.1-7.tar.gz")
               (method url-fetch)
               (sha256
                (base32
-                "0hnf9kgfqck4ik40wm54yyny6h2gi8pm7jlcb3a4ix54zwz492vf"))
-              (modules '((guix build utils)))
+                "0cr2d4fdv4ljvag55dsz3rpha1jan2gc3jhr06ycyk43450pl58p"))
+              ;; (modules '((guix build utils)))
 
               ;; Remove bundled libraries.
               ;; FIXME: There's few more under extlib/.
-              (snippet '(delete-file-recursively "extlib/litl"))))
+              ;; FIXME: The bundled litl is different from the latest
+              ;; release (0.1.8), so we have to use it.
+              ;; (snippet '(delete-file-recursively "extlib/litl"))
+              ))
     (build-system gnu-build-system)
     (arguments
      '(#:configure-flags (list "LDFLAGS=-liberty" ;for bfd
-                               (string-append "--with-litl="
-                                              (assoc-ref %build-inputs
-                                                         "litl")))
+                               ;; (string-append "--with-litl="
+                               ;;                (assoc-ref %build-inputs
+                               ;;                           "litl"))
+                               )
 
        ;; FIXME: There are test failures in bundled libraries.
        #:tests? #f))

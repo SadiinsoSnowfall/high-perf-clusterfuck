@@ -22,60 +22,10 @@ update:
 ##########################
 # Stage 1: Lint packages #
 ##########################
-lint_simgrid:
+lint:
   stage: lint
   script:
-    - guix lint simgrid
-
-lint_litl:
-  stage: lint
-  script:
-    - guix lint litl
-
-lint_fxt:
-  stage: lint
-  script:
-    - guix lint fxt
-
-lint_eztrace:
-  stage: lint
-  script:
-    - guix lint eztrace
-
-lint_starpu-1.1:
-  stage: lint
-  script:
-    - guix lint starpu@1.1
-
-lint_starpu:
-  stage: lint
-  script:
-    - guix lint starpu
-
-lint_starpu-simgrid:
-  stage: lint
-  script:
-    - guix lint starpu-simgrid
-
-lint_starpu-fxt:
-  stage: lint
-  script:
-    - guix lint starpu-fxt
-
-lint_chameleon:
-  stage: lint
-  script:
-    - guix lint chameleon
-
-lint_maphys:
-  stage: lint
-  script:
-    - guix lint maphys
-
-lint_pastix:
-  stage: lint
-  script:
-    - guix lint pastix
+    - guix lint `guix package -A | grep inria/ | cut -f1`
 
 ###########################
 # Stage 2: Build packages #

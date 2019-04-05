@@ -151,7 +151,7 @@ kernels are executed as efficiently as possible.")
                             #t)))))))
    (propagated-inputs  `(("mpi" ,openmpi)
                          ,@(alist-delete "mpi"
-                                         (package-native-inputs starpu-1.2))))))
+                                         (package-propagated-inputs starpu-1.2))))))
 
 (define-public starpu
   starpu-1.3)

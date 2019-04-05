@@ -20,6 +20,7 @@
   #:use-module (gnu packages python)
   #:use-module (inria storm-pm2)
   #:use-module (inria eztrace)
+  #:use-module (inria mpi)
   #:use-module (inria simgrid)
   #:use-module (ice-9 match))
 
@@ -96,7 +97,7 @@
     (inputs `(("fftw" ,fftw)
               ("fftwf" ,fftwf)))
     (propagated-inputs  `(("hwloc" ,hwloc "lib")
-                          ("mpi" ,openmpi)))
+                          ("mpi" ,openmpi-with-mpi1-compat)))
     (synopsis "Run-time system for heterogeneous computing")
     (description
      "StarPU is a run-time system that offers support for heterogeneous
@@ -146,7 +147,10 @@ kernels are executed as efficiently as possible.")
                           (lambda _
                             (substitute* "min-dgels/base/make.inc"
                               (("/bin/sh")  (which "sh")))
-                            #t)))))))))
+                            #t)))))))
+   (propagated-inputs  `(("mpi" ,openmpi)
+                         ,@(alist-delete "mpi"
+                                         (package-native-inputs starpu-1.2))))))
 
 (define-public starpu
   starpu-1.3)

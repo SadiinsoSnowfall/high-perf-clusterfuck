@@ -26,10 +26,22 @@ privileges that the
 
 ## How does it work?
 
-The package recipes in this repo _extend_
-[those that come with Guix](https://gnu.org/s/guix/packages).  To make
-them visible to the `guix` command-line tools, simply drop them in
-`GUIX_PACKAGE_PATH`:
+The package definitions in this repo _extend_ [those that come with
+Guix](https://gnu.org/s/guix/packages).  To make them visible to the
+`guix` command-line tools, create the `~/.config/guix/channels.scm` file
+with the following snippet to request the `guix-hpc` _channel_:
+
+```
+(cons (channel
+        (name 'guix-hpc)
+        (url "https://gitlab.inria.fr/guix-hpc/guix-hpc.git"))
+      %default-channels)
+```
+
+That way, `guix pull` will systematically pull not only Guix, but also
+Guix-HPC.
+
+Alternately, you can drop a Guix-HPC checkout in `GUIX_PACKAGE_PATH`:
 
 ```
 $ git clone https://gitlab.inria.fr/guix-hpc/guix-hpc.git
@@ -43,22 +55,6 @@ The following derivations will be built:
    /gnu/store/xv5r6sxybz441jfgzn0skj7gm2p37dfa-starpu-1.2.1.drv
 ```
 
-If you use Guix > 0.15.0, or if you `pull`ed it in early September 2018
-or later, you can instead use the _channel_ mechanism.  To do that,
-create a `~/.config/guix/channels.scm` file with the following
-snippet:
-
-```
-(cons (channel
-        (name 'guix-hpc)
-        (url "https://gitlab.inria.fr/guix-hpc/guix-hpc.git"))
-      %default-channels)
-```
-
-That way, `guix pull` will systematically pull not only Guix, but also
-Guix-HPC; the `GUIX_PACKAGE_PATH` environment variable becomes
-unnecessary.
-
 ## More information
 
 The Guix manual contains useful information:
@@ -70,6 +66,10 @@ The Guix manual contains useful information:
     [`guix environment`](https://www.gnu.org/software/guix/manual/html_node/Invoking-guix-environment.html),
     the tool that allows you to enter a specific development
     environment;
+  * on the [channels
+    mechanism](https://www.gnu.org/software/guix/manual/en/html_node/Channels.html),
+    which allows you to pull in `guix-hpc` packages in addition to those
+    provided by Guix;
   * on
     [the `GUIX_PACKAGE_PATH` environment variable](https://www.gnu.org/software/guix/manual/html_node/Package-Modules.html#index-GUIX_005fPACKAGE_005fPATH),
     which allows you to extend the set of packages visible to `guix`.

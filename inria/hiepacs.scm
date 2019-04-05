@@ -47,6 +47,7 @@ area (CPUs-GPUs, distributed nodes).")
                (base32
                 "03sjykh24ms4h2vzylkxcc6v7nshl3w0dhyyrv9grzckmxvmvzij"))))
     (build-system cmake-build-system)
+    (outputs '("debug" "out"))
     (arguments
      '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON"
                            "-DCHAMELEON_USE_MPI=ON")

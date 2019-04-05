@@ -84,3 +84,8 @@ build_pastix:
   stage: build
   script:
     - guix build pastix
+
+build_nmad:
+  stage: build
+  script:
+    - guix build nmad

@@ -60,8 +60,8 @@ The following derivations will be built:
 Pre-built binaries for Guix-HPC packages are served from
 `https://guix-hpc.bordeaux.inria.fr`.  To benefit from them, you must:
 
-  1. Add `https://guix-hpc.bordeaux.inria.fr` to the list of
-     `--substitute-urls` option [of
+  1. Add `https://guix-hpc.bordeaux.inria.fr` to the `--substitute-urls`
+     option [of
      `guix-daemon`](https://www.gnu.org/software/guix/manual/en/html_node/Invoking-guix_002ddaemon.html#daemon_002dsubstitute_002durls)
      or that [of client
      tools](https://www.gnu.org/software/guix/manual/en/html_node/Common-Build-Options.html#client_002dsubstitute_002durls).

@@ -10,7 +10,8 @@
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages perl)
-  #:use-module (gnu packages pkg-config))
+  #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages mpi))
 
 (define-public eztrace
   (package
@@ -36,14 +37,17 @@
                                ;; (string-append "--with-litl="
                                ;;                (assoc-ref %build-inputs
                                ;;                           "litl"))
-                               )
+                               (string-append "--with-mpi="
+                                              (assoc-ref %build-inputs
+                                                         "openmpi")))
 
        ;; FIXME: There are test failures in bundled libraries.
        #:tests? #f))
     (inputs `(("litl" ,litl)
               ("gfortran" ,gfortran)
               ("libiberty" ,libiberty)            ;for bfd
-              ("zlib" ,zlib)))                    ;for bfd
+              ("zlib" ,zlib)                      ;for bfd
+              ("openmpi" ,openmpi)))
     (synopsis "Collect program execution traces")
     (description
      "EZTrace is a tool that aims at generating automatically execution trace

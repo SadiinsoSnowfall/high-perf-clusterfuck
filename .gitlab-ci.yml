@@ -89,3 +89,8 @@ build_nmad:
   stage: build
   script:
     - guix build nmad
+
+build_pampa:
+  stage: build
+  script:
+    - guix build pampa

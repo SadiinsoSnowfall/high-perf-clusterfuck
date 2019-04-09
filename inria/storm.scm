@@ -183,7 +183,9 @@ kernels are executed as efficiently as possible.")
        `(cons "--enable-nmad" ,flags))))
    (inputs
     `(("nmad" ,nmad)
-      ,@(package-inputs starpu)))))
+      ,@(package-inputs starpu)))
+   (propagated-inputs  (alist-delete "mpi"
+                                     (package-propagated-inputs starpu)))))
 
 (define-public starpu+simgrid
   (package

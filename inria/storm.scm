@@ -143,6 +143,12 @@ kernels are executed as efficiently as possible.")
               (base32 "1s212xgn5vdj6c79zwnq03c2dpipwwfaz7dhfz324jfs5cjyk89f"))))
    (arguments
     (substitute-keyword-arguments (package-arguments starpu-1.2)
+      ((#:configure-flags flags '())
+       (match (assoc "mpi" (package-propagated-inputs this-package))
+         (("mpi" mpi)
+          (if (string=? (package-name mpi) "nmad")
+              `(cons "--enable-nmad" ,flags)
+              flags))))
       ((#:phases phases '())
        (append phases '((add-after 'patch-source-shebangs 'fix-hardcoded-paths
                           (lambda _
@@ -172,20 +178,6 @@ kernels are executed as efficiently as possible.")
     (native-inputs
      `(("python" ,python-2)
        ,@(package-native-inputs starpu)))))
-
-(define-public starpu+nmad
-  (package
-   (inherit starpu)
-   (name "starpu-nmad")
-   (arguments
-    (substitute-keyword-arguments (package-arguments starpu)
-      ((#:configure-flags flags '())
-       `(cons "--enable-nmad" ,flags))))
-   (inputs
-    `(("nmad" ,nmad)
-      ,@(package-inputs starpu)))
-   (propagated-inputs  (alist-delete "mpi"
-                                     (package-propagated-inputs starpu)))))
 
 (define-public starpu+simgrid
   (package

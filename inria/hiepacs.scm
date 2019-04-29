@@ -73,7 +73,7 @@ area (CPUs-GPUs, distributed nodes).")
   (package
     (name "maphys")
     (version "0.9.5.1")
-    (home-page "https://gitlab.inria.fr/solverstack/maphys")
+    (home-page "https://gitlab.inria.fr/solverstack/maphys/maphys")
     (source (origin
               (method git-fetch)
               (uri (git-reference

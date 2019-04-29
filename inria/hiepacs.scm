@@ -72,7 +72,7 @@ area (CPUs-GPUs, distributed nodes).")
 (define-public maphys
   (package
     (name "maphys")
-    (version "0.9.5.1")
+    (version "0.9.6.0")
     (home-page "https://gitlab.inria.fr/solverstack/maphys/maphys")
     (source (origin
               (method git-fetch)
@@ -85,7 +85,7 @@ area (CPUs-GPUs, distributed nodes).")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "0qrm5zm0bi0g3d8gbk4bvjr094k9m2pzq4xbki0xbfm5dr7xlzf9"))
+                "020r2km34n3pxrg3iw4djdjbzq1y61q7gnaz92mi1bbmyk0hs5ip"))
               (patches (search-patches "inria/patches/maphys-installation-directories.patch"))))
     (build-system cmake-build-system)
     (arguments

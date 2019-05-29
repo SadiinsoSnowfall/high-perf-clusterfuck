@@ -17,6 +17,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (inria storm)
   #:use-module (inria storm-pm2)
+  #:use-module (inria eztrace)
   #:use-module (guix utils)
   #:use-module (srfi srfi-1))
 
@@ -68,6 +69,19 @@ area (CPUs-GPUs, distributed nodes).")
     (native-inputs `(("pkg-config" ,pkg-config)
                      ("gfortran" ,gfortran)
                      ("python" ,python-2)))))
+
+(define-public chameleon+fxt
+  (package
+   (inherit chameleon)
+   (name "chameleon-fxt")
+   (arguments
+    (substitute-keyword-arguments (package-arguments chameleon)
+                                  ((#:configure-flags flags '())
+                                   `(cons "-DCHAMELEON_ENABLE_TRACING=ON" ,flags))))
+   (propagated-inputs `(("fxt" ,fxt)
+                        ("starpu" ,starpu+fxt)
+             ,@(delete `("starpu" ,starpu) (package-inputs chameleon))))))
+
 
 (define-public maphys
   (package

@@ -22,24 +22,26 @@
   #:use-module (ice-9 match))
 
 (define %pm2-home-page "http://pm2.gforge.inria.fr/")
-(define %pm2-revision 28005)
-(define %padicotm-revision 5235)
 (define %pm2-svn "https://scm.gforge.inria.fr/anonscm/svn/pm2/trunk")
 (define %padicotm-svn "https://scm.gforge.inria.fr/anonscm/svn/padico/PadicoTM/trunk")
 (define %patch-path "inria/patches/autogen_building-tools.patch")
 
-(define-public puk
+(define %v2019-05-13 "2019-05-13")
+(define %v2019-05-13-pm2-revision 28048)
+(define %v2019-05-13-padicotm-revision 5248)
+
+(define-public puk-2019-05-13
   (package
    (name "puk")
-   (version (number->string %padicotm-revision))
+   (version %v2019-05-13)
    (home-page (string-append %pm2-home-page "/PadicoTM"))
    (source (origin
             (method svn-fetch)
             (uri (svn-reference
                   (url (string-append %padicotm-svn "/PadicoTM/Puk"))
-                  (revision %padicotm-revision)))
+                  (revision %v2019-05-13-padicotm-revision)))
             (sha256
-             (base32 "1w53lcjrcc5rbp4i9v9axllz82ihk80w2hx4vdd97fbs7mzbawld"))
+             (base32 "1zy8wgwns1i0hazc87mfwizzyaq4c0zyhd92amaw20wflfnchwb3"))
             (patches (search-patches %patch-path))))
    (build-system gnu-build-system)
    (arguments
@@ -64,18 +66,21 @@
    (description "Dummy")
    (license license:lgpl2.0)))
 
-(define-public pioman
+(define-public puk
+  puk-2019-05-13)
+
+(define-public pioman-2019-05-13
   (package
    (name "pioman")
-   (version (number->string %pm2-revision))
+   (version %v2019-05-13)
    (home-page (string-append %pm2-home-page "/pioman"))
    (source (origin
             (method svn-fetch)
             (uri (svn-reference
                   (url (string-append %pm2-svn "/pioman"))
-                  (revision %pm2-revision)))
+                  (revision %v2019-05-13-pm2-revision)))
             (sha256
-             (base32 "0f77cs4il25zys76h9ngiiifcjr0y2qjz8v3jdvasynmi1dqzkk2"))
+             (base32 "1b8c1ys3vg49pnzcvjzxpygw242dn1z4xprjg971181343bbgc20"))
             (patches (search-patches %patch-path))))
    (build-system gnu-build-system)
    (arguments
@@ -101,18 +106,21 @@
    (description "Dummy")
    (license license:lgpl2.0)))
 
-(define-public padicotm
+(define-public pioman
+  pioman-2019-05-13)
+
+(define-public padicotm-2019-05-13
   (package
    (name "padicotm")
-   (version (number->string %padicotm-revision))
+   (version %v2019-05-13)
    (home-page (string-append %pm2-home-page "/PadicoTM"))
    (source (origin
             (method svn-fetch)
             (uri (svn-reference
                   (url (string-append %padicotm-svn "/PadicoTM/PadicoTM"))
-                  (revision %padicotm-revision)))
+                  (revision %v2019-05-13-padicotm-revision)))
             (sha256
-             (base32 "140ywhgda84a6wdls8sm7csw5jrryg2mbcqlw8l97x6636r54dbv"))
+             (base32 "1ry745qc1acr7kwri7yzhyf8pg7lp4hg2mxakqqyx4wdpkpixyr9"))
             (patches (search-patches %patch-path))))
    (build-system gnu-build-system)
    (arguments
@@ -143,7 +151,10 @@
    (description "Dummy")
    (license license:lgpl2.0)))
 
-(define-public padicotm-mini
+(define-public padicotm
+  padicotm-2019-05-13)
+
+(define-public padicotm-mini-2019-05-13
   (package
    (inherit padicotm)
    (name "padicotm-mini")
@@ -154,18 +165,21 @@
    (propagated-inputs
     `(("puk" ,puk)))))
 
-(define-public nmad
+(define-public padicotm-mini
+  padicotm-mini-2019-05-13)
+
+(define-public nmad-2019-05-13
   (package
    (name "nmad")
-   (version (number->string %pm2-revision))
+   (version %v2019-05-13)
    (home-page (string-append %pm2-home-page "/NewMadeleine"))
    (source (origin
             (method svn-fetch)
             (uri (svn-reference
                   (url (string-append %pm2-svn "/nmad"))
-                  (revision %pm2-revision)))
+                  (revision %v2019-05-13-pm2-revision)))
             (sha256
-             (base32 "01h1k0riyq0w5m7rzd1p0l8qprz8h8p2fm6gsfwvj7vzq1hp0ihv"))
+             (base32 "1i4cxan90rg0ipy7c5w3f93k6gpgx38x75b3gfy9wprjf6x0ybwm"))
             (patches (search-patches %patch-path))))
    (build-system gnu-build-system)
    (arguments
@@ -199,7 +213,10 @@
    (description "Dummy")
    (license license:lgpl2.0)))
 
-(define-public nmad-mini
+(define-public nmad
+  nmad-2019-05-13)
+
+(define-public nmad-mini-2019-05-13
   (package
    (inherit nmad)
    (name "nmad-mini")
@@ -210,3 +227,6 @@
    (propagated-inputs
     `(("padicotm" ,padicotm-mini)
       ,@(delete `("padicotm" ,padicotm) (package-inputs nmad))))))
+
+(define-public nmad-mini
+  nmad-mini-2019-05-13)

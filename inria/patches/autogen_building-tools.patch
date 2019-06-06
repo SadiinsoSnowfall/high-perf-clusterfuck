@@ -1,19 +1,978 @@
-Index: PadicoTM/autogen.sh
-===================================================================
---- PadicoTM/autogen.sh	(révision 5179)
-+++ PadicoTM/autogen.sh	(copie de travail)
-@@ -1,6 +1,6 @@
- #! /bin/sh -e
- 
+diff -ruN -p0 PadicoTM.orig/autogen.sh PadicoTM/autogen.sh
+--- PadicoTM.orig/autogen.sh	2019-06-06 13:31:38.787701933 +0200
++++ PadicoTM/autogen.sh	2019-06-06 13:32:00.247799823 +0200
+@@ -3 +3 @@
 -export M4PATH=../building-tools:./building-tools:${M4PATH}
 +export M4PATH=./building-tools:./building-tools:${M4PATH}
- 
- ${AUTOCONF:-autoconf} 
- ${AUTOHEADER:-autoheader} -f
-Index: PadicoTM/building-tools/COPYING
-===================================================================
---- PadicoTM/building-tools/COPYING	(nonexistent)
-+++ PadicoTM/building-tools/COPYING	(copie de travail)
+diff -ruN -p0 PadicoTM.orig/building-tools/ax_check_compile_flag.m4 PadicoTM/building-tools/ax_check_compile_flag.m4
+--- PadicoTM.orig/building-tools/ax_check_compile_flag.m4	1970-01-01 01:00:00.000000000 +0100
++++ PadicoTM/building-tools/ax_check_compile_flag.m4	2019-06-06 13:31:53.993771292 +0200
+@@ -0,0 +1,74 @@
++# ===========================================================================
++#   http://www.gnu.org/software/autoconf-archive/ax_check_compile_flag.html
++# ===========================================================================
++#
++# SYNOPSIS
++#
++#   AX_CHECK_COMPILE_FLAG(FLAG, [ACTION-SUCCESS], [ACTION-FAILURE], [EXTRA-FLAGS], [INPUT])
++#
++# DESCRIPTION
++#
++#   Check whether the given FLAG works with the current language's compiler
++#   or gives an error.  (Warnings, however, are ignored)
++#
++#   ACTION-SUCCESS/ACTION-FAILURE are shell commands to execute on
++#   success/failure.
++#
++#   If EXTRA-FLAGS is defined, it is added to the current language's default
++#   flags (e.g. CFLAGS) when the check is done.  The check is thus made with
++#   the flags: "CFLAGS EXTRA-FLAGS FLAG".  This can for example be used to
++#   force the compiler to issue an error when a bad flag is given.
++#
++#   INPUT gives an alternative input source to AC_COMPILE_IFELSE.
++#
++#   NOTE: Implementation based on AX_CFLAGS_GCC_OPTION. Please keep this
++#   macro in sync with AX_CHECK_{PREPROC,LINK}_FLAG.
++#
++# LICENSE
++#
++#   Copyright (c) 2008 Guido U. Draheim <guidod@gmx.de>
++#   Copyright (c) 2011 Maarten Bosmans <mkbosmans@gmail.com>
++#
++#   This program is free software: you can redistribute it and/or modify it
++#   under the terms of the GNU General Public License as published by the
++#   Free Software Foundation, either version 3 of the License, or (at your
++#   option) any later version.
++#
++#   This program is distributed in the hope that it will be useful, but
++#   WITHOUT ANY WARRANTY; without even the implied warranty of
++#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
++#   Public License for more details.
++#
++#   You should have received a copy of the GNU General Public License along
++#   with this program. If not, see <http://www.gnu.org/licenses/>.
++#
++#   As a special exception, the respective Autoconf Macro's copyright owner
++#   gives unlimited permission to copy, distribute and modify the configure
++#   scripts that are the output of Autoconf when processing the Macro. You
++#   need not follow the terms of the GNU General Public License when using
++#   or distributing such scripts, even though portions of the text of the
++#   Macro appear in them. The GNU General Public License (GPL) does govern
++#   all other use of the material that constitutes the Autoconf Macro.
++#
++#   This special exception to the GPL applies to versions of the Autoconf
++#   Macro released by the Autoconf Archive. When you make and distribute a
++#   modified version of the Autoconf Macro, you may extend this special
++#   exception to the GPL to apply to your modified version as well.
++
++#serial 4
++
++AC_DEFUN([AX_CHECK_COMPILE_FLAG],
++[AC_PREREQ(2.64)dnl for _AC_LANG_PREFIX and AS_VAR_IF
++AS_VAR_PUSHDEF([CACHEVAR],[ax_cv_check_[]_AC_LANG_ABBREV[]flags_$4_$1])dnl
++AC_CACHE_CHECK([whether _AC_LANG compiler accepts $1], CACHEVAR, [
++  ax_check_save_flags=$[]_AC_LANG_PREFIX[]FLAGS
++  _AC_LANG_PREFIX[]FLAGS="$[]_AC_LANG_PREFIX[]FLAGS $4 $1"
++  AC_COMPILE_IFELSE([m4_default([$5],[AC_LANG_PROGRAM()])],
++    [AS_VAR_SET(CACHEVAR,[yes])],
++    [AS_VAR_SET(CACHEVAR,[no])])
++  _AC_LANG_PREFIX[]FLAGS=$ax_check_save_flags])
++AS_VAR_IF(CACHEVAR,yes,
++  [m4_default([$2], :)],
++  [m4_default([$3], :)])
++AS_VAR_POPDEF([CACHEVAR])dnl
++])dnl AX_CHECK_COMPILE_FLAGS
+diff -ruN -p0 PadicoTM.orig/building-tools/ax_mpi.m4 PadicoTM/building-tools/ax_mpi.m4
+--- PadicoTM.orig/building-tools/ax_mpi.m4	1970-01-01 01:00:00.000000000 +0100
++++ PadicoTM/building-tools/ax_mpi.m4	2019-06-06 13:31:53.993771292 +0200
+@@ -0,0 +1,176 @@
++# ===========================================================================
++#          http://www.gnu.org/software/autoconf-archive/ax_mpi.html
++# ===========================================================================
++#
++# SYNOPSIS
++#
++#   AX_MPI([ACTION-IF-FOUND[, ACTION-IF-NOT-FOUND]])
++#
++# DESCRIPTION
++#
++#   This macro tries to find out how to compile programs that use MPI
++#   (Message Passing Interface), a standard API for parallel process
++#   communication (see http://www-unix.mcs.anl.gov/mpi/)
++#
++#   On success, it sets the MPICC, MPICXX, MPIF77, or MPIFC output variable
++#   to the name of the MPI compiler, depending upon the current language.
++#   (This may just be $CC/$CXX/$F77/$FC, but is more often something like
++#   mpicc/mpiCC/mpif77/mpif90.) It also sets MPILIBS to any libraries that
++#   are needed for linking MPI (e.g. -lmpi or -lfmpi, if a special
++#   MPICC/MPICXX/MPIF77/MPIFC was not found).
++#
++#   Note that this macro should be used only if you just have a few source
++#   files that need to be compiled using MPI. In particular, you should
++#   neither overwrite CC/CXX/F77/FC with the values of
++#   MPICC/MPICXX/MPIF77/MPIFC, nor assume that you can use the same flags
++#   etc. as the standard compilers. If you want to compile a whole program
++#   using the MPI compiler commands, use one of the macros
++#   AX_PROG_{CC,CXX,FC}_MPI.
++#
++#   ACTION-IF-FOUND is a list of shell commands to run if an MPI library is
++#   found, and ACTION-IF-NOT-FOUND is a list of commands to run if it is not
++#   found. If ACTION-IF-FOUND is not specified, the default action will
++#   define HAVE_MPI.
++#
++# LICENSE
++#
++#   Copyright (c) 2008 Steven G. Johnson <stevenj@alum.mit.edu>
++#   Copyright (c) 2008 Julian C. Cummings <cummings@cacr.caltech.edu>
++#
++#   This program is free software: you can redistribute it and/or modify it
++#   under the terms of the GNU General Public License as published by the
++#   Free Software Foundation, either version 3 of the License, or (at your
++#   option) any later version.
++#
++#   This program is distributed in the hope that it will be useful, but
++#   WITHOUT ANY WARRANTY; without even the implied warranty of
++#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
++#   Public License for more details.
++#
++#   You should have received a copy of the GNU General Public License along
++#   with this program. If not, see <http://www.gnu.org/licenses/>.
++#
++#   As a special exception, the respective Autoconf Macro's copyright owner
++#   gives unlimited permission to copy, distribute and modify the configure
++#   scripts that are the output of Autoconf when processing the Macro. You
++#   need not follow the terms of the GNU General Public License when using
++#   or distributing such scripts, even though portions of the text of the
++#   Macro appear in them. The GNU General Public License (GPL) does govern
++#   all other use of the material that constitutes the Autoconf Macro.
++#
++#   This special exception to the GPL applies to versions of the Autoconf
++#   Macro released by the Autoconf Archive. When you make and distribute a
++#   modified version of the Autoconf Macro, you may extend this special
++#   exception to the GPL to apply to your modified version as well.
++
++#serial 8
++
++AU_ALIAS([ACX_MPI], [AX_MPI])
++AC_DEFUN([AX_MPI], [
++AC_PREREQ(2.50) dnl for AC_LANG_CASE
++
++AC_LANG_CASE([C], [
++	AC_REQUIRE([AC_PROG_CC])
++	AC_ARG_VAR(MPICC,[MPI C compiler command])
++	AC_CHECK_PROGS(MPICC, mpicc hcc mpxlc_r mpxlc mpcc cmpicc, $CC)
++	ax_mpi_save_CC="$CC"
++	CC="$MPICC"
++	AC_SUBST(MPICC)
++],
++[C++], [
++	AC_REQUIRE([AC_PROG_CXX])
++	AC_ARG_VAR(MPICXX,[MPI C++ compiler command])
++	AC_CHECK_PROGS(MPICXX, mpic++ mpicxx mpiCC hcp mpxlC_r mpxlC mpCC cmpic++, $CXX)
++	ax_mpi_save_CXX="$CXX"
++	CXX="$MPICXX"
++	AC_SUBST(MPICXX)
++],
++[Fortran 77], [
++	AC_REQUIRE([AC_PROG_F77])
++	AC_ARG_VAR(MPIF77,[MPI Fortran 77 compiler command])
++	AC_CHECK_PROGS(MPIF77, mpif77 hf77 mpxlf_r mpxlf mpf77 cmpifc, $F77)
++	ax_mpi_save_F77="$F77"
++	F77="$MPIF77"
++	AC_SUBST(MPIF77)
++],
++[Fortran], [
++	AC_REQUIRE([AC_PROG_FC])
++	AC_ARG_VAR(MPIFC,[MPI Fortran compiler command])
++	AC_CHECK_PROGS(MPIFC, mpif90 mpxlf95_r mpxlf90_r mpxlf95 mpxlf90 mpf90 cmpif90c, $FC)
++	ax_mpi_save_FC="$FC"
++	FC="$MPIFC"
++	AC_SUBST(MPIFC)
++])
++
++if test x = x"$MPILIBS"; then
++	AC_LANG_CASE([C], [AC_CHECK_FUNC(MPI_Init, [MPILIBS=" "])],
++		[C++], [AC_CHECK_FUNC(MPI_Init, [MPILIBS=" "])],
++		[Fortran 77], [AC_MSG_CHECKING([for MPI_Init])
++			AC_LINK_IFELSE([AC_LANG_PROGRAM([],[      call MPI_Init])],[MPILIBS=" "
++				AC_MSG_RESULT(yes)], [AC_MSG_RESULT(no)])],
++		[Fortran], [AC_MSG_CHECKING([for MPI_Init])
++			AC_LINK_IFELSE([AC_LANG_PROGRAM([],[      call MPI_Init])],[MPILIBS=" "
++				AC_MSG_RESULT(yes)], [AC_MSG_RESULT(no)])])
++fi
++AC_LANG_CASE([Fortran 77], [
++	if test x = x"$MPILIBS"; then
++		AC_CHECK_LIB(fmpi, MPI_Init, [MPILIBS="-lfmpi"])
++	fi
++	if test x = x"$MPILIBS"; then
++		AC_CHECK_LIB(fmpich, MPI_Init, [MPILIBS="-lfmpich"])
++	fi
++],
++[Fortran], [
++	if test x = x"$MPILIBS"; then
++		AC_CHECK_LIB(fmpi, MPI_Init, [MPILIBS="-lfmpi"])
++	fi
++	if test x = x"$MPILIBS"; then
++		AC_CHECK_LIB(mpichf90, MPI_Init, [MPILIBS="-lmpichf90"])
++	fi
++])
++if test x = x"$MPILIBS"; then
++	AC_CHECK_LIB(mpi, MPI_Init, [MPILIBS="-lmpi"])
++fi
++if test x = x"$MPILIBS"; then
++	AC_CHECK_LIB(mpich, MPI_Init, [MPILIBS="-lmpich"])
++fi
++
++dnl We have to use AC_TRY_COMPILE and not AC_CHECK_HEADER because the
++dnl latter uses $CPP, not $CC (which may be mpicc).
++AC_LANG_CASE([C], [if test x != x"$MPILIBS"; then
++	AC_MSG_CHECKING([for mpi.h])
++	AC_TRY_COMPILE([#include <mpi.h>],[],[AC_MSG_RESULT(yes)], [MPILIBS=""
++		AC_MSG_RESULT(no)])
++fi],
++[C++], [if test x != x"$MPILIBS"; then
++	AC_MSG_CHECKING([for mpi.h])
++	AC_TRY_COMPILE([#include <mpi.h>],[],[AC_MSG_RESULT(yes)], [MPILIBS=""
++		AC_MSG_RESULT(no)])
++fi],
++[Fortran 77], [if test x != x"$MPILIBS"; then
++	AC_MSG_CHECKING([for mpif.h])
++	AC_COMPILE_IFELSE([AC_LANG_PROGRAM([],[      include 'mpif.h'])],[AC_MSG_RESULT(yes)], [MPILIBS=""
++		AC_MSG_RESULT(no)])
++fi],
++[Fortran], [if test x != x"$MPILIBS"; then
++	AC_MSG_CHECKING([for mpif.h])
++	AC_COMPILE_IFELSE([AC_LANG_PROGRAM([],[      include 'mpif.h'])],[AC_MSG_RESULT(yes)], [MPILIBS=""
++		AC_MSG_RESULT(no)])
++fi])
++
++AC_LANG_CASE([C], [CC="$ax_mpi_save_CC"],
++	[C++], [CXX="$ax_mpi_save_CXX"],
++	[Fortran 77], [F77="$ax_mpi_save_F77"],
++	[Fortran], [FC="$ax_mpi_save_FC"])
++
++AC_SUBST(MPILIBS)
++
++# Finally, execute ACTION-IF-FOUND/ACTION-IF-NOT-FOUND:
++if test x = x"$MPILIBS"; then
++        $2
++        :
++else
++        ifelse([$1],,[AC_DEFINE(HAVE_MPI,1,[Define if you have the MPI library.])],[$1])
++        :
++fi
++])dnl AX_MPI
+diff -ruN -p0 PadicoTM.orig/building-tools/ax_openmp.m4 PadicoTM/building-tools/ax_openmp.m4
+--- PadicoTM.orig/building-tools/ax_openmp.m4	1970-01-01 01:00:00.000000000 +0100
++++ PadicoTM/building-tools/ax_openmp.m4	2019-06-06 13:31:53.993771292 +0200
+@@ -0,0 +1,119 @@
++# ===========================================================================
++#         http://www.gnu.org/software/autoconf-archive/ax_openmp.html
++# ===========================================================================
++#
++# SYNOPSIS
++#
++#   AX_OPENMP([ACTION-IF-FOUND[, ACTION-IF-NOT-FOUND]])
++#
++# DESCRIPTION
++#
++#   This macro tries to find out how to compile programs that use OpenMP a
++#   standard API and set of compiler directives for parallel programming
++#   (see http://www-unix.mcs/)
++#
++#   On success, it sets the OPENMP_CFLAGS/OPENMP_CXXFLAGS/OPENMP_F77FLAGS
++#   output variable to the flag (e.g. -omp) used both to compile *and* link
++#   OpenMP programs in the current language.
++#
++#   NOTE: You are assumed to not only compile your program with these flags,
++#   but also link it with them as well.
++#
++#   If you want to compile everything with OpenMP, you should set:
++#
++#     CFLAGS="$CFLAGS $OPENMP_CFLAGS"
++#     #OR#  CXXFLAGS="$CXXFLAGS $OPENMP_CXXFLAGS"
++#     #OR#  FFLAGS="$FFLAGS $OPENMP_FFLAGS"
++#
++#   (depending on the selected language).
++#
++#   The user can override the default choice by setting the corresponding
++#   environment variable (e.g. OPENMP_CFLAGS).
++#
++#   ACTION-IF-FOUND is a list of shell commands to run if an OpenMP flag is
++#   found, and ACTION-IF-NOT-FOUND is a list of commands to run it if it is
++#   not found. If ACTION-IF-FOUND is not specified, the default action will
++#   define HAVE_OPENMP.
++#
++# LICENSE
++#
++#   Copyright (c) 2008 Steven G. Johnson <stevenj@alum.mit.edu>
++#   Copyright (c) 2015 John W. Peterson <jwpeterson@gmail.com>
++#
++#   This program is free software: you can redistribute it and/or modify it
++#   under the terms of the GNU General Public License as published by the
++#   Free Software Foundation, either version 3 of the License, or (at your
++#   option) any later version.
++#
++#   This program is distributed in the hope that it will be useful, but
++#   WITHOUT ANY WARRANTY; without even the implied warranty of
++#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
++#   Public License for more details.
++#
++#   You should have received a copy of the GNU General Public License along
++#   with this program. If not, see <http://www.gnu.org/licenses/>.
++#
++#   As a special exception, the respective Autoconf Macro's copyright owner
++#   gives unlimited permission to copy, distribute and modify the configure
++#   scripts that are the output of Autoconf when processing the Macro. You
++#   need not follow the terms of the GNU General Public License when using
++#   or distributing such scripts, even though portions of the text of the
++#   Macro appear in them. The GNU General Public License (GPL) does govern
++#   all other use of the material that constitutes the Autoconf Macro.
++#
++#   This special exception to the GPL applies to versions of the Autoconf
++#   Macro released by the Autoconf Archive. When you make and distribute a
++#   modified version of the Autoconf Macro, you may extend this special
++#   exception to the GPL to apply to your modified version as well.
++
++#serial 11
++
++AC_DEFUN([AX_OPENMP], [
++AC_PREREQ([2.69]) dnl for _AC_LANG_PREFIX
++
++AC_CACHE_CHECK([for OpenMP flag of _AC_LANG compiler], ax_cv_[]_AC_LANG_ABBREV[]_openmp, [save[]_AC_LANG_PREFIX[]FLAGS=$[]_AC_LANG_PREFIX[]FLAGS
++ax_cv_[]_AC_LANG_ABBREV[]_openmp=unknown
++# Flags to try:  -fopenmp (gcc), -openmp (icc), -mp (SGI & PGI),
++#                -xopenmp (Sun), -omp (Tru64), -qsmp=omp (AIX), none
++ax_openmp_flags="-fopenmp -openmp -mp -xopenmp -omp -qsmp=omp none"
++if test "x$OPENMP_[]_AC_LANG_PREFIX[]FLAGS" != x; then
++  ax_openmp_flags="$OPENMP_[]_AC_LANG_PREFIX[]FLAGS $ax_openmp_flags"
++fi
++for ax_openmp_flag in $ax_openmp_flags; do
++  case $ax_openmp_flag in
++    none) []_AC_LANG_PREFIX[]FLAGS=$save[]_AC_LANG_PREFIX[] ;;
++    *) []_AC_LANG_PREFIX[]FLAGS="$save[]_AC_LANG_PREFIX[]FLAGS $ax_openmp_flag" ;;
++  esac
++  AC_LINK_IFELSE([AC_LANG_SOURCE([[
++@%:@include <omp.h>
++
++static void
++parallel_fill(int * data, int n)
++{
++  int i;
++@%:@pragma omp parallel for
++  for (i = 0; i < n; ++i)
++    data[i] = i;
++}
++
++int
++main()
++{
++  int arr[100000];
++  omp_set_num_threads(2);
++  parallel_fill(arr, 100000);
++  return 0;
++}
++]])],[ax_cv_[]_AC_LANG_ABBREV[]_openmp=$ax_openmp_flag; break],[])
++done
++[]_AC_LANG_PREFIX[]FLAGS=$save[]_AC_LANG_PREFIX[]FLAGS
++])
++if test "x$ax_cv_[]_AC_LANG_ABBREV[]_openmp" = "xunknown"; then
++  m4_default([$2],:)
++else
++  if test "x$ax_cv_[]_AC_LANG_ABBREV[]_openmp" != "xnone"; then
++    OPENMP_[]_AC_LANG_PREFIX[]FLAGS=$ax_cv_[]_AC_LANG_ABBREV[]_openmp
++  fi
++  m4_default([$1], [AC_DEFINE(HAVE_OPENMP,1,[Define if OpenMP is enabled])])
++fi
++])dnl AX_OPENMP
+diff -ruN -p0 PadicoTM.orig/building-tools/common_rules.mk.in PadicoTM/building-tools/common_rules.mk.in
+--- PadicoTM.orig/building-tools/common_rules.mk.in	1970-01-01 01:00:00.000000000 +0100
++++ PadicoTM/building-tools/common_rules.mk.in	2019-06-06 13:31:53.992771288 +0200
+@@ -0,0 +1,218 @@
++
++# common_rules.mk: begin
++# @configure_input@
++
++.SUFFIXES:
++
++.PHONY: all install install-lib install-libexec install-bin install-include clean clean-obj clean-doxygen doxygen distclean subdirs modules dep $(SUBDIRS) $(TARGET_MOD) $(MODULES)
++
++all: $(TARGETS)
++
++subdirs: $(SUBDIRS)
++
++$(SUBDIRS):
++	$(SHOWMK) "  [SUBDIR] make '$(if $(MAKECMDGOALS),$(MAKECMDGOALS),all)' in: $@"
++	$(Q)$(MAKE) -C $@ $(MAKECMDGOALS)
++
++# ## docs, only if doxyfile exists
++ifneq ($(wildcard doc/Doxyfile),)
++doxygen: @abs_top_builddir@/doc/Doxyfile @srcdir@/README.md
++	$(SHOWMK) "  [DOXYGEN] $(MYDIR)/"
++	$(Q)doxygen doc/Doxyfile
++	@echo
++	@echo "# documentation generated in: @top_builddir@/doc/html/index.html"
++	@echo
++
++clean-doxygen:
++	$(SHOWMK) "  [CLEAN]  $(MYDIR)/doc/html"
++	$(Q)$(RM) doc/html
++
++TARGET_CLEAN += clean-doxygen
++
++upload-doc: doxygen
++	@echo "  [RSYNC]  $(package_short_name)"
++	rsync -rcvz @abs_top_builddir@/doc/html/ scm.gforge.inria.fr:/home/groups/pm2/htdocs/$(package_short_name)/doc/
++endif
++
++clean: subdirs clean-obj clean-mod $(TARGET_CLEAN)
++	$(SHOWMK) "  [CLEAN]  $(MYDIR)/"
++
++clean-obj: subdirs
++	$(Q)$(RM) *.o *.pic.o *.so *.dylib *.d .*.d .*.stamp $(TARGET_BIN) $(TARGET_LIBEXEC) $(TARGET_LIB) $(CLEAN_MORE)
++
++clean-mod: subdirs
++	$(Q)(  \
++          for mod in $(patsubst %/meta.xml, %, $(wildcard */meta.xml)); do  \
++	    $(ECHO) "  [CLEAN]  $(MYDIR)/$${mod}" ; \
++	    if [ -r $${mod}/meta.xml ]; then rm -r $${mod}; fi ; \
++	  done  \
++	)
++
++distclean: clean
++	$(SHOWMK) "  [DISTCLEAN] $(MYDIR)/"
++	$(Q)$(RM) config.log config.status $(PADICO_OUT_FILES)
++
++install: install-dir install-subdirs $(TARGETS)
++
++install-dir: install-sbin install-lib install-mod install-libexec install-bin install-include install-etc install-init install-pkgconfig
++
++install-subdirs: subdirs 
++
++install-lib: $(INSTALL_LIB)
++	@$(if $^,,$(IGNORE)) $(SHOWMK) "  [INST]   in lib/:     $(^F)"
++	@$(if $^,,$(IGNORE)) $(Q)$(INSTALL) -d $(INSTALL_LIB_PATH)
++	@$(if $^,,$(IGNORE)) $(Q)$(INSTALL_DATA) $^ $(INSTALL_LIB_PATH)
++
++install-mod: $(INSTALL_MOD)
++	@$(if $^,,$(IGNORE)) $(SHOWMK) "  [INST]   in lib/padico/: $(^F)"
++	@$(if $^,,$(IGNORE)) $(Q)$(INSTALL) -d $(INSTALL_MOD_PATH)
++	@$(if $^,,$(IGNORE)) $(Q)$(CP) -r $^ $(INSTALL_MOD_PATH)/
++
++install-libexec: $(INSTALL_LIBEXEC)
++	@$(if $^,,$(IGNORE)) $(SHOWMK) "  [INST]   in libexec/: $(^F)"
++	@$(if $^,,$(IGNORE)) $(Q)$(INSTALL) -d  $(INSTALL_LIBEXEC_PATH)
++	@$(if $^,,$(IGNORE)) $(Q)$(INSTALL_PROG) $^ $(INSTALL_LIBEXEC_PATH)
++
++install-bin: $(INSTALL_BIN)
++	@$(if $^,,$(IGNORE)) $(SHOWMK) "  [INST]   in bin/:     $(^F)"
++	@$(if $^,,$(IGNORE)) $(Q)$(INSTALL) -d $(INSTALL_BIN_PATH)
++	@$(if $^,,$(IGNORE)) $(Q)$(INSTALL_PROG) $^ $(INSTALL_BIN_PATH)
++
++install-include: $(INSTALL_INCLUDE)
++	@$(if $^,,$(IGNORE)) $(SHOWMK) "  [INST]   in include/: $(^F)"
++	@$(if $^,,$(IGNORE)) $(Q)$(INSTALL) -d $(INSTALL_INCLUDE_PATH)
++	@$(if $^,,$(IGNORE)) $(Q)$(INSTALL_DATA) $^ $(INSTALL_INCLUDE_PATH)
++
++install-etc: $(INSTALL_ETC)
++	@$(if $^,,$(IGNORE)) $(SHOWMK) "  [INST]   in etc/:     $(^F)"
++	@$(if $^,,$(IGNORE)) $(Q)$(INSTALL) -d $(INSTALL_ETC_PATH)
++	@$(if $^,,$(IGNORE)) $(Q)$(INSTALL_DATA) -m 644 $^ $(INSTALL_ETC_PATH)
++
++install-init: $(INSTALL_INIT)
++	@$(if $^,,$(IGNORE)) $(SHOWMK) "  [INST]   in etc/init.d/: $(^F)"
++	@$(if $^,,$(IGNORE)) $(Q)$(INSTALL) -d $(INSTALL_ETC_PATH)/init.d/
++	@$(if $^,,$(IGNORE)) $(Q)$(INSTALL_DATA) -m 644 $^ $(INSTALL_ETC_PATH)/init.d/
++
++install-sbin: $(INSTALL_SBIN)
++	@$(if $^,,$(IGNORE)) $(SHOWMK) "  [INST]   in sbin/:    $(^F)"
++	@$(if $^,,$(IGNORE)) $(Q)$(INSTALL) -d $(INSTALL_SBIN_PATH)
++	@$(if $^,,$(IGNORE)) $(Q)$(INSTALL_PROG) $^ $(INSTALL_SBIN_PATH)
++
++install-pkgconfig: $(INSTALL_PKGCONFIG)
++	@$(if $^,,$(IGNORE)) $(SHOWMK) "  [INST]   in lib/pkgconfig/: $(^F)"
++	@$(if $^,,$(IGNORE)) $(Q)$(INSTALL) -d $(INSTALL_PKGCONFIG_PATH)
++	@$(if $^,,$(IGNORE)) $(Q)$(INSTALL_DATA) $^ $(INSTALL_PKGCONFIG_PATH)
++
++ifeq (@HAVE_DYNLIB@,yes)
++@DYNLIB_PREFIX@%@DYNLIB_EXT@:
++	@$(SHOWMK) "  [LIB-LD] $@"
++	$(Q)$(DYNLIB_LD) $(LDFLAGS) -o $@ $+ $(LIBS)
++endif
++
++lib%.a:
++	@$(SHOWMK) "  [AR]     $@"
++	@$(AR) cr $@ $^
++	@$(SHOWMK) "  [RANLIB] $@"
++	@$(RANLIB) $@
++
++$(TARGET_BIN):
++	@$(SHOWMK) "  [LD]     $@"
++	$(Q)$(LD) $(LDFLAGS) -o $@ $+ $(LIBS) $(BINLIBS)
++
++$(TARGET_LIBEXEC):
++	@$(SHOWMK) "  [LD]     $@"
++	$(Q)$(LD) $(LDFLAGS) -o $@ $+ $(LIBS)
++
++$(TARGET_MOD):
++	$(Q)$(MAKE) --silent .$@.stamp _MODOBJS='$(filter %o %.pic %.so %.a,$+)' _MODLIBS='$(MODLIBS)'
++
++.%.stamp: $(_MODOBJS)
++	@$(SHOWMK) "  [MKMOD]  $* [$(notdir $(_MODOBJS))]"
++	$(Q)$(MKMOD) -o $* $(_MODOBJS) $(_MODLIBS)
++	@$(TOUCH) $@
++
++# ## Rule to make modules
++# build module, then install it, before building next
++
++$(MODULES):
++	$(SHOWMK) "  [MODULE] make '$(if $(MAKECMDGOALS),$(MAKECMDGOALS),all)' in: $@"
++	$(Q)$(MAKE) -C $@ all
++	$(Q)$(MAKE) -C $@ install
++
++# don't need .d files for cleanning!
++ifeq ($(MAKECMDGOALS),clean)
++  PADICO_USE_MKDEPEND = no
++endif
++
++ifeq ($(PADICO_USE_MKDEPEND),yes)
++# rules with dependancy checking
++
++.PRECIOUS: %.d
++
++%.pic.o: %.c %.d
++	@$(SHOWMK) "  [CC]     $@"
++	$(Q)$(CC) $(CFLAGS) $(CPICFLAGS) -c -o $@ $<
++
++%.o: %.c %.d
++	@$(SHOWMK) "  [CC]     $@"
++	$(Q)$(CC) $(CFLAGS) -c -o $@ $<
++
++%.d: %.c $(PADICO_CONFIG_FILES)
++	@$(SHOWMK) "  [CDEP]   $@"
++	$(Q)$(MKDIR) $(dir $@)
++	$(Q)$(CC_DEP) $(CFLAGS) -DMKDEPEND $< > $@
++	$(Q)$(ECHO) >> $@
++	$(Q)$(CC_DEP) -MT $*.pic.o $(CFLAGS) -DMKDEPEND $< >> $@
++
++TARGET_DEP += $(patsubst $(srcdir)/%.c,  ./%.d, $(wildcard $(srcdir)/*.c))
++
++ifeq ($(HAVE_CXX),yes)
++%.pic.o: %.cc %.d
++	@$(SHOWMK) "  [C++]    $@"
++	$(Q)$(CXX) $(CXXFLAGS) $(CXXPICFLAGS) -c -o $@ $<
++
++%.o: %.cc %.d
++	@$(SHOWMK) "  [C++]    $@"
++	$(Q)$(CXX) $(CXXFLAGS) -c -o $@ $<
++
++%.d: %.cc $(PADICO_CONFIG_FILES)
++	@$(SHOWMK) "  [C++DEP] $@"
++	$(Q)$(CXX_DEP) $(CXXFLAGS) $< > $@
++
++TARGET_DEP += $(patsubst $(srcdir)/%.cc, ./%.d, $(wildcard $(srcdir)/*.cc))
++endif
++
++
++CLEAN_MORE += $(TARGET_DEP)
++
++dep: $(TARGET_DEP)
++
++_DEP_FILES = $(wildcard *.d)
++
++ifneq ($(strip $(_DEP_FILES)),)
++-include $(_DEP_FILES)
++endif
++
++else
++# PADICO_USE_MKDEPEND = no
++%.o: %.c
++	@$(SHOWMK) "  [CC]     $@"
++	$(Q)$(CC) $(CFLAGS) -c -o $@ $<
++
++%.pic.o: %.c
++	@$(SHOWMK) "  [CC]     $@"
++	$(Q)$(CC) $(CFLAGS) $(CPICFLAGS) -c -o $@ $<
++
++ifeq ($(HAVE_CXX),yes)
++%.o: %.cc
++	@$(SHOWMK) "  [C++]    $@"
++	$(Q)$(CXX) $(CXXFLAGS) -c -o $@ $<
++
++%.pic.o: %.cc
++	@$(SHOWMK) "  [C++]    $@"
++	$(Q)$(CXX) $(CXXFLAGS) $(CXXPICFLAGS) -c -o $@ $<
++endif
++endif
++# end: PADICO_USE_MKDEPEND
++
++# common_rules.mk: end
+diff -ruN -p0 PadicoTM.orig/building-tools/common_vars.mk.in PadicoTM/building-tools/common_vars.mk.in
+--- PadicoTM.orig/building-tools/common_vars.mk.in	1970-01-01 01:00:00.000000000 +0100
++++ PadicoTM/building-tools/common_vars.mk.in	2019-06-06 13:31:53.993771292 +0200
+@@ -0,0 +1,126 @@
++
++# common_vars.mk: begin
++# @configure_input@
++
++padico_builddir := @padico_builddir@
++padico_srcdir   := @padico_srcdir@
++prefix          := @prefix@
++
++package_name       := @package_name@
++package_short_name := @package_short_name@
++
++# path used for install; may be overriden in makefiles
++INSTALL_PREFIX         = $(prefix)
++INSTALL_BIN_PATH       = $(INSTALL_PREFIX)/bin
++INSTALL_SBIN_PATH      = $(INSTALL_PREFIX)/sbin
++INSTALL_LIB_PATH       = $(INSTALL_PREFIX)/lib
++INSTALL_ETC_PATH       = $(INSTALL_PREFIX)/etc
++INSTALL_LIBEXEC_PATH   = $(INSTALL_PREFIX)/libexec
++INSTALL_INCLUDE_PATH   = $(INSTALL_PREFIX)/include
++INSTALL_PKGCONFIG_PATH = $(INSTALL_LIB_PATH)/pkgconfig
++INSTALL_MOD_PATH       = $(INSTALL_LIB_PATH)/padico
++
++# ## Various flags
++# preprocessor options - usually "-D_REENTRANT"
++CPPFLAGS        = @CPPFLAGS@
++# common flags for C code - usually "-Wall"
++BASE_CFLAGS    := @BASE_CFLAGS@
++# flags for debug flavors - usually "-g"
++DEBUG_CFLAGS   := -DDEBUG @DEBUG_CFLAGS@
++# flags for optimize - usually "-O2" or "-O4 -mcpu=athlon" and the likes
++OPT_CFLAGS     := -DNDEBUG @OPT_CFLAGS@
++# flags for producing Position Independent Code
++CPICFLAGS      := @CPICFLAGS@
++# is C++ compiler used
++HAVE_CXX       := @HAVE_CXX@
++# common flags for C++
++BASE_CXXFLAGS  := @BASE_CXXFLAGS@
++# debug for C++
++DEBUG_CXXFLAGS := -DDEBUG @DEBUG_CXXFLAGS@
++# optimize for C++
++OPT_CXXFLAGS   := -DNDEBUG @OPT_CXXFLAGS@
++# PIC flags for C++
++CXXPICFLAGS    := @CXXPICFLAGS@
++# optimize linker hash tables
++OPT_LDFLAGS    := @OPT_LDFLAGS@
++
++CFLAGS   = $(CPPFLAGS) $(BASE_CFLAGS)   -I. -I@includedir@
++CXXFLAGS = $(CPPFLAGS) $(BASE_CXXFLAGS) -I. -I@includedir@
++
++# basic shell commands
++ECHO    = echo
++RM      = rm -rf
++CP      = cp -f
++LN      = ln -fs
++MKDIR   = mkdir -p
++INSTALL = install -p
++SHELL   = /bin/sh
++TOUCH   = touch
++IGNORE  = @BIN_TRUE@
++INSTALL_DATA = $(INSTALL) -m 644
++INSTALL_PROG = $(INSTALL) -m 755
++
++# build & link
++LDFLAGS    = @LDFLAGS@
++LIBS       = @LIBS@
++BINLIBS    =
++CC         = @CC@
++CXX        = @CXX@
++LD         = @LD@
++CC_DEP     = @CC_DEP@
++CXX_DEP    = @CXX_DEP@
++DYNLIB_LD  = @DYNLIB_LD@
++DYNLIB_EXT = @DYNLIB_EXT@
++DSO_LD     = @DSO_LD@
++DSO_EXT    = @DSO_EXT@
++AR         = ar
++RANLIB     = ranlib
++
++# control verbosity
++ifeq ($(VERBOSE),yes)
++# verbose
++Q         := 
++SHOWMK    := @$(IGNORE)
++MKMOD     := @puk_root@/bin/padico-mkmod
++INSTALL   := $(INSTALL) -v
++else
++# quiet
++Q         := @
++SHOWMK    := @$(ECHO)
++MAKEFLAGS += --no-print-directory
++MKMOD     := @puk_root@/bin/padico-mkmod --quiet
++endif
++
++# Default choices for optimize/debug follows PadicoTM configure
++ifeq ($(ENABLE_OPTIMIZE),)
++ENABLE_OPTIMIZE = @ENABLE_OPTIMIZE_FLAG@
++endif
++ifeq ($(ENABLE_DEBUG),)
++ENABLE_DEBUG = @ENABLE_DEBUG_FLAG@
++endif
++# set the appropriate flags for optimize/debug
++ifeq ($(ENABLE_OPTIMIZE),yes)
++CFLAGS    += $(OPT_CFLAGS)
++CXX_FLAGS += $(OPT_CXXFLAGS)
++LDFLAGS   += $(OPT_CFLAGS) $(OPT_LDFLAGS)
++endif
++ifeq ($(ENABLE_DEBUG),yes)
++CFLAGS    += $(DEBUG_CFLAGS)
++CXX_FLAGS += $(DEBUG_CXXFLAGS)
++endif
++
++MODLIBS = -DENABLE_OPTIMIZE=$(ENABLE_OPTIMIZE) -DENABLE_DEBUG=$(ENABLE_DEBUG)
++
++# config files that trigger rebuild if changed
++PADICO_CONFIG_FILES := $(wildcard Makefile config.status common_vars.mk common_rules.mk)
++
++# out files generated by configure; will be remove by distclean
++PADICO_OUT_FILES := @PADICO_OUT_FILES@
++
++# always use mkdepend, except for clean
++PADICO_USE_MKDEPEND = yes
++
++# directory used for pretty-print
++MYDIR := $(notdir $(CURDIR))
++
++# common_vars.mk: end
+diff -ruN -p0 PadicoTM.orig/building-tools/compiler.m4 PadicoTM/building-tools/compiler.m4
+--- PadicoTM.orig/building-tools/compiler.m4	1970-01-01 01:00:00.000000000 +0100
++++ PadicoTM/building-tools/compiler.m4	2019-06-06 13:31:53.993771292 +0200
+@@ -0,0 +1,229 @@
++dnl -*- mode: Autoconf;-*-
++
++m4_include([ax_check_compile_flag.m4])
++
++AC_DEFUN([AC_PADICO_CXX],
++  [
++    MYCXXFLAGS="$CXXFLAGS"
++    AC_PROG_CXX
++    AC_PROG_CXXCPP
++    case `uname -s` in
++      SunOS)
++        case ${CXX} in
++          c++|g++*) CXXFLAGS="-g"
++    		    CXXPICFLAGS="-fPIC"
++               	    CXXDEPFLAGS="-MM";;
++               CC)  CXXFLAGS="-g"
++		    CXXPICFLAGS="-Kpic"
++	            CXXDEPFLAGS="-xM1"
++		    CXXSHFLAGS="-G";;
++        esac
++      ;;
++      Linux|*BSD)
++        BASE_CXXFLAGS=""
++        DEBUG_CXXFLAGS="-g"
++        OPT_CXXFLAGS="-O2"
++        CXXPICFLAGS="-fPIC"
++        CXXDEPFLAGS="-MM"
++      ;;
++      IRIX64)
++        CXXFLAGS="-Wall -Dirix"
++        CXXPICFLAGS="-fPIC"
++        CXXDEPFLAGS="-MM"
++        CXXDEBUGFLAGS="-g"
++        CXXOPTFLAGS="-O2" dnl it's *really* -O2, not -O4. Else, it doesn't work with omniORB 3
++      ;;
++      Darwin)
++        CXXFLAGS="-g -Wall -traditional-cpp"
++        CXXPICFLAGS="-fPIC"
++        CXXDEPFLAGS="-MM"
++      ;;
++      *) # What is this f$*k!@ OS? :-)
++        AC_MSG_ERROR([Unknown OS/platform: `uname -s`])
++      ;;
++    esac
++    BASE_CXXFLAGS="$MYCXXFLAGS $BASE_CXXFLAGS"
++    AC_SUBST(CXXPICFLAGS)
++    AC_SUBST(BASE_CXXFLAGS)
++    AC_SUBST(DEBUG_CXXFLAGS)
++    AC_SUBST(OPT_CXXFLAGS)
++    HAVE_CXX=yes
++    AC_SUBST([HAVE_CXX])
++  ])
++
++AC_DEFUN([AC_PADICO_SAVEFLAGS],
++  [
++    MYCPPFLAGS="$CPPFLAGS"
++    MYCFLAGS="$CFLAGS"
++    MYLDFLAGS="$LDFLAGS"
++  ])
++  
++AC_DEFUN([AC_PADICO_COMPILER],
++  [
++    dnl - save current state
++    AC_REQUIRE([AC_PADICO_SAVEFLAGS])
++    AC_REQUIRE([AC_PROG_CC])
++    AC_REQUIRE([AC_PROG_CPP])
++    AC_REQUIRE([AC_PROG_CC_C99])
++    dnl --- compute flags depending on the OS type
++    case `uname -s` in
++      SunOS)
++        binary_format=elf
++        dnl - dynamic libraries
++        LDFLAGS=
++        SYMBOL_PREFIX=""
++        DYNLIB_PREFIX="lib"
++        DYNLIB_EXT=".so"
++        DYNLIB_FLAGS="-shared"
++        DSO_EXT=".so"
++        DSO_FLAGS="-shared"
++        case ${CC} in
++          gcc*) CFLAGS="-g -Wall"
++                CPICFLAGS="-fPIC"
++	        CDEPFLAGS="-MM";;
++          cc)   CFLAGS="-g"
++  	        CPICFLAGS="-Kpic"
++	        CDEPFLAGS="-xM1";;
++        esac
++      ;;
++      Linux|*BSD)
++        binary_format=elf
++        LDFLAGS="-rdynamic"
++        SYMBOL_PREFIX=""
++        DYNLIB_PREFIX="lib"
++        DYNLIB_EXT=".so"
++        DYNLIB_FLAGS="-shared -rdynamic"
++        DSO_EXT=".so"
++        DSO_FLAGS="-shared -rdynamic"
++        OPT_LDFLAGS="-Wl,-O1"
++        dnl gcc
++        BASE_CFLAGS="-Wall -pipe"
++        DEBUG_CFLAGS="-g"
++        AX_CHECK_COMPILE_FLAG([-xHOST], [OPT_CFLAGS_NATIVE="-xHOST"], [])
++	if test "x${OPT_CFLAGS_NATIVE}" = "x"; then
++          AX_CHECK_COMPILE_FLAG([-march=native], [OPT_CFLAGS_NATIVE="-march=native"], [])
++	fi
++        AX_CHECK_COMPILE_FLAG([-ipo], [OPT_CFLAGS_LTO="-ipo"], [])
++	if test "x${OPT_CFLAGS_LTO}" = "x"; then
++	  AX_CHECK_COMPILE_FLAG([-flto], [OPT_CFLAGS_LTO="-flto"], [])
++	fi
++	OPT_CFLAGS="-O3 $OPT_CFLAGS_NATIVE $OPT_CFLAGS_LTO"
++        CPICFLAGS="-fPIC"
++        CDEPFLAGS="-MM"
++      ;;
++      IRIX64)
++        binary_format=elf
++        dnl - dynamic libraries
++        LDFLAGS="-rdynamic"
++        SYMBOL_PREFIX="" 
++        DYNLIB_PREFIX="lib"
++        DYNLIB_EXT=".so"
++        DYNLIB_FLAGS="-shared"
++        DSO_EXT=".so"
++        DSO_FLAGS="-shared"
++        dnl gcc-specific flags... but no other compiler supported
++        CFLAGS="-Wall -Dirix"
++        CPICFLAGS="-fPIC"
++        CDEPFLAGS="-MM"
++        CDEBUGFLAGS="-g"
++        COPTFLAGS="-O4"
++      ;;
++      Darwin)
++        binary_format="Mach-O"
++        dnl - dynamic libraries
++        LDFLAGS=""
++        SYMBOL_PREFIX="_"
++        DYNLIB_PREFIX="lib"
++        DYNLIB_EXT=".dylib"
++        DYNLIB_FLAGS="-flat_namespace -undefined suppress -fno-common -dynamiclib"
++        DSO_EXT=""
++        DSO_FLAGS="-flat_namespace -undefined suppress -bundle"
++        dnl - gcc
++        CFLAGS="-g -Wall -traditional-cpp -fno-common -Wno-long-double"
++        CPICFLAGS="-fPIC"
++        CDEPFLAGS="-MM"
++      ;;
++      *) # What is this f$*k!@ OS? :-)
++        AC_MSG_ERROR([Unknown OS/platform: `uname -s`])
++      ;;
++    esac
++    dnl - user specified and standard flags
++    CPPFLAGS="$MYCPPFGLAGS -D_REENTRANT -D_GNU_SOURCE"
++    LDFLAGS="$MYLDFLAGS $LDFLAGS"
++    BASE_CFLAGS="$MYCFLAGS $BASE_CFLAGS"
++    AC_SUBST(CPPFLAGS)
++    AC_SUBST(CDEPFLAGS)
++    AC_SUBST(CPICFLAGS)
++    AC_SUBST(DEBUG_CFLAGS)
++    AC_SUBST(BASE_CFLAGS)
++    AC_SUBST(OPT_CFLAGS)
++    AC_SUBST(OPT_LDFLAGS)
++    AC_SUBST(binary_format)
++  ])
++
++
++AC_DEFUN([AC_PADICO_GCC_VERSION],
++	 [ AC_REQUIRE([AC_PADICO_VERSION])
++	   AC_REQUIRE([AC_PADICO_COMPILER])
++	   AC_MSG_CHECKING([for gcc version])
++	   if test "x$GCC" != "xyes"; then
++	     AC_MSG_ERROR([ $PACKAGE_STRING requires GNU C compiler.])
++	   else
++	     gcc_version="`${CC} -dumpversion`"
++	     case $gcc_version in
++	       2.9*|3.0.4|3.1*|3.2*|3.3*|3.4*|4.*|5.*|6.*|7.*|7)
++	         AC_MSG_RESULT([ ${gcc_version} ok])
++	       ;;
++	       2.7*|2.8*|3.0*|2.96*)
++	         AC_MSG_RESULT([ ${gcc_version} not supported-- warning: gcc version not supported])
++	       ;;
++	       *)
++	         AC_MSG_RESULT([ ${gcc_version} unknown-- report how it works!])
++	       ;;
++	     esac
++	   fi
++	  ])
++
++AC_DEFUN([AC_PADICO_GXX_VERSION],
++	 [ AC_REQUIRE([AC_PADICO_VERSION])
++	   AC_REQUIRE([AC_PADICO_CXX])
++           AC_MSG_CHECKING([for g++ version])
++	   if test "x$GXX" != "xyes"; then
++	     AC_MSG_ERROR([ $PACKAGE_STRING requires GNU C++ compiler.])
++	   else
++	     gxx_version="`${CXX} -dumpversion`"
++	     case $gxx_version in
++	       2.9*|3.0.4|3.1*|3.2*|3.3*|3.4*|4.*|5.*|6.*|7.*|7)
++	         AC_MSG_RESULT([ ${gxx_version} ok])
++	       ;;
++	       2.*|3.0*)
++	         AC_MSG_RESULT([ ${gxx_version} --warning: g++ version not supported. No CORBA support])
++	       ;;
++	       *)
++	         AC_MSG_RESULT([ ${gxx_version} unkown --report how it works!])
++	       ;;
++	     esac
++	   fi
++         ])
++
++# ## dynamic objects
++AC_DEFUN([AC_PADICO_DSO],
++	 [
++	   AC_REQUIRE([AC_PADICO_COMPILER])
++	   AC_MSG_CHECKING([for dynamic object (DSO) linker])
++	   DSO_LD="${CC} ${CPICFLAGS} ${DSO_FLAGS}"
++	   AC_MSG_RESULT([${DSO_LD}])
++	   AC_SUBST(DSO_LD)
++
++	   AC_MSG_CHECKING([for DSO extension])
++	   AC_MSG_RESULT([${DSO_EXT}])
++	   AC_SUBST(DSO_EXT)
++	   AC_DEFINE_UNQUOTED(DSO_EXT, "${DSO_EXT}",
++	     [Extension for bundles])
++
++	   AC_MSG_CHECKING([for symbol prefix])
++	   AC_MSG_RESULT([${SYMBOL_PREFIX}])
++	   AC_SUBST(SYMBOL_PREFIX)
++	   AC_DEFINE_UNQUOTED(SYMBOL_PREFIX, "${SYMBOL_PREFIX}",
++	     [prefix prepended to symbols by the ABI (usually "_")])
++	 ])
+diff -ruN -p0 PadicoTM.orig/building-tools/COPYING PadicoTM/building-tools/COPYING
+--- PadicoTM.orig/building-tools/COPYING	1970-01-01 01:00:00.000000000 +0100
++++ PadicoTM/building-tools/COPYING	2019-06-06 13:31:53.993771292 +0200
 @@ -0,0 +1,339 @@
 +		    GNU GENERAL PUBLIC LICENSE
 +		       Version 2, June 1991
@@ -354,10 +1313,9 @@ Index: PadicoTM/building-tools/COPYING
 +consider it more useful to permit linking proprietary applications with the
 +library.  If this is what you want to do, use the GNU Library General
 +Public License instead of this License.
-Index: PadicoTM/building-tools/COPYRIGHT
-===================================================================
---- PadicoTM/building-tools/COPYRIGHT	(nonexistent)
-+++ PadicoTM/building-tools/COPYRIGHT	(copie de travail)
+diff -ruN -p0 PadicoTM.orig/building-tools/COPYRIGHT PadicoTM/building-tools/COPYRIGHT
+--- PadicoTM.orig/building-tools/COPYRIGHT	1970-01-01 01:00:00.000000000 +0100
++++ PadicoTM/building-tools/COPYRIGHT	2019-06-06 13:31:53.993771292 +0200
 @@ -0,0 +1,21 @@
 + Padico -- a High Performance Parallel and Distributed Computing Environment
 + Copyright (c) 2002-2010 INRIA and the University of Rennes 1
@@ -380,989 +1338,10 @@ Index: PadicoTM/building-tools/COPYRIGHT
 + You should have received a copy of the GNU General Public License
 + along with this program; if not, write to the Free Software
 + Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-Index: PadicoTM/building-tools/VERSION
-===================================================================
---- PadicoTM/building-tools/VERSION	(nonexistent)
-+++ PadicoTM/building-tools/VERSION	(copie de travail)
-@@ -0,0 +1 @@
-+0.5.0
-Index: PadicoTM/building-tools/ax_check_compile_flag.m4
-===================================================================
---- PadicoTM/building-tools/ax_check_compile_flag.m4	(nonexistent)
-+++ PadicoTM/building-tools/ax_check_compile_flag.m4	(copie de travail)
-@@ -0,0 +1,74 @@
-+# ===========================================================================
-+#   http://www.gnu.org/software/autoconf-archive/ax_check_compile_flag.html
-+# ===========================================================================
-+#
-+# SYNOPSIS
-+#
-+#   AX_CHECK_COMPILE_FLAG(FLAG, [ACTION-SUCCESS], [ACTION-FAILURE], [EXTRA-FLAGS], [INPUT])
-+#
-+# DESCRIPTION
-+#
-+#   Check whether the given FLAG works with the current language's compiler
-+#   or gives an error.  (Warnings, however, are ignored)
-+#
-+#   ACTION-SUCCESS/ACTION-FAILURE are shell commands to execute on
-+#   success/failure.
-+#
-+#   If EXTRA-FLAGS is defined, it is added to the current language's default
-+#   flags (e.g. CFLAGS) when the check is done.  The check is thus made with
-+#   the flags: "CFLAGS EXTRA-FLAGS FLAG".  This can for example be used to
-+#   force the compiler to issue an error when a bad flag is given.
-+#
-+#   INPUT gives an alternative input source to AC_COMPILE_IFELSE.
-+#
-+#   NOTE: Implementation based on AX_CFLAGS_GCC_OPTION. Please keep this
-+#   macro in sync with AX_CHECK_{PREPROC,LINK}_FLAG.
-+#
-+# LICENSE
-+#
-+#   Copyright (c) 2008 Guido U. Draheim <guidod@gmx.de>
-+#   Copyright (c) 2011 Maarten Bosmans <mkbosmans@gmail.com>
-+#
-+#   This program is free software: you can redistribute it and/or modify it
-+#   under the terms of the GNU General Public License as published by the
-+#   Free Software Foundation, either version 3 of the License, or (at your
-+#   option) any later version.
-+#
-+#   This program is distributed in the hope that it will be useful, but
-+#   WITHOUT ANY WARRANTY; without even the implied warranty of
-+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
-+#   Public License for more details.
-+#
-+#   You should have received a copy of the GNU General Public License along
-+#   with this program. If not, see <http://www.gnu.org/licenses/>.
-+#
-+#   As a special exception, the respective Autoconf Macro's copyright owner
-+#   gives unlimited permission to copy, distribute and modify the configure
-+#   scripts that are the output of Autoconf when processing the Macro. You
-+#   need not follow the terms of the GNU General Public License when using
-+#   or distributing such scripts, even though portions of the text of the
-+#   Macro appear in them. The GNU General Public License (GPL) does govern
-+#   all other use of the material that constitutes the Autoconf Macro.
-+#
-+#   This special exception to the GPL applies to versions of the Autoconf
-+#   Macro released by the Autoconf Archive. When you make and distribute a
-+#   modified version of the Autoconf Macro, you may extend this special
-+#   exception to the GPL to apply to your modified version as well.
-+
-+#serial 4
-+
-+AC_DEFUN([AX_CHECK_COMPILE_FLAG],
-+[AC_PREREQ(2.64)dnl for _AC_LANG_PREFIX and AS_VAR_IF
-+AS_VAR_PUSHDEF([CACHEVAR],[ax_cv_check_[]_AC_LANG_ABBREV[]flags_$4_$1])dnl
-+AC_CACHE_CHECK([whether _AC_LANG compiler accepts $1], CACHEVAR, [
-+  ax_check_save_flags=$[]_AC_LANG_PREFIX[]FLAGS
-+  _AC_LANG_PREFIX[]FLAGS="$[]_AC_LANG_PREFIX[]FLAGS $4 $1"
-+  AC_COMPILE_IFELSE([m4_default([$5],[AC_LANG_PROGRAM()])],
-+    [AS_VAR_SET(CACHEVAR,[yes])],
-+    [AS_VAR_SET(CACHEVAR,[no])])
-+  _AC_LANG_PREFIX[]FLAGS=$ax_check_save_flags])
-+AS_VAR_IF(CACHEVAR,yes,
-+  [m4_default([$2], :)],
-+  [m4_default([$3], :)])
-+AS_VAR_POPDEF([CACHEVAR])dnl
-+])dnl AX_CHECK_COMPILE_FLAGS
-Index: PadicoTM/building-tools/ax_mpi.m4
-===================================================================
---- PadicoTM/building-tools/ax_mpi.m4	(nonexistent)
-+++ PadicoTM/building-tools/ax_mpi.m4	(copie de travail)
-@@ -0,0 +1,176 @@
-+# ===========================================================================
-+#          http://www.gnu.org/software/autoconf-archive/ax_mpi.html
-+# ===========================================================================
-+#
-+# SYNOPSIS
-+#
-+#   AX_MPI([ACTION-IF-FOUND[, ACTION-IF-NOT-FOUND]])
-+#
-+# DESCRIPTION
-+#
-+#   This macro tries to find out how to compile programs that use MPI
-+#   (Message Passing Interface), a standard API for parallel process
-+#   communication (see http://www-unix.mcs.anl.gov/mpi/)
-+#
-+#   On success, it sets the MPICC, MPICXX, MPIF77, or MPIFC output variable
-+#   to the name of the MPI compiler, depending upon the current language.
-+#   (This may just be $CC/$CXX/$F77/$FC, but is more often something like
-+#   mpicc/mpiCC/mpif77/mpif90.) It also sets MPILIBS to any libraries that
-+#   are needed for linking MPI (e.g. -lmpi or -lfmpi, if a special
-+#   MPICC/MPICXX/MPIF77/MPIFC was not found).
-+#
-+#   Note that this macro should be used only if you just have a few source
-+#   files that need to be compiled using MPI. In particular, you should
-+#   neither overwrite CC/CXX/F77/FC with the values of
-+#   MPICC/MPICXX/MPIF77/MPIFC, nor assume that you can use the same flags
-+#   etc. as the standard compilers. If you want to compile a whole program
-+#   using the MPI compiler commands, use one of the macros
-+#   AX_PROG_{CC,CXX,FC}_MPI.
-+#
-+#   ACTION-IF-FOUND is a list of shell commands to run if an MPI library is
-+#   found, and ACTION-IF-NOT-FOUND is a list of commands to run if it is not
-+#   found. If ACTION-IF-FOUND is not specified, the default action will
-+#   define HAVE_MPI.
-+#
-+# LICENSE
-+#
-+#   Copyright (c) 2008 Steven G. Johnson <stevenj@alum.mit.edu>
-+#   Copyright (c) 2008 Julian C. Cummings <cummings@cacr.caltech.edu>
-+#
-+#   This program is free software: you can redistribute it and/or modify it
-+#   under the terms of the GNU General Public License as published by the
-+#   Free Software Foundation, either version 3 of the License, or (at your
-+#   option) any later version.
-+#
-+#   This program is distributed in the hope that it will be useful, but
-+#   WITHOUT ANY WARRANTY; without even the implied warranty of
-+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
-+#   Public License for more details.
-+#
-+#   You should have received a copy of the GNU General Public License along
-+#   with this program. If not, see <http://www.gnu.org/licenses/>.
-+#
-+#   As a special exception, the respective Autoconf Macro's copyright owner
-+#   gives unlimited permission to copy, distribute and modify the configure
-+#   scripts that are the output of Autoconf when processing the Macro. You
-+#   need not follow the terms of the GNU General Public License when using
-+#   or distributing such scripts, even though portions of the text of the
-+#   Macro appear in them. The GNU General Public License (GPL) does govern
-+#   all other use of the material that constitutes the Autoconf Macro.
-+#
-+#   This special exception to the GPL applies to versions of the Autoconf
-+#   Macro released by the Autoconf Archive. When you make and distribute a
-+#   modified version of the Autoconf Macro, you may extend this special
-+#   exception to the GPL to apply to your modified version as well.
-+
-+#serial 8
-+
-+AU_ALIAS([ACX_MPI], [AX_MPI])
-+AC_DEFUN([AX_MPI], [
-+AC_PREREQ(2.50) dnl for AC_LANG_CASE
-+
-+AC_LANG_CASE([C], [
-+	AC_REQUIRE([AC_PROG_CC])
-+	AC_ARG_VAR(MPICC,[MPI C compiler command])
-+	AC_CHECK_PROGS(MPICC, mpicc hcc mpxlc_r mpxlc mpcc cmpicc, $CC)
-+	ax_mpi_save_CC="$CC"
-+	CC="$MPICC"
-+	AC_SUBST(MPICC)
-+],
-+[C++], [
-+	AC_REQUIRE([AC_PROG_CXX])
-+	AC_ARG_VAR(MPICXX,[MPI C++ compiler command])
-+	AC_CHECK_PROGS(MPICXX, mpic++ mpicxx mpiCC hcp mpxlC_r mpxlC mpCC cmpic++, $CXX)
-+	ax_mpi_save_CXX="$CXX"
-+	CXX="$MPICXX"
-+	AC_SUBST(MPICXX)
-+],
-+[Fortran 77], [
-+	AC_REQUIRE([AC_PROG_F77])
-+	AC_ARG_VAR(MPIF77,[MPI Fortran 77 compiler command])
-+	AC_CHECK_PROGS(MPIF77, mpif77 hf77 mpxlf_r mpxlf mpf77 cmpifc, $F77)
-+	ax_mpi_save_F77="$F77"
-+	F77="$MPIF77"
-+	AC_SUBST(MPIF77)
-+],
-+[Fortran], [
-+	AC_REQUIRE([AC_PROG_FC])
-+	AC_ARG_VAR(MPIFC,[MPI Fortran compiler command])
-+	AC_CHECK_PROGS(MPIFC, mpif90 mpxlf95_r mpxlf90_r mpxlf95 mpxlf90 mpf90 cmpif90c, $FC)
-+	ax_mpi_save_FC="$FC"
-+	FC="$MPIFC"
-+	AC_SUBST(MPIFC)
-+])
-+
-+if test x = x"$MPILIBS"; then
-+	AC_LANG_CASE([C], [AC_CHECK_FUNC(MPI_Init, [MPILIBS=" "])],
-+		[C++], [AC_CHECK_FUNC(MPI_Init, [MPILIBS=" "])],
-+		[Fortran 77], [AC_MSG_CHECKING([for MPI_Init])
-+			AC_LINK_IFELSE([AC_LANG_PROGRAM([],[      call MPI_Init])],[MPILIBS=" "
-+				AC_MSG_RESULT(yes)], [AC_MSG_RESULT(no)])],
-+		[Fortran], [AC_MSG_CHECKING([for MPI_Init])
-+			AC_LINK_IFELSE([AC_LANG_PROGRAM([],[      call MPI_Init])],[MPILIBS=" "
-+				AC_MSG_RESULT(yes)], [AC_MSG_RESULT(no)])])
-+fi
-+AC_LANG_CASE([Fortran 77], [
-+	if test x = x"$MPILIBS"; then
-+		AC_CHECK_LIB(fmpi, MPI_Init, [MPILIBS="-lfmpi"])
-+	fi
-+	if test x = x"$MPILIBS"; then
-+		AC_CHECK_LIB(fmpich, MPI_Init, [MPILIBS="-lfmpich"])
-+	fi
-+],
-+[Fortran], [
-+	if test x = x"$MPILIBS"; then
-+		AC_CHECK_LIB(fmpi, MPI_Init, [MPILIBS="-lfmpi"])
-+	fi
-+	if test x = x"$MPILIBS"; then
-+		AC_CHECK_LIB(mpichf90, MPI_Init, [MPILIBS="-lmpichf90"])
-+	fi
-+])
-+if test x = x"$MPILIBS"; then
-+	AC_CHECK_LIB(mpi, MPI_Init, [MPILIBS="-lmpi"])
-+fi
-+if test x = x"$MPILIBS"; then
-+	AC_CHECK_LIB(mpich, MPI_Init, [MPILIBS="-lmpich"])
-+fi
-+
-+dnl We have to use AC_TRY_COMPILE and not AC_CHECK_HEADER because the
-+dnl latter uses $CPP, not $CC (which may be mpicc).
-+AC_LANG_CASE([C], [if test x != x"$MPILIBS"; then
-+	AC_MSG_CHECKING([for mpi.h])
-+	AC_TRY_COMPILE([#include <mpi.h>],[],[AC_MSG_RESULT(yes)], [MPILIBS=""
-+		AC_MSG_RESULT(no)])
-+fi],
-+[C++], [if test x != x"$MPILIBS"; then
-+	AC_MSG_CHECKING([for mpi.h])
-+	AC_TRY_COMPILE([#include <mpi.h>],[],[AC_MSG_RESULT(yes)], [MPILIBS=""
-+		AC_MSG_RESULT(no)])
-+fi],
-+[Fortran 77], [if test x != x"$MPILIBS"; then
-+	AC_MSG_CHECKING([for mpif.h])
-+	AC_COMPILE_IFELSE([AC_LANG_PROGRAM([],[      include 'mpif.h'])],[AC_MSG_RESULT(yes)], [MPILIBS=""
-+		AC_MSG_RESULT(no)])
-+fi],
-+[Fortran], [if test x != x"$MPILIBS"; then
-+	AC_MSG_CHECKING([for mpif.h])
-+	AC_COMPILE_IFELSE([AC_LANG_PROGRAM([],[      include 'mpif.h'])],[AC_MSG_RESULT(yes)], [MPILIBS=""
-+		AC_MSG_RESULT(no)])
-+fi])
-+
-+AC_LANG_CASE([C], [CC="$ax_mpi_save_CC"],
-+	[C++], [CXX="$ax_mpi_save_CXX"],
-+	[Fortran 77], [F77="$ax_mpi_save_F77"],
-+	[Fortran], [FC="$ax_mpi_save_FC"])
-+
-+AC_SUBST(MPILIBS)
-+
-+# Finally, execute ACTION-IF-FOUND/ACTION-IF-NOT-FOUND:
-+if test x = x"$MPILIBS"; then
-+        $2
-+        :
-+else
-+        ifelse([$1],,[AC_DEFINE(HAVE_MPI,1,[Define if you have the MPI library.])],[$1])
-+        :
-+fi
-+])dnl AX_MPI
-Index: PadicoTM/building-tools/ax_openmp.m4
-===================================================================
---- PadicoTM/building-tools/ax_openmp.m4	(nonexistent)
-+++ PadicoTM/building-tools/ax_openmp.m4	(copie de travail)
-@@ -0,0 +1,119 @@
-+# ===========================================================================
-+#         http://www.gnu.org/software/autoconf-archive/ax_openmp.html
-+# ===========================================================================
-+#
-+# SYNOPSIS
-+#
-+#   AX_OPENMP([ACTION-IF-FOUND[, ACTION-IF-NOT-FOUND]])
-+#
-+# DESCRIPTION
-+#
-+#   This macro tries to find out how to compile programs that use OpenMP a
-+#   standard API and set of compiler directives for parallel programming
-+#   (see http://www-unix.mcs/)
-+#
-+#   On success, it sets the OPENMP_CFLAGS/OPENMP_CXXFLAGS/OPENMP_F77FLAGS
-+#   output variable to the flag (e.g. -omp) used both to compile *and* link
-+#   OpenMP programs in the current language.
-+#
-+#   NOTE: You are assumed to not only compile your program with these flags,
-+#   but also link it with them as well.
-+#
-+#   If you want to compile everything with OpenMP, you should set:
-+#
-+#     CFLAGS="$CFLAGS $OPENMP_CFLAGS"
-+#     #OR#  CXXFLAGS="$CXXFLAGS $OPENMP_CXXFLAGS"
-+#     #OR#  FFLAGS="$FFLAGS $OPENMP_FFLAGS"
-+#
-+#   (depending on the selected language).
-+#
-+#   The user can override the default choice by setting the corresponding
-+#   environment variable (e.g. OPENMP_CFLAGS).
-+#
-+#   ACTION-IF-FOUND is a list of shell commands to run if an OpenMP flag is
-+#   found, and ACTION-IF-NOT-FOUND is a list of commands to run it if it is
-+#   not found. If ACTION-IF-FOUND is not specified, the default action will
-+#   define HAVE_OPENMP.
-+#
-+# LICENSE
-+#
-+#   Copyright (c) 2008 Steven G. Johnson <stevenj@alum.mit.edu>
-+#   Copyright (c) 2015 John W. Peterson <jwpeterson@gmail.com>
-+#
-+#   This program is free software: you can redistribute it and/or modify it
-+#   under the terms of the GNU General Public License as published by the
-+#   Free Software Foundation, either version 3 of the License, or (at your
-+#   option) any later version.
-+#
-+#   This program is distributed in the hope that it will be useful, but
-+#   WITHOUT ANY WARRANTY; without even the implied warranty of
-+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
-+#   Public License for more details.
-+#
-+#   You should have received a copy of the GNU General Public License along
-+#   with this program. If not, see <http://www.gnu.org/licenses/>.
-+#
-+#   As a special exception, the respective Autoconf Macro's copyright owner
-+#   gives unlimited permission to copy, distribute and modify the configure
-+#   scripts that are the output of Autoconf when processing the Macro. You
-+#   need not follow the terms of the GNU General Public License when using
-+#   or distributing such scripts, even though portions of the text of the
-+#   Macro appear in them. The GNU General Public License (GPL) does govern
-+#   all other use of the material that constitutes the Autoconf Macro.
-+#
-+#   This special exception to the GPL applies to versions of the Autoconf
-+#   Macro released by the Autoconf Archive. When you make and distribute a
-+#   modified version of the Autoconf Macro, you may extend this special
-+#   exception to the GPL to apply to your modified version as well.
-+
-+#serial 11
-+
-+AC_DEFUN([AX_OPENMP], [
-+AC_PREREQ([2.69]) dnl for _AC_LANG_PREFIX
-+
-+AC_CACHE_CHECK([for OpenMP flag of _AC_LANG compiler], ax_cv_[]_AC_LANG_ABBREV[]_openmp, [save[]_AC_LANG_PREFIX[]FLAGS=$[]_AC_LANG_PREFIX[]FLAGS
-+ax_cv_[]_AC_LANG_ABBREV[]_openmp=unknown
-+# Flags to try:  -fopenmp (gcc), -openmp (icc), -mp (SGI & PGI),
-+#                -xopenmp (Sun), -omp (Tru64), -qsmp=omp (AIX), none
-+ax_openmp_flags="-fopenmp -openmp -mp -xopenmp -omp -qsmp=omp none"
-+if test "x$OPENMP_[]_AC_LANG_PREFIX[]FLAGS" != x; then
-+  ax_openmp_flags="$OPENMP_[]_AC_LANG_PREFIX[]FLAGS $ax_openmp_flags"
-+fi
-+for ax_openmp_flag in $ax_openmp_flags; do
-+  case $ax_openmp_flag in
-+    none) []_AC_LANG_PREFIX[]FLAGS=$save[]_AC_LANG_PREFIX[] ;;
-+    *) []_AC_LANG_PREFIX[]FLAGS="$save[]_AC_LANG_PREFIX[]FLAGS $ax_openmp_flag" ;;
-+  esac
-+  AC_LINK_IFELSE([AC_LANG_SOURCE([[
-+@%:@include <omp.h>
-+
-+static void
-+parallel_fill(int * data, int n)
-+{
-+  int i;
-+@%:@pragma omp parallel for
-+  for (i = 0; i < n; ++i)
-+    data[i] = i;
-+}
-+
-+int
-+main()
-+{
-+  int arr[100000];
-+  omp_set_num_threads(2);
-+  parallel_fill(arr, 100000);
-+  return 0;
-+}
-+]])],[ax_cv_[]_AC_LANG_ABBREV[]_openmp=$ax_openmp_flag; break],[])
-+done
-+[]_AC_LANG_PREFIX[]FLAGS=$save[]_AC_LANG_PREFIX[]FLAGS
-+])
-+if test "x$ax_cv_[]_AC_LANG_ABBREV[]_openmp" = "xunknown"; then
-+  m4_default([$2],:)
-+else
-+  if test "x$ax_cv_[]_AC_LANG_ABBREV[]_openmp" != "xnone"; then
-+    OPENMP_[]_AC_LANG_PREFIX[]FLAGS=$ax_cv_[]_AC_LANG_ABBREV[]_openmp
-+  fi
-+  m4_default([$1], [AC_DEFINE(HAVE_OPENMP,1,[Define if OpenMP is enabled])])
-+fi
-+])dnl AX_OPENMP
-Index: PadicoTM/building-tools/common_rules.mk.in
-===================================================================
---- PadicoTM/building-tools/common_rules.mk.in	(nonexistent)
-+++ PadicoTM/building-tools/common_rules.mk.in	(copie de travail)
-@@ -0,0 +1,218 @@
-+
-+# common_rules.mk: begin
-+# @configure_input@
-+
-+.SUFFIXES:
-+
-+.PHONY: all install install-lib install-libexec install-bin install-include clean clean-obj clean-doxygen doxygen distclean subdirs modules dep $(SUBDIRS) $(TARGET_MOD) $(MODULES)
-+
-+all: $(TARGETS)
-+
-+subdirs: $(SUBDIRS)
-+
-+$(SUBDIRS):
-+	$(SHOWMK) "  [SUBDIR] make '$(if $(MAKECMDGOALS),$(MAKECMDGOALS),all)' in: $@"
-+	$(Q)$(MAKE) -C $@ $(MAKECMDGOALS)
-+
-+# ## docs, only if doxyfile exists
-+ifneq ($(wildcard doc/Doxyfile),)
-+doxygen: @abs_top_builddir@/doc/Doxyfile @srcdir@/README.md
-+	$(SHOWMK) "  [DOXYGEN] $(MYDIR)/"
-+	$(Q)doxygen doc/Doxyfile
-+	@echo
-+	@echo "# documentation generated in: @top_builddir@/doc/html/index.html"
-+	@echo
-+
-+clean-doxygen:
-+	$(SHOWMK) "  [CLEAN]  $(MYDIR)/doc/html"
-+	$(Q)$(RM) doc/html
-+
-+TARGET_CLEAN += clean-doxygen
-+
-+upload-doc: doxygen
-+	@echo "  [RSYNC]  $(package_short_name)"
-+	rsync -rcvz @abs_top_builddir@/doc/html/ scm.gforge.inria.fr:/home/groups/pm2/htdocs/$(package_short_name)/doc/
-+endif
-+
-+clean: subdirs clean-obj clean-mod $(TARGET_CLEAN)
-+	$(SHOWMK) "  [CLEAN]  $(MYDIR)/"
-+
-+clean-obj: subdirs
-+	$(Q)$(RM) *.o *.pic.o *.so *.dylib *.d .*.d .*.stamp $(TARGET_BIN) $(TARGET_LIBEXEC) $(TARGET_LIB) $(CLEAN_MORE)
-+
-+clean-mod: subdirs
-+	$(Q)(  \
-+          for mod in $(patsubst %/meta.xml, %, $(wildcard */meta.xml)); do  \
-+	    $(ECHO) "  [CLEAN]  $(MYDIR)/$${mod}" ; \
-+	    if [ -r $${mod}/meta.xml ]; then rm -r $${mod}; fi ; \
-+	  done  \
-+	)
-+
-+distclean: clean
-+	$(SHOWMK) "  [DISTCLEAN] $(MYDIR)/"
-+	$(Q)$(RM) config.log config.status $(PADICO_OUT_FILES)
-+
-+install: install-dir install-subdirs $(TARGETS)
-+
-+install-dir: install-sbin install-lib install-mod install-libexec install-bin install-include install-etc install-init install-pkgconfig
-+
-+install-subdirs: subdirs 
-+
-+install-lib: $(INSTALL_LIB)
-+	@$(if $^,,$(IGNORE)) $(SHOWMK) "  [INST]   in lib/:     $(^F)"
-+	@$(if $^,,$(IGNORE)) $(Q)$(INSTALL) -d $(INSTALL_LIB_PATH)
-+	@$(if $^,,$(IGNORE)) $(Q)$(INSTALL_DATA) $^ $(INSTALL_LIB_PATH)
-+
-+install-mod: $(INSTALL_MOD)
-+	@$(if $^,,$(IGNORE)) $(SHOWMK) "  [INST]   in lib/padico/: $(^F)"
-+	@$(if $^,,$(IGNORE)) $(Q)$(INSTALL) -d $(INSTALL_MOD_PATH)
-+	@$(if $^,,$(IGNORE)) $(Q)$(CP) -r $^ $(INSTALL_MOD_PATH)/
-+
-+install-libexec: $(INSTALL_LIBEXEC)
-+	@$(if $^,,$(IGNORE)) $(SHOWMK) "  [INST]   in libexec/: $(^F)"
-+	@$(if $^,,$(IGNORE)) $(Q)$(INSTALL) -d  $(INSTALL_LIBEXEC_PATH)
-+	@$(if $^,,$(IGNORE)) $(Q)$(INSTALL_PROG) $^ $(INSTALL_LIBEXEC_PATH)
-+
-+install-bin: $(INSTALL_BIN)
-+	@$(if $^,,$(IGNORE)) $(SHOWMK) "  [INST]   in bin/:     $(^F)"
-+	@$(if $^,,$(IGNORE)) $(Q)$(INSTALL) -d $(INSTALL_BIN_PATH)
-+	@$(if $^,,$(IGNORE)) $(Q)$(INSTALL_PROG) $^ $(INSTALL_BIN_PATH)
-+
-+install-include: $(INSTALL_INCLUDE)
-+	@$(if $^,,$(IGNORE)) $(SHOWMK) "  [INST]   in include/: $(^F)"
-+	@$(if $^,,$(IGNORE)) $(Q)$(INSTALL) -d $(INSTALL_INCLUDE_PATH)
-+	@$(if $^,,$(IGNORE)) $(Q)$(INSTALL_DATA) $^ $(INSTALL_INCLUDE_PATH)
-+
-+install-etc: $(INSTALL_ETC)
-+	@$(if $^,,$(IGNORE)) $(SHOWMK) "  [INST]   in etc/:     $(^F)"
-+	@$(if $^,,$(IGNORE)) $(Q)$(INSTALL) -d $(INSTALL_ETC_PATH)
-+	@$(if $^,,$(IGNORE)) $(Q)$(INSTALL_DATA) -m 644 $^ $(INSTALL_ETC_PATH)
-+
-+install-init: $(INSTALL_INIT)
-+	@$(if $^,,$(IGNORE)) $(SHOWMK) "  [INST]   in etc/init.d/: $(^F)"
-+	@$(if $^,,$(IGNORE)) $(Q)$(INSTALL) -d $(INSTALL_ETC_PATH)/init.d/
-+	@$(if $^,,$(IGNORE)) $(Q)$(INSTALL_DATA) -m 644 $^ $(INSTALL_ETC_PATH)/init.d/
-+
-+install-sbin: $(INSTALL_SBIN)
-+	@$(if $^,,$(IGNORE)) $(SHOWMK) "  [INST]   in sbin/:    $(^F)"
-+	@$(if $^,,$(IGNORE)) $(Q)$(INSTALL) -d $(INSTALL_SBIN_PATH)
-+	@$(if $^,,$(IGNORE)) $(Q)$(INSTALL_PROG) $^ $(INSTALL_SBIN_PATH)
-+
-+install-pkgconfig: $(INSTALL_PKGCONFIG)
-+	@$(if $^,,$(IGNORE)) $(SHOWMK) "  [INST]   in lib/pkgconfig/: $(^F)"
-+	@$(if $^,,$(IGNORE)) $(Q)$(INSTALL) -d $(INSTALL_PKGCONFIG_PATH)
-+	@$(if $^,,$(IGNORE)) $(Q)$(INSTALL_DATA) $^ $(INSTALL_PKGCONFIG_PATH)
-+
-+ifeq (@HAVE_DYNLIB@,yes)
-+@DYNLIB_PREFIX@%@DYNLIB_EXT@:
-+	@$(SHOWMK) "  [LIB-LD] $@"
-+	$(Q)$(DYNLIB_LD) $(LDFLAGS) -o $@ $+ $(LIBS)
-+endif
-+
-+lib%.a:
-+	@$(SHOWMK) "  [AR]     $@"
-+	@$(AR) cr $@ $^
-+	@$(SHOWMK) "  [RANLIB] $@"
-+	@$(RANLIB) $@
-+
-+$(TARGET_BIN):
-+	@$(SHOWMK) "  [LD]     $@"
-+	$(Q)$(LD) $(LDFLAGS) -o $@ $+ $(LIBS) $(BINLIBS)
-+
-+$(TARGET_LIBEXEC):
-+	@$(SHOWMK) "  [LD]     $@"
-+	$(Q)$(LD) $(LDFLAGS) -o $@ $+ $(LIBS)
-+
-+$(TARGET_MOD):
-+	$(Q)$(MAKE) --silent .$@.stamp _MODOBJS='$(filter %o %.pic %.so %.a,$+)' _MODLIBS='$(MODLIBS)'
-+
-+.%.stamp: $(_MODOBJS)
-+	@$(SHOWMK) "  [MKMOD]  $* [$(notdir $(_MODOBJS))]"
-+	$(Q)$(MKMOD) -o $* $(_MODOBJS) $(_MODLIBS)
-+	@$(TOUCH) $@
-+
-+# ## Rule to make modules
-+# build module, then install it, before building next
-+
-+$(MODULES):
-+	$(SHOWMK) "  [MODULE] make '$(if $(MAKECMDGOALS),$(MAKECMDGOALS),all)' in: $@"
-+	$(Q)$(MAKE) -C $@ all
-+	$(Q)$(MAKE) -C $@ install
-+
-+# don't need .d files for cleanning!
-+ifeq ($(MAKECMDGOALS),clean)
-+  PADICO_USE_MKDEPEND = no
-+endif
-+
-+ifeq ($(PADICO_USE_MKDEPEND),yes)
-+# rules with dependancy checking
-+
-+.PRECIOUS: %.d
-+
-+%.pic.o: %.c %.d
-+	@$(SHOWMK) "  [CC]     $@"
-+	$(Q)$(CC) $(CFLAGS) $(CPICFLAGS) -c -o $@ $<
-+
-+%.o: %.c %.d
-+	@$(SHOWMK) "  [CC]     $@"
-+	$(Q)$(CC) $(CFLAGS) -c -o $@ $<
-+
-+%.d: %.c $(PADICO_CONFIG_FILES)
-+	@$(SHOWMK) "  [CDEP]   $@"
-+	$(Q)$(MKDIR) $(dir $@)
-+	$(Q)$(CC_DEP) $(CFLAGS) -DMKDEPEND $< > $@
-+	$(Q)$(ECHO) >> $@
-+	$(Q)$(CC_DEP) -MT $*.pic.o $(CFLAGS) -DMKDEPEND $< >> $@
-+
-+TARGET_DEP += $(patsubst $(srcdir)/%.c,  ./%.d, $(wildcard $(srcdir)/*.c))
-+
-+ifeq ($(HAVE_CXX),yes)
-+%.pic.o: %.cc %.d
-+	@$(SHOWMK) "  [C++]    $@"
-+	$(Q)$(CXX) $(CXXFLAGS) $(CXXPICFLAGS) -c -o $@ $<
-+
-+%.o: %.cc %.d
-+	@$(SHOWMK) "  [C++]    $@"
-+	$(Q)$(CXX) $(CXXFLAGS) -c -o $@ $<
-+
-+%.d: %.cc $(PADICO_CONFIG_FILES)
-+	@$(SHOWMK) "  [C++DEP] $@"
-+	$(Q)$(CXX_DEP) $(CXXFLAGS) $< > $@
-+
-+TARGET_DEP += $(patsubst $(srcdir)/%.cc, ./%.d, $(wildcard $(srcdir)/*.cc))
-+endif
-+
-+
-+CLEAN_MORE += $(TARGET_DEP)
-+
-+dep: $(TARGET_DEP)
-+
-+_DEP_FILES = $(wildcard *.d)
-+
-+ifneq ($(strip $(_DEP_FILES)),)
-+-include $(_DEP_FILES)
-+endif
-+
-+else
-+# PADICO_USE_MKDEPEND = no
-+%.o: %.c
-+	@$(SHOWMK) "  [CC]     $@"
-+	$(Q)$(CC) $(CFLAGS) -c -o $@ $<
-+
-+%.pic.o: %.c
-+	@$(SHOWMK) "  [CC]     $@"
-+	$(Q)$(CC) $(CFLAGS) $(CPICFLAGS) -c -o $@ $<
-+
-+ifeq ($(HAVE_CXX),yes)
-+%.o: %.cc
-+	@$(SHOWMK) "  [C++]    $@"
-+	$(Q)$(CXX) $(CXXFLAGS) -c -o $@ $<
-+
-+%.pic.o: %.cc
-+	@$(SHOWMK) "  [C++]    $@"
-+	$(Q)$(CXX) $(CXXFLAGS) $(CXXPICFLAGS) -c -o $@ $<
-+endif
-+endif
-+# end: PADICO_USE_MKDEPEND
-+
-+# common_rules.mk: end
-Index: PadicoTM/building-tools/common_vars.mk.in
-===================================================================
---- PadicoTM/building-tools/common_vars.mk.in	(nonexistent)
-+++ PadicoTM/building-tools/common_vars.mk.in	(copie de travail)
-@@ -0,0 +1,126 @@
-+
-+# common_vars.mk: begin
-+# @configure_input@
-+
-+padico_builddir := @padico_builddir@
-+padico_srcdir   := @padico_srcdir@
-+prefix          := @prefix@
-+
-+package_name       := @package_name@
-+package_short_name := @package_short_name@
-+
-+# path used for install; may be overriden in makefiles
-+INSTALL_PREFIX         = $(prefix)
-+INSTALL_BIN_PATH       = $(INSTALL_PREFIX)/bin
-+INSTALL_SBIN_PATH      = $(INSTALL_PREFIX)/sbin
-+INSTALL_LIB_PATH       = $(INSTALL_PREFIX)/lib
-+INSTALL_ETC_PATH       = $(INSTALL_PREFIX)/etc
-+INSTALL_LIBEXEC_PATH   = $(INSTALL_PREFIX)/libexec
-+INSTALL_INCLUDE_PATH   = $(INSTALL_PREFIX)/include
-+INSTALL_PKGCONFIG_PATH = $(INSTALL_LIB_PATH)/pkgconfig
-+INSTALL_MOD_PATH       = $(INSTALL_LIB_PATH)/padico
-+
-+# ## Various flags
-+# preprocessor options - usually "-D_REENTRANT"
-+CPPFLAGS        = @CPPFLAGS@
-+# common flags for C code - usually "-Wall"
-+BASE_CFLAGS    := @BASE_CFLAGS@
-+# flags for debug flavors - usually "-g"
-+DEBUG_CFLAGS   := -DDEBUG @DEBUG_CFLAGS@
-+# flags for optimize - usually "-O2" or "-O4 -mcpu=athlon" and the likes
-+OPT_CFLAGS     := -DNDEBUG @OPT_CFLAGS@
-+# flags for producing Position Independent Code
-+CPICFLAGS      := @CPICFLAGS@
-+# is C++ compiler used
-+HAVE_CXX       := @HAVE_CXX@
-+# common flags for C++
-+BASE_CXXFLAGS  := @BASE_CXXFLAGS@
-+# debug for C++
-+DEBUG_CXXFLAGS := -DDEBUG @DEBUG_CXXFLAGS@
-+# optimize for C++
-+OPT_CXXFLAGS   := -DNDEBUG @OPT_CXXFLAGS@
-+# PIC flags for C++
-+CXXPICFLAGS    := @CXXPICFLAGS@
-+# optimize linker hash tables
-+OPT_LDFLAGS    := @OPT_LDFLAGS@
-+
-+CFLAGS   = $(CPPFLAGS) $(BASE_CFLAGS)   -I. -I@includedir@
-+CXXFLAGS = $(CPPFLAGS) $(BASE_CXXFLAGS) -I. -I@includedir@
-+
-+# basic shell commands
-+ECHO    = echo
-+RM      = rm -rf
-+CP      = cp -f
-+LN      = ln -fs
-+MKDIR   = mkdir -p
-+INSTALL = install -p
-+SHELL   = /bin/sh
-+TOUCH   = touch
-+IGNORE  = @BIN_TRUE@
-+INSTALL_DATA = $(INSTALL) -m 644
-+INSTALL_PROG = $(INSTALL) -m 755
-+
-+# build & link
-+LDFLAGS    = @LDFLAGS@
-+LIBS       = @LIBS@
-+BINLIBS    =
-+CC         = @CC@
-+CXX        = @CXX@
-+LD         = @LD@
-+CC_DEP     = @CC_DEP@
-+CXX_DEP    = @CXX_DEP@
-+DYNLIB_LD  = @DYNLIB_LD@
-+DYNLIB_EXT = @DYNLIB_EXT@
-+DSO_LD     = @DSO_LD@
-+DSO_EXT    = @DSO_EXT@
-+AR         = ar
-+RANLIB     = ranlib
-+
-+# control verbosity
-+ifeq ($(VERBOSE),yes)
-+# verbose
-+Q         := 
-+SHOWMK    := @$(IGNORE)
-+MKMOD     := @puk_root@/bin/padico-mkmod
-+INSTALL   := $(INSTALL) -v
-+else
-+# quiet
-+Q         := @
-+SHOWMK    := @$(ECHO)
-+MAKEFLAGS += --no-print-directory
-+MKMOD     := @puk_root@/bin/padico-mkmod --quiet
-+endif
-+
-+# Default choices for optimize/debug follows PadicoTM configure
-+ifeq ($(ENABLE_OPTIMIZE),)
-+ENABLE_OPTIMIZE = @ENABLE_OPTIMIZE_FLAG@
-+endif
-+ifeq ($(ENABLE_DEBUG),)
-+ENABLE_DEBUG = @ENABLE_DEBUG_FLAG@
-+endif
-+# set the appropriate flags for optimize/debug
-+ifeq ($(ENABLE_OPTIMIZE),yes)
-+CFLAGS    += $(OPT_CFLAGS)
-+CXX_FLAGS += $(OPT_CXXFLAGS)
-+LDFLAGS   += $(OPT_CFLAGS) $(OPT_LDFLAGS)
-+endif
-+ifeq ($(ENABLE_DEBUG),yes)
-+CFLAGS    += $(DEBUG_CFLAGS)
-+CXX_FLAGS += $(DEBUG_CXXFLAGS)
-+endif
-+
-+MODLIBS = -DENABLE_OPTIMIZE=$(ENABLE_OPTIMIZE) -DENABLE_DEBUG=$(ENABLE_DEBUG)
-+
-+# config files that trigger rebuild if changed
-+PADICO_CONFIG_FILES := $(wildcard Makefile config.status common_vars.mk common_rules.mk)
-+
-+# out files generated by configure; will be remove by distclean
-+PADICO_OUT_FILES := @PADICO_OUT_FILES@
-+
-+# always use mkdepend, except for clean
-+PADICO_USE_MKDEPEND = yes
-+
-+# directory used for pretty-print
-+MYDIR := $(notdir $(CURDIR))
-+
-+# common_vars.mk: end
-Index: PadicoTM/building-tools/compiler.m4
-===================================================================
---- PadicoTM/building-tools/compiler.m4	(nonexistent)
-+++ PadicoTM/building-tools/compiler.m4	(copie de travail)
-@@ -0,0 +1,229 @@
-+dnl -*- mode: Autoconf;-*-
-+
-+m4_include([ax_check_compile_flag.m4])
-+
-+AC_DEFUN([AC_PADICO_CXX],
-+  [
-+    MYCXXFLAGS="$CXXFLAGS"
-+    AC_PROG_CXX
-+    AC_PROG_CXXCPP
-+    case `uname -s` in
-+      SunOS)
-+        case ${CXX} in
-+          c++|g++*) CXXFLAGS="-g"
-+    		    CXXPICFLAGS="-fPIC"
-+               	    CXXDEPFLAGS="-MM";;
-+               CC)  CXXFLAGS="-g"
-+		    CXXPICFLAGS="-Kpic"
-+	            CXXDEPFLAGS="-xM1"
-+		    CXXSHFLAGS="-G";;
-+        esac
-+      ;;
-+      Linux|*BSD)
-+        BASE_CXXFLAGS=""
-+        DEBUG_CXXFLAGS="-g"
-+        OPT_CXXFLAGS="-O2"
-+        CXXPICFLAGS="-fPIC"
-+        CXXDEPFLAGS="-MM"
-+      ;;
-+      IRIX64)
-+        CXXFLAGS="-Wall -Dirix"
-+        CXXPICFLAGS="-fPIC"
-+        CXXDEPFLAGS="-MM"
-+        CXXDEBUGFLAGS="-g"
-+        CXXOPTFLAGS="-O2" dnl it's *really* -O2, not -O4. Else, it doesn't work with omniORB 3
-+      ;;
-+      Darwin)
-+        CXXFLAGS="-g -Wall -traditional-cpp"
-+        CXXPICFLAGS="-fPIC"
-+        CXXDEPFLAGS="-MM"
-+      ;;
-+      *) # What is this f$*k!@ OS? :-)
-+        AC_MSG_ERROR([Unknown OS/platform: `uname -s`])
-+      ;;
-+    esac
-+    BASE_CXXFLAGS="$MYCXXFLAGS $BASE_CXXFLAGS"
-+    AC_SUBST(CXXPICFLAGS)
-+    AC_SUBST(BASE_CXXFLAGS)
-+    AC_SUBST(DEBUG_CXXFLAGS)
-+    AC_SUBST(OPT_CXXFLAGS)
-+    HAVE_CXX=yes
-+    AC_SUBST([HAVE_CXX])
-+  ])
-+
-+AC_DEFUN([AC_PADICO_SAVEFLAGS],
-+  [
-+    MYCPPFLAGS="$CPPFLAGS"
-+    MYCFLAGS="$CFLAGS"
-+    MYLDFLAGS="$LDFLAGS"
-+  ])
-+  
-+AC_DEFUN([AC_PADICO_COMPILER],
-+  [
-+    dnl - save current state
-+    AC_REQUIRE([AC_PADICO_SAVEFLAGS])
-+    AC_REQUIRE([AC_PROG_CC])
-+    AC_REQUIRE([AC_PROG_CPP])
-+    AC_REQUIRE([AC_PROG_CC_C99])
-+    dnl --- compute flags depending on the OS type
-+    case `uname -s` in
-+      SunOS)
-+        binary_format=elf
-+        dnl - dynamic libraries
-+        LDFLAGS=
-+        SYMBOL_PREFIX=""
-+        DYNLIB_PREFIX="lib"
-+        DYNLIB_EXT=".so"
-+        DYNLIB_FLAGS="-shared"
-+        DSO_EXT=".so"
-+        DSO_FLAGS="-shared"
-+        case ${CC} in
-+          gcc*) CFLAGS="-g -Wall"
-+                CPICFLAGS="-fPIC"
-+	        CDEPFLAGS="-MM";;
-+          cc)   CFLAGS="-g"
-+  	        CPICFLAGS="-Kpic"
-+	        CDEPFLAGS="-xM1";;
-+        esac
-+      ;;
-+      Linux|*BSD)
-+        binary_format=elf
-+        LDFLAGS="-rdynamic"
-+        SYMBOL_PREFIX=""
-+        DYNLIB_PREFIX="lib"
-+        DYNLIB_EXT=".so"
-+        DYNLIB_FLAGS="-shared -rdynamic"
-+        DSO_EXT=".so"
-+        DSO_FLAGS="-shared -rdynamic"
-+        OPT_LDFLAGS="-Wl,-O1"
-+        dnl gcc
-+        BASE_CFLAGS="-Wall -pipe"
-+        DEBUG_CFLAGS="-g"
-+        AX_CHECK_COMPILE_FLAG([-xHOST], [OPT_CFLAGS_NATIVE="-xHOST"], [])
-+	if test "x${OPT_CFLAGS_NATIVE}" = "x"; then
-+          AX_CHECK_COMPILE_FLAG([-march=native], [OPT_CFLAGS_NATIVE="-march=native"], [])
-+	fi
-+        AX_CHECK_COMPILE_FLAG([-ipo], [OPT_CFLAGS_LTO="-ipo"], [])
-+	if test "x${OPT_CFLAGS_LTO}" = "x"; then
-+	  AX_CHECK_COMPILE_FLAG([-flto], [OPT_CFLAGS_LTO="-flto"], [])
-+	fi
-+	OPT_CFLAGS="-O3 $OPT_CFLAGS_NATIVE $OPT_CFLAGS_LTO"
-+        CPICFLAGS="-fPIC"
-+        CDEPFLAGS="-MM"
-+      ;;
-+      IRIX64)
-+        binary_format=elf
-+        dnl - dynamic libraries
-+        LDFLAGS="-rdynamic"
-+        SYMBOL_PREFIX="" 
-+        DYNLIB_PREFIX="lib"
-+        DYNLIB_EXT=".so"
-+        DYNLIB_FLAGS="-shared"
-+        DSO_EXT=".so"
-+        DSO_FLAGS="-shared"
-+        dnl gcc-specific flags... but no other compiler supported
-+        CFLAGS="-Wall -Dirix"
-+        CPICFLAGS="-fPIC"
-+        CDEPFLAGS="-MM"
-+        CDEBUGFLAGS="-g"
-+        COPTFLAGS="-O4"
-+      ;;
-+      Darwin)
-+        binary_format="Mach-O"
-+        dnl - dynamic libraries
-+        LDFLAGS=""
-+        SYMBOL_PREFIX="_"
-+        DYNLIB_PREFIX="lib"
-+        DYNLIB_EXT=".dylib"
-+        DYNLIB_FLAGS="-flat_namespace -undefined suppress -fno-common -dynamiclib"
-+        DSO_EXT=""
-+        DSO_FLAGS="-flat_namespace -undefined suppress -bundle"
-+        dnl - gcc
-+        CFLAGS="-g -Wall -traditional-cpp -fno-common -Wno-long-double"
-+        CPICFLAGS="-fPIC"
-+        CDEPFLAGS="-MM"
-+      ;;
-+      *) # What is this f$*k!@ OS? :-)
-+        AC_MSG_ERROR([Unknown OS/platform: `uname -s`])
-+      ;;
-+    esac
-+    dnl - user specified and standard flags
-+    CPPFLAGS="$MYCPPFGLAGS -D_REENTRANT -D_GNU_SOURCE"
-+    LDFLAGS="$MYLDFLAGS $LDFLAGS"
-+    BASE_CFLAGS="$MYCFLAGS $BASE_CFLAGS"
-+    AC_SUBST(CPPFLAGS)
-+    AC_SUBST(CDEPFLAGS)
-+    AC_SUBST(CPICFLAGS)
-+    AC_SUBST(DEBUG_CFLAGS)
-+    AC_SUBST(BASE_CFLAGS)
-+    AC_SUBST(OPT_CFLAGS)
-+    AC_SUBST(OPT_LDFLAGS)
-+    AC_SUBST(binary_format)
-+  ])
-+
-+
-+AC_DEFUN([AC_PADICO_GCC_VERSION],
-+	 [ AC_REQUIRE([AC_PADICO_VERSION])
-+	   AC_REQUIRE([AC_PADICO_COMPILER])
-+	   AC_MSG_CHECKING([for gcc version])
-+	   if test "x$GCC" != "xyes"; then
-+	     AC_MSG_ERROR([ $PACKAGE_STRING requires GNU C compiler.])
-+	   else
-+	     gcc_version="`${CC} -dumpversion`"
-+	     case $gcc_version in
-+	       2.9*|3.0.4|3.1*|3.2*|3.3*|3.4*|4.*|5.*|6.*|7.*|7)
-+	         AC_MSG_RESULT([ ${gcc_version} ok])
-+	       ;;
-+	       2.7*|2.8*|3.0*|2.96*)
-+	         AC_MSG_RESULT([ ${gcc_version} not supported-- warning: gcc version not supported])
-+	       ;;
-+	       *)
-+	         AC_MSG_RESULT([ ${gcc_version} unknown-- report how it works!])
-+	       ;;
-+	     esac
-+	   fi
-+	  ])
-+
-+AC_DEFUN([AC_PADICO_GXX_VERSION],
-+	 [ AC_REQUIRE([AC_PADICO_VERSION])
-+	   AC_REQUIRE([AC_PADICO_CXX])
-+           AC_MSG_CHECKING([for g++ version])
-+	   if test "x$GXX" != "xyes"; then
-+	     AC_MSG_ERROR([ $PACKAGE_STRING requires GNU C++ compiler.])
-+	   else
-+	     gxx_version="`${CXX} -dumpversion`"
-+	     case $gxx_version in
-+	       2.9*|3.0.4|3.1*|3.2*|3.3*|3.4*|4.*|5.*|6.*|7.*|7)
-+	         AC_MSG_RESULT([ ${gxx_version} ok])
-+	       ;;
-+	       2.*|3.0*)
-+	         AC_MSG_RESULT([ ${gxx_version} --warning: g++ version not supported. No CORBA support])
-+	       ;;
-+	       *)
-+	         AC_MSG_RESULT([ ${gxx_version} unkown --report how it works!])
-+	       ;;
-+	     esac
-+	   fi
-+         ])
-+
-+# ## dynamic objects
-+AC_DEFUN([AC_PADICO_DSO],
-+	 [
-+	   AC_REQUIRE([AC_PADICO_COMPILER])
-+	   AC_MSG_CHECKING([for dynamic object (DSO) linker])
-+	   DSO_LD="${CC} ${CPICFLAGS} ${DSO_FLAGS}"
-+	   AC_MSG_RESULT([${DSO_LD}])
-+	   AC_SUBST(DSO_LD)
-+
-+	   AC_MSG_CHECKING([for DSO extension])
-+	   AC_MSG_RESULT([${DSO_EXT}])
-+	   AC_SUBST(DSO_EXT)
-+	   AC_DEFINE_UNQUOTED(DSO_EXT, "${DSO_EXT}",
-+	     [Extension for bundles])
-+
-+	   AC_MSG_CHECKING([for symbol prefix])
-+	   AC_MSG_RESULT([${SYMBOL_PREFIX}])
-+	   AC_SUBST(SYMBOL_PREFIX)
-+	   AC_DEFINE_UNQUOTED(SYMBOL_PREFIX, "${SYMBOL_PREFIX}",
-+	     [prefix prepended to symbols by the ABI (usually "_")])
-+	 ])
-Index: PadicoTM/building-tools/features.m4
-===================================================================
---- PadicoTM/building-tools/features.m4	(nonexistent)
-+++ PadicoTM/building-tools/features.m4	(copie de travail)
-@@ -0,0 +1,321 @@
+diff -ruN -p0 PadicoTM.orig/building-tools/features.m4 PadicoTM/building-tools/features.m4
+--- PadicoTM.orig/building-tools/features.m4	1970-01-01 01:00:00.000000000 +0100
++++ PadicoTM/building-tools/features.m4	2019-06-06 13:31:53.993771292 +0200
+@@ -0,0 +1,341 @@
 +dnl -*- mode: Autoconf;-*-
 +
 +dnl -- Optionnal features
@@ -1399,6 +1378,26 @@ Index: PadicoTM/building-tools/features.m4
 +	        [ HAVE_LZ4_H="no"
 +	          HAVE_LIBLZ4="no" ])
 +  	   AC_SUBST(HAVE_LIBLZ4)
++	 ])
++
++AC_DEFUN([AC_PADICO_CHECK_LIBCURL],
++	 [
++	   AC_REQUIRE([PKG_PROG_PKG_CONFIG])
++           PKG_CHECK_MODULES([libcurl], [libcurl], [HAVE_LIBCURL=yes], [HAVE_LIBCURL=no])
++	   if test x${HAVE_LIBCURL} = xyes; then
++	     AC_CHECK_HEADER(curl/curl.h, [ ], [ AC_MSG_ERROR([unusable libcurl]) ])
++	   fi
++	   AC_SUBST([HAVE_LIBCURL])
++	 ])
++
++AC_DEFUN([AC_PADICO_CHECK_JANSSON],
++	 [
++	   AC_REQUIRE([PKG_PROG_PKG_CONFIG])
++           PKG_CHECK_MODULES([jansson], [jansson], [HAVE_JANSSON=yes], [HAVE_JANSSON=no])
++	   if test x${HAVE_JANSSON} = xyes; then
++	     AC_CHECK_HEADER(jansson.h, [ ], [ AC_MSG_ERROR([unusable jansson]) ])
++	   fi
++	   AC_SUBST([HAVE_JANSSON])
 +	 ])
 +
 +# ## checks for hwloc
@@ -1477,7 +1476,7 @@ Index: PadicoTM/building-tools/features.m4
 +    HAVE_PSM=no
 +    AC_ARG_WITH([psm],
 +	        [AS_HELP_STRING([--with-psm],
-+		 [use Intel Performance Scaled Messasging (PSM) @<:@default=check@:>@] )],
++		 [use Intel Performance Scaled Messaging (PSM) @<:@default=check@:>@] )],
 +	         [], [ with_psm=check ])
 +    if test "x${with_psm}" != "xno"; then
 +      save_CPPFLAGS="${CPPFLAGS}"
@@ -1519,7 +1518,7 @@ Index: PadicoTM/building-tools/features.m4
 +    HAVE_PSM2=no
 +    AC_ARG_WITH([psm2],
 +		[AS_HELP_STRING([--with-psm2],
-+	    	 [use Intel Performance Scaled Messasging 2 (PSM2) @<:@default=check@:>@] )],
++	    	 [use Intel Performance Scaled Messaging 2 (PSM2) @<:@default=check@:>@] )],
 +		 [], [ with_psm2=check ])
 +    if test "x${with_psm2}" != "xno"; then
 +      save_CPPFLAGS="${CPPFLAGS}"
@@ -1684,17 +1683,15 @@ Index: PadicoTM/building-tools/features.m4
 +	                 [])
 +	 ])
 +
-Index: PadicoTM/building-tools/html_footer.html
-===================================================================
---- PadicoTM/building-tools/html_footer.html	(nonexistent)
-+++ PadicoTM/building-tools/html_footer.html	(copie de travail)
+diff -ruN -p0 PadicoTM.orig/building-tools/html_footer.html PadicoTM/building-tools/html_footer.html
+--- PadicoTM.orig/building-tools/html_footer.html	1970-01-01 01:00:00.000000000 +0100
++++ PadicoTM/building-tools/html_footer.html	2019-06-06 13:31:53.993771292 +0200
 @@ -0,0 +1,2 @@
 +</body>
 +</html>
-Index: PadicoTM/building-tools/html_header.html
-===================================================================
---- PadicoTM/building-tools/html_header.html	(nonexistent)
-+++ PadicoTM/building-tools/html_header.html	(copie de travail)
+diff -ruN -p0 PadicoTM.orig/building-tools/html_header.html PadicoTM/building-tools/html_header.html
+--- PadicoTM.orig/building-tools/html_header.html	1970-01-01 01:00:00.000000000 +0100
++++ PadicoTM/building-tools/html_header.html	2019-06-06 13:31:53.993771292 +0200
 @@ -0,0 +1,24 @@
 +
 +<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN""http://www.w3.org/TR/REC-html40/loose.dtd">
@@ -1720,11 +1717,10 @@ Index: PadicoTM/building-tools/html_header.html
 +    </div>
 +    
 +      
-\ No newline at end of file
-Index: PadicoTM/building-tools/misc.m4
-===================================================================
---- PadicoTM/building-tools/misc.m4	(nonexistent)
-+++ PadicoTM/building-tools/misc.m4	(copie de travail)
+\ Pas de fin de ligne à la fin du fichier
+diff -ruN -p0 PadicoTM.orig/building-tools/misc.m4 PadicoTM/building-tools/misc.m4
+--- PadicoTM.orig/building-tools/misc.m4	1970-01-01 01:00:00.000000000 +0100
++++ PadicoTM/building-tools/misc.m4	2019-06-06 13:31:53.992771288 +0200
 @@ -0,0 +1,101 @@
 +dnl -*- mode: Autoconf;-*-
 +
@@ -1827,10 +1823,9 @@ Index: PadicoTM/building-tools/misc.m4
 +	   AC_DEFINE_UNQUOTED(PADICO_VERSION_STRING, "${PACKAGE_STRING}",
 +			      [Padico version as string])
 +	 ])
-Index: PadicoTM/building-tools/out.m4
-===================================================================
---- PadicoTM/building-tools/out.m4	(nonexistent)
-+++ PadicoTM/building-tools/out.m4	(copie de travail)
+diff -ruN -p0 PadicoTM.orig/building-tools/out.m4 PadicoTM/building-tools/out.m4
+--- PadicoTM.orig/building-tools/out.m4	1970-01-01 01:00:00.000000000 +0100
++++ PadicoTM/building-tools/out.m4	2019-06-06 13:31:53.993771292 +0200
 @@ -0,0 +1,51 @@
 +dnl -*- mode: Autoconf;-*-
 +
@@ -1883,10 +1878,9 @@ Index: PadicoTM/building-tools/out.m4
 +	   AC_SUBST([PADICO_OUT_FILES])
 +	   AC_OUTPUT
 +	 ])
-Index: PadicoTM/building-tools/pkg.m4
-===================================================================
---- PadicoTM/building-tools/pkg.m4	(nonexistent)
-+++ PadicoTM/building-tools/pkg.m4	(copie de travail)
+diff -ruN -p0 PadicoTM.orig/building-tools/pkg.m4 PadicoTM/building-tools/pkg.m4
+--- PadicoTM.orig/building-tools/pkg.m4	1970-01-01 01:00:00.000000000 +0100
++++ PadicoTM/building-tools/pkg.m4	2019-06-06 13:31:53.993771292 +0200
 @@ -0,0 +1,157 @@
 +# pkg.m4 - Macros to locate and utilise pkg-config.            -*- Autoconf -*-
 +# serial 1 (pkg-config-0.24)
@@ -2045,10 +2039,9 @@ Index: PadicoTM/building-tools/pkg.m4
 +	$3
 +fi[]dnl
 +])# PKG_CHECK_MODULES
-Index: PadicoTM/building-tools/tools.m4
-===================================================================
---- PadicoTM/building-tools/tools.m4	(nonexistent)
-+++ PadicoTM/building-tools/tools.m4	(copie de travail)
+diff -ruN -p0 PadicoTM.orig/building-tools/tools.m4 PadicoTM/building-tools/tools.m4
+--- PadicoTM.orig/building-tools/tools.m4	1970-01-01 01:00:00.000000000 +0100
++++ PadicoTM/building-tools/tools.m4	2019-06-06 13:31:53.992771288 +0200
 @@ -0,0 +1,166 @@
 +dnl -*- mode: Autoconf;-*-
 +
@@ -2216,3 +2209,8 @@ Index: PadicoTM/building-tools/tools.m4
 +	         AC_MSG_ERROR([required ${puk_root}/etc/common_rules.mk not found])
 +             fi
 +	 ])
+diff -ruN -p0 PadicoTM.orig/building-tools/VERSION PadicoTM/building-tools/VERSION
+--- PadicoTM.orig/building-tools/VERSION	1970-01-01 01:00:00.000000000 +0100
++++ PadicoTM/building-tools/VERSION	2019-06-06 13:31:53.993771292 +0200
+@@ -0,0 +1 @@
++0.5.0

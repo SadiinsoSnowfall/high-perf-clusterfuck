@@ -16,7 +16,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
   #:use-module (inria storm)
-  #:use-module (inria storm-pm2)
+  #:use-module (inria tadaam)
   #:use-module (inria eztrace)
   #:use-module (guix utils)
   #:use-module (srfi srfi-1))

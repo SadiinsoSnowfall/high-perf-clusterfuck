@@ -18,7 +18,7 @@
   #:use-module (gnu packages maths)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages python)
-  #:use-module (inria storm-pm2)
+  #:use-module (inria tadaam)
   #:use-module (inria eztrace)
   #:use-module (inria mpi)
   #:use-module (inria simgrid)

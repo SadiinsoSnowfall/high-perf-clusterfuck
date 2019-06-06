@@ -3,7 +3,7 @@
 ;;;
 ;;; Copyright © 2017, 2018 Inria
 
-(define-module (inria storm-pm2)
+(define-module (inria tadaam)
   #:use-module (guix)
   #:use-module (guix build-system gnu)
   #:use-module (guix svn-download)

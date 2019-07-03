@@ -134,6 +134,68 @@ blocks).  This enables it to exploit a large number of processors with a
 moderate number of blocks which ensures a reasonable convergence behavior.")
     (license license:cecill-c)))
 
+(define-public maphys++
+  (package
+   (name "maphys++")
+   (version "0.1")
+   (home-page "https://gitlab.inria.fr/solverstack/maphys/maphyspp.git")
+   (synopsis "Massively Parallel Hybrid Solver")
+   (description
+    "MaPHyS (Massively Parallel Hybrid Solver) is a parallel linear solver
+that couples direct and iterative approaches.  The underlying idea is to
+apply to general unstructured linear systems domain decomposition ideas
+developed for the solution of linear systems arising from PDEs.  The
+interface problem, associated with the so called Schur complement system, is
+solved using a block preconditioner with overlap between the blocks that is
+referred to as Algebraic Additive Schwarz.  To cope with the possible
+lack of
+coarse grid mechanism that enables one to keep constant the number of
+iterations when the number of blocks is increased, the solver exploits two
+levels of parallelism (between the blocks and within the treatment of the
+blocks).  This enables it to exploit a large number of processors with a
+moderate number of blocks which ensures a reasonable convergence behavior.")
+   (license license:cecill-c)
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url home-page)
+                  (commit "5d0eb3cf85472f3935a7f43fc8f6d2b7a0d1c898")
+                  ;; We need the submodule in 'cmake_modules/morse_cmake'.
+                  (recursive? #t)))
+            (file-name (string-append name "-" version "-checkout"))
+            (sha256
+             (base32
+              "03sjykh24ms4h2vzylkxcc6v7nshl3w0dhyyrv9grzckmxvmvzij"))))
+   (build-system cmake-build-system)
+   (outputs '("debug" "out"))
+   (inputs `(("lapack" ,openblas)
+             ("pastix" ,pastix)))
+   (propagated-inputs `(("mpi" ,openmpi)))
+   (native-inputs `(("pkg-config" ,pkg-config)
+                    ("python" ,python-2)))))
+
+(define-public blaspp
+  (package
+    (name "blaspp")
+    (version "0.1")
+    (synopsis "C++ API for the Basic Linear Algebra Subroutines")
+    (description
+     "The objective of BLAS++ is to provide a convenient, performance oriented
+API for development in the C++ language, that, for the most part, preserves
+established conventions, while, at the same time, takes advantages of modern C++
+features, such as: namespaces, templates, exceptions, etc.")
+    (source (origin
+             (uri "https://bitbucket.org/icl/blaspp/get/c7163fa9c5ea.zip")
+              (method url-fetch)
+              (sha256
+               (base32
+                "075vk2b1mx44jynn8h9lfqkyjbagszxr9bva32fn3r2w6f9x40xy"))))
+    (build-system cmake-build-system)
+    (inputs `(("openblas" ,openblas)))
+    (native-inputs `(("gfortran" ,gfortran)))
+    (license #f)
+    (home-page "https://bitbucket.org/icl/blaspp")))
+
 (define-public pastix
   (package
     (name "pastix")

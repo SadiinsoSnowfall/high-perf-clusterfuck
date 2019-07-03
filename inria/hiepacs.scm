@@ -86,7 +86,7 @@ area (CPUs-GPUs, distributed nodes).")
 (define-public maphys
   (package
     (name "maphys")
-    (version "0.9.6.0")
+    (version "0.9.8.0")
     (home-page "https://gitlab.inria.fr/solverstack/maphys/maphys")
     (source (origin
               (method git-fetch)
@@ -99,7 +99,7 @@ area (CPUs-GPUs, distributed nodes).")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "020r2km34n3pxrg3iw4djdjbzq1y61q7gnaz92mi1bbmyk0hs5ip"))
+                "100459lshxd9s8p7z6vygp6hz5cyw3rai0hh827p698dwqhp73vp"))
               (patches (search-patches "inria/patches/maphys-installation-directories.patch"))))
     (build-system cmake-build-system)
     (arguments
@@ -132,7 +132,7 @@ iterations when the number of blocks is increased, the solver exploits two
 levels of parallelism (between the blocks and within the treatment of the
 blocks).  This enables it to exploit a large number of processors with a
 moderate number of blocks which ensures a reasonable convergence behavior.")
-    (license #f)))                        ;XXX: license needs to be clarified
+    (license license:cecill-c)))
 
 (define-public pastix
   (package

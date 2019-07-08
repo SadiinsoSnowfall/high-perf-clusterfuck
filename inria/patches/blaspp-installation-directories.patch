@@ -1,0 +1,47 @@
+diff -r c7163fa9c5ea CMakeLists.txt
+--- a/CMakeLists.txt	Wed Jun 19 14:22:42 2019 -0400
++++ b/CMakeLists.txt	Thu Jul 04 17:11:18 2019 +0200
+@@ -294,8 +294,8 @@
+ 
+ install (TARGETS blaspp
+     EXPORT blasppTargets
+-    LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/blaspp/lib
+-    INCLUDES DESTINATION ${CMAKE_INSTALL_PREFIX}/blaspp/include
++    LIBRARY DESTINATION lib
++    INCLUDES DESTINATION include
+     )
+ 
+ #export(EXPORT blasppTargets
+@@ -313,24 +313,21 @@
+     COPYONLY
+ )
+ 
+-
+-install (EXPORT blasppTargets
+-    FILE blasppTargets.cmake
+-    DESTINATION ${CMAKE_INSTALL_PREFIX}/blaspp
+-)
+-
+ install(
+     DIRECTORY
+         ${CMAKE_CURRENT_SOURCE_DIR}/include
+     DESTINATION
+-        ${CMAKE_INSTALL_PREFIX}/blaspp
++        ${CMAKE_INSTALL_PREFIX}
++)
++
++install (EXPORT blasppTargets
++    FILE blasppTargets.cmake
++    DESTINATION lib/cmake/blaspp
+ )
+ 
+ install (
+-    FILES
+-        ${CMAKE_CURRENT_SOURCE_DIR}/blasppConfig.cmake
+-    DESTINATION
+-        ${CMAKE_INSTALL_PREFIX}/blaspp
++    FILES blasppConfig.cmake
++    DESTINATION lib/cmake/blaspp
+ )
+ 
+ # Testers are built by default, but will not be included if Libtest is not found

@@ -6,6 +6,7 @@
 (define-module (inria hiepacs)
   #:use-module (guix)
   #:use-module (guix git-download)
+  #:use-module (guix hg-download)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system cmake)
   #:use-module (gnu packages)
@@ -159,25 +160,44 @@ moderate number of blocks which ensures a reasonable convergence behavior.")
             (method git-fetch)
             (uri (git-reference
                   (url home-page)
-                  (commit "5d0eb3cf85472f3935a7f43fc8f6d2b7a0d1c898")
+                  (commit "9eb9ec41ed2dd20f5a10833aa80b032f1a3e4552")
                   ;; We need the submodule in 'cmake_modules/morse_cmake'.
                   (recursive? #t)))
             (file-name (string-append name "-" version "-checkout"))
             (sha256
              (base32
               "03sjykh24ms4h2vzylkxcc6v7nshl3w0dhyyrv9grzckmxvmvzij"))))
+   (arguments
+    '(#:configure-flags '("-DMAPHYS_COMPILE_EXAMPLES=ON"
+                          "-DMAPHYS_COMPILE_TESTS=ON"
+                          "-DMAPHYS_USE_ARMADILLO=OFF"
+                          "-DMAPHYS_USE_EIGEN=OFF"
+                          "-DMAPHYS_USE_FABULOUS=OFF"
+                          "-DMAPHYS_DEV_TANGLE=OFF"
+                          "-DMAPHYS_USE_PASTIX=ON")
+                        #:phases (modify-phases %standard-phases
+                                                (add-before 'configure 'fixgcc7
+                                                            (lambda _
+                                                              (unsetenv "C_INCLUDE_PATH")
+                                                              (unsetenv "CPLUS_INCLUDE_PATH"))))
+                        #:tests? #f ;; Test fail with MPI (like for MaPHyS)
+      ))
+
    (build-system cmake-build-system)
    (outputs '("debug" "out"))
    (inputs `(("lapack" ,openblas)
+             ("blaspp" ,blaspp)
              ("pastix" ,pastix)))
    (propagated-inputs `(("mpi" ,openmpi)))
-   (native-inputs `(("pkg-config" ,pkg-config)
-                    ("python" ,python-2)))))
+   (native-inputs `(("gcc" ,gcc-7)
+                    ("gcc-lib" ,gcc-7 "lib")
+                    ("pkg-config" ,pkg-config)))))
 
 (define-public blaspp
   (package
     (name "blaspp")
     (version "0.1")
+    (home-page "https://bitbucket.org/icl/blaspp")
     (synopsis "C++ API for the Basic Linear Algebra Subroutines")
     (description
      "The objective of BLAS++ is to provide a convenient, performance oriented
@@ -185,16 +205,21 @@ API for development in the C++ language, that, for the most part, preserves
 established conventions, while, at the same time, takes advantages of modern C++
 features, such as: namespaces, templates, exceptions, etc.")
     (source (origin
-             (uri "https://bitbucket.org/icl/blaspp/get/c7163fa9c5ea.zip")
-              (method url-fetch)
-              (sha256
-               (base32
-                "075vk2b1mx44jynn8h9lfqkyjbagszxr9bva32fn3r2w6f9x40xy"))))
+             (method hg-fetch)
+             (uri (hg-reference
+                   (url home-page)
+                   (changeset "c7163fa9c5eabaa6e0bd7ae4c2cc7da45830672c")))
+             (patches (search-patches "inria/patches/blaspp-installation-directories.patch"))
+             (sha256
+              (base32
+               "0lmx2vpanxn6q9kqmzambbrcm3fhz6pr31a3v8213g4xk79xqvvx"))))
+    (arguments
+     '(#:tests? #f))
+     ;;'(#:configure-flags '("-DBLASPP_BUILD_TESTS=ON")
     (build-system cmake-build-system)
     (inputs `(("openblas" ,openblas)))
     (native-inputs `(("gfortran" ,gfortran)))
-    (license #f)
-    (home-page "https://bitbucket.org/icl/blaspp")))
+    (license #f)))
 
 (define-public pastix
   (package
@@ -216,6 +241,7 @@ features, such as: namespaces, templates, exceptions, etc.")
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON"
+                           "-DPASTIX_WITH_MPI=ON"
                            "-DPASTIX_WITH_STARPU=ON")
 
        #:phases (modify-phases %standard-phases
@@ -254,10 +280,8 @@ features, such as: namespaces, templates, exceptions, etc.")
        ("gfortran" ,gfortran)))
     (inputs
      `(("gfortran:lib" ,gfortran "lib")           ;for 'gcc … -lgfortran'
-       ("hwloc" ,hwloc "lib")
        ("openblas" ,openblas)
        ("lapack" ,lapack)         ;must be built with '-DLAPACKE_WITH_TMG=ON'
-       ("scotch" ,scotch)
 
        ;; The following are optional dependencies.
        ("metis" ,metis)
@@ -272,6 +296,8 @@ features, such as: namespaces, templates, exceptions, etc.")
 
        ("python-numpy" ,python2-numpy)
        ("python-scipy" ,python2-scipy)))
+    (propagated-inputs `(("hwloc" ,hwloc "lib")
+                         ("scotch" ,scotch)))
     (synopsis "Sparse matrix direct solver")
     (description
      "PaStiX (Parallel Sparse matriX package) is a scientific library that

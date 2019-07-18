@@ -184,7 +184,6 @@ moderate number of blocks which ensures a reasonable convergence behavior.")
       ))
 
    (build-system cmake-build-system)
-   (outputs '("debug" "out"))
    (inputs `(("lapack" ,openblas)
              ("blaspp" ,blaspp)
              ("pastix" ,pastix)))

@@ -70,7 +70,7 @@ Pre-built binaries for Guix-HPC packages are served from
 	 ```
 	 $EDITOR /etc/systemd/system/guix-daemon.service
 
-	   … add ‘--substitute-urls='https://ci.guix.gnu.org https://guix.bordeaux.inria.fr'
+	   … add ‘--substitute-urls='https://ci.guix.gnu.org https://guix.bordeaux.inria.fr'’
        to the ‘guix-daemon’ command line.
 	  
      systemctl daemon-reload

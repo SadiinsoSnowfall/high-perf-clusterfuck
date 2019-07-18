@@ -65,6 +65,17 @@ Pre-built binaries for Guix-HPC packages are served from
      `guix-daemon`](https://www.gnu.org/software/guix/manual/en/html_node/Invoking-guix_002ddaemon.html#daemon_002dsubstitute_002durls)
      or that [of client
      tools](https://www.gnu.org/software/guix/manual/en/html_node/Common-Build-Options.html#client_002dsubstitute_002durls).
+     To enable it globally, do:
+	 
+	 ```
+	 $EDITOR /etc/systemd/system/guix-daemon.service
+
+	   … add ‘--substitute-urls='https://ci.guix.gnu.org https://guix.bordeaux.inria.fr'
+       to the ‘guix-daemon’ command line.
+	  
+     systemctl daemon-reload
+	 systemctl restart guix-daemon.service
+	 ```
 
   2. [Authorize](https://www.gnu.org/software/guix/manual/en/html_node/Substitute-Server-Authorization.html)
      the key used to sign substitutes:
@@ -74,6 +85,12 @@ Pre-built binaries for Guix-HPC packages are served from
 	  (ecc
 	   (curve Ed25519)
 	   (q #89FBA276A976A8DE2A69774771A92C8C879E0F24614AAAAE23119608707B3F06#)))
+	 ```
+	 
+	 Typically, assuming the key above is stored in `key.txt`, run as root:
+	 
+	 ```
+	 guix archive --authorize < key.txt
 	 ```
 
 Enjoy!

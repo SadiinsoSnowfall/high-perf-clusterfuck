@@ -16,6 +16,7 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
+  #:use-module (gnu packages ssh)
   #:use-module (inria storm)
   #:use-module (inria tadaam)
   #:use-module (inria eztrace)
@@ -106,11 +107,11 @@ area (CPUs-GPUs, distributed nodes).")
     (arguments
      '(#:configure-flags '("-DMAPHYS_SDS_MUMPS=ON"
                            "-DMAPHYS_SDS_PASTIX=OFF")
-
        ;; FIXME: Tests segfault.
        #:tests? #f))
     (inputs `(("hwloc" ,hwloc "lib")
               ("openmpi" ,openmpi)
+              ("ssh" ,openssh)
               ("scalapack" ,scalapack)
               ("openblas" ,openblas)
               ("lapack" ,lapack)
@@ -119,15 +120,15 @@ area (CPUs-GPUs, distributed nodes).")
               ("metis" ,metis)))
     (native-inputs `(("gforgran" ,gfortran)
                      ("pkg-config" ,pkg-config)))
-    (synopsis "Massively Parallel Hybrid Solver")
+    (synopsis "Sparse matrix hybrid solver")
     (description
      "MaPHyS (Massively Parallel Hybrid Solver) is a parallel linear solver
-that couples direct and iterative approaches.  The underlying idea is to
+that couples direct and iterative approaches. The underlying idea is to
 apply to general unstructured linear systems domain decomposition ideas
-developed for the solution of linear systems arising from PDEs.  The
+developed for the solution of linear systems arising from PDEs. The
 interface problem, associated with the so called Schur complement system, is
 solved using a block preconditioner with overlap between the blocks that is
-referred to as Algebraic Additive Schwarz.  To cope with the possible lack of
+referred to as Algebraic Additive Schwarz.To cope with the possible lack of
 coarse grid mechanism that enables one to keep constant the number of
 iterations when the number of blocks is increased, the solver exploits two
 levels of parallelism (between the blocks and within the treatment of the
@@ -140,27 +141,20 @@ moderate number of blocks which ensures a reasonable convergence behavior.")
    (name "maphys++")
    (version "0.1")
    (home-page "https://gitlab.inria.fr/solverstack/maphys/maphyspp.git")
-   (synopsis "Massively Parallel Hybrid Solver")
+   (synopsis "Sparse matrix hybrid solver")
    (description
     "MaPHyS (Massively Parallel Hybrid Solver) is a parallel linear solver
-that couples direct and iterative approaches.  The underlying idea is to
+that couples direct and iterative approaches. The underlying idea is to
 apply to general unstructured linear systems domain decomposition ideas
-developed for the solution of linear systems arising from PDEs.  The
-interface problem, associated with the so called Schur complement system, is
-solved using a block preconditioner with overlap between the blocks that is
-referred to as Algebraic Additive Schwarz.  To cope with the possible
-lack of
-coarse grid mechanism that enables one to keep constant the number of
-iterations when the number of blocks is increased, the solver exploits two
-levels of parallelism (between the blocks and within the treatment of the
-blocks).  This enables it to exploit a large number of processors with a
-moderate number of blocks which ensures a reasonable convergence behavior.")
+developed for the solution of linear systems arising from PDEs.
+This new implementation in C++ offers a wide range of hybrid methods to
+solve massive sparse systems efficiently.")
    (license license:cecill-c)
    (source (origin
             (method git-fetch)
             (uri (git-reference
                   (url home-page)
-                  (commit "9eb9ec41ed2dd20f5a10833aa80b032f1a3e4552")
+                  (commit "f0b91e98efab1324323d5bdf0f0163bc0695d45a")
                   ;; We need the submodule in 'cmake_modules/morse_cmake'.
                   (recursive? #t)))
             (file-name (string-append name "-" version "-checkout"))
@@ -180,14 +174,13 @@ moderate number of blocks which ensures a reasonable convergence behavior.")
                                                             (lambda _
                                                               (unsetenv "C_INCLUDE_PATH")
                                                               (unsetenv "CPLUS_INCLUDE_PATH"))))
-                        #:tests? #f ;; Test fail with MPI (like for MaPHyS)
       ))
-
    (build-system cmake-build-system)
    (inputs `(("lapack" ,openblas)
              ("blaspp" ,blaspp)
              ("pastix" ,pastix)))
-   (propagated-inputs `(("mpi" ,openmpi)))
+   (propagated-inputs `(("mpi" ,openmpi)
+                        ("ssh" ,openssh)))
    (native-inputs `(("gcc" ,gcc-7)
                     ("gcc-lib" ,gcc-7 "lib")
                     ("pkg-config" ,pkg-config)))))
@@ -207,7 +200,7 @@ features, such as: namespaces, templates, exceptions, etc.")
              (method hg-fetch)
              (uri (hg-reference
                    (url home-page)
-                   (changeset "c7163fa9c5eabaa6e0bd7ae4c2cc7da45830672c")))
+                   (changeset "7859f573d9d04dfd38176fb7612edfa6d6d3ac0b")))
              (patches (search-patches "inria/patches/blaspp-installation-directories.patch"))
              (sha256
               (base32

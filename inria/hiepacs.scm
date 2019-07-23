@@ -84,31 +84,28 @@ area (CPUs-GPUs, distributed nodes).")
                         ("starpu" ,starpu+fxt)
              ,@(delete `("starpu" ,starpu) (package-inputs chameleon))))))
 
-
 (define-public maphys
   (package
     (name "maphys")
-    (version "0.9.8.0")
+    (version "0.9.8.1")
     (home-page "https://gitlab.inria.fr/solverstack/maphys/maphys")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url home-page)
                     (commit version)
-
                     ;; We need the submodule in 'cmake_modules/morse'.
                     (recursive? #t)))
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "100459lshxd9s8p7z6vygp6hz5cyw3rai0hh827p698dwqhp73vp"))
-              (patches (search-patches "inria/patches/maphys-installation-directories.patch"))))
+                "13mllxhq1yhpd78x9lb8769mdpjy2dfaijpv76vy88cfrdjbal84"))))
     (build-system cmake-build-system)
     (arguments
-     '(#:configure-flags '("-DMAPHYS_SDS_MUMPS=ON"
-                           "-DMAPHYS_SDS_PASTIX=OFF")
-       ;; FIXME: Tests segfault.
-       #:tests? #f))
+     '(#:configure-flags '("-DMAPHYS_BUILD_TESTS=ON"
+                           "-DMAPHYS_SDS_MUMPS=ON"
+                           "-DMAPHYS_SDS_PASTIX=ON")
+                         ))
     (inputs `(("hwloc" ,hwloc "lib")
               ("openmpi" ,openmpi)
               ("ssh" ,openssh)
@@ -116,7 +113,8 @@ area (CPUs-GPUs, distributed nodes).")
               ("openblas" ,openblas)
               ("lapack" ,lapack)
               ("scotch" ,pt-scotch)
-              ("mumps" ,mumps)
+              ("mumps" ,mumps-openmpi)
+              ("pastix" ,pastix)
               ("metis" ,metis)))
     (native-inputs `(("gforgran" ,gfortran)
                      ("pkg-config" ,pkg-config)))

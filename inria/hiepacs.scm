@@ -105,7 +105,14 @@ area (CPUs-GPUs, distributed nodes).")
      '(#:configure-flags '("-DMAPHYS_BUILD_TESTS=ON"
                            "-DMAPHYS_SDS_MUMPS=ON"
                            "-DMAPHYS_SDS_PASTIX=ON")
-                         ))
+
+       #:phases (modify-phases %standard-phases
+                   (add-before 'check 'prepare-test-environment
+                   (lambda _
+                     ;; Allow tests with more MPI processes than available CPU cores,
+                     ;; which is not allowed by default by OpenMPI
+                     (setenv "OMPI_MCA_rmaps_base_oversubscribe" "1"))))))
+
     (inputs `(("hwloc" ,hwloc "lib")
               ("openmpi" ,openmpi)
               ("ssh" ,openssh)

@@ -99,7 +99,7 @@ area (CPUs-GPUs, distributed nodes).")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "13mllxhq1yhpd78x9lb8769mdpjy2dfaijpv76vy88cfrdjbal84"))))
+                "0flmhsfkm8cn6f0vvfnc7q0628z20a6rvx1nkxbf2vsrq9jn5bf0"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags '("-DMAPHYS_BUILD_TESTS=ON"

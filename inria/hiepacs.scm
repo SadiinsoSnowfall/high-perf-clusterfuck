@@ -10,6 +10,8 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system cmake)
   #:use-module (gnu packages)
+  #:use-module (gnu packages bison)
+  #:use-module (gnu packages flex)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mpi)
@@ -22,6 +24,78 @@
   #:use-module (inria eztrace)
   #:use-module (guix utils)
   #:use-module (srfi srfi-1))
+
+(define-public parsec
+  (package
+    (name "parsec")
+    (version "210d9d2b8cb292b64c01a597047581f27cf8cb54")
+    (home-page "https://bitbucket.org/mfaverge/parsec.git")
+    (synopsis "Runtime system based on dynamic task generation mechanism")
+    (description
+     "PaRSEC is a generic framework for architecture aware scheduling
+and management of micro-tasks on distributed many-core heterogeneous
+architectures.")
+    (license license:bsd-2)
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit "210d9d2b8cb292b64c01a597047581f27cf8cb54")
+                    (recursive? #t)))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "1yfny4ra9v3nxal1mbi0jqpivc0qamrx7m270qqnxjjp95vvky4z"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON"
+                           "-DPARSEC_GPU_WITH_CUDA=OFF"
+                           "-DPARSEC_DIST_WITH_MPI=OFF")
+       #:tests? #f))
+    (inputs `(("hwloc" ,hwloc)
+              ("bison" ,bison)
+              ("flex" ,flex)))
+    (native-inputs `(("gfortran" ,gfortran)
+                     ("python" ,python-2)))))
+
+(define-public quark
+  (package
+    (name "quark")
+    (version "db4aef9a66a00487d849cf8591927dcebe18ef2f")
+    (home-page "https://github.com/ecrc/quark")
+    (synopsis "QUeuing And Runtime for Kernels")
+    (description
+     "QUARK (QUeuing And Runtime for Kernels) provides a library that
+enables the dynamic execution of tasks with data dependencies in a
+multi-core, multi-socket, shared-memory environment.  QUARK infers
+data dependencies and precedence constraints between tasks from the
+way that the data is used, and then executes the tasks in an
+asynchronous, dynamic fashion in order to achieve a high utilization
+of the available resources.")
+    (license license:bsd-2)
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit "db4aef9a66a00487d849cf8591927dcebe18ef2f")))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "1bwh8247d70lmbr13h5cb8fpr6m0k9vcaim4bq7j8mynfclb6r77"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON")
+       #:phases
+       (modify-phases %standard-phases
+        (add-after 'unpack 'patch-makefile
+                    (lambda _
+                      (substitute* "CMakeLists.txt"
+                        (("DESTINATION quark")  "DESTINATION include"))
+                      #t)))
+       ;; No target for tests
+       #:tests? #f))
+    (inputs `(("hwloc" ,hwloc)))
+    (native-inputs `(("gfortran" ,gfortran)))))
 
 (define-public chameleon
   (package
@@ -83,6 +157,41 @@ area (CPUs-GPUs, distributed nodes).")
    (propagated-inputs `(("fxt" ,fxt)
                         ("starpu" ,starpu+fxt)
              ,@(delete `("starpu" ,starpu) (package-inputs chameleon))))))
+
+(define-public chameleon+openmp
+  (package
+   (inherit chameleon)
+   (name "chameleon-openmp")
+   (arguments
+    (substitute-keyword-arguments (package-arguments chameleon)
+                                  ((#:configure-flags flags '())
+                                   `(cons "-DCHAMELEON_SCHED=OPENMP" (delete "-DCHAMELEON_USE_MPI=ON" ,flags)))))
+   (propagated-inputs `(,@(delete `("starpu" ,starpu) (package-inputs chameleon))
+                        ,@(delete `("mpi" ,openmpi) (package-inputs chameleon))))))
+
+(define-public chameleon+quark
+  (package
+   (inherit chameleon)
+   (name "chameleon-quark")
+   (arguments
+    (substitute-keyword-arguments (package-arguments chameleon)
+                                  ((#:configure-flags flags '())
+                                   `(cons "-DCHAMELEON_SCHED=QUARK" (delete "-DCHAMELEON_USE_MPI=ON" ,flags)))))
+   (propagated-inputs `(("quark" ,quark)
+             ,@(delete `("starpu" ,starpu) (package-inputs chameleon))
+             ,@(delete `("mpi" ,openmpi) (package-inputs chameleon))))))
+
+(define-public chameleon+parsec
+  (package
+   (inherit chameleon)
+   (name "chameleon-parsec")
+   (arguments
+    (substitute-keyword-arguments (package-arguments chameleon)
+                                  ((#:configure-flags flags '())
+                                   `(cons "-DCHAMELEON_SCHED=PARSEC" (delete "-DCHAMELEON_USE_MPI=ON" ,flags)))))
+   (propagated-inputs `(("parsec" ,parsec)
+             ,@(delete `("starpu" ,starpu) (package-inputs chameleon))
+             ,@(delete `("mpi" ,openmpi) (package-inputs chameleon))))))
 
 (define-public maphys
   (package

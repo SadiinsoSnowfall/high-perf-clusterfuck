@@ -80,6 +80,26 @@ build_chameleon:
   script:
     - guix build chameleon
 
+build_chameleon-fxt:
+  stage: build
+  script:
+    - guix build chameleon-fxt
+
+build_chameleon-openmp:
+  stage: build
+  script:
+    - guix build chameleon-openmp
+
+build_chameleon-parsec:
+  stage: build
+  script:
+    - guix build chameleon-parsec
+
+build_chameleon-quark:
+  stage: build
+  script:
+    - guix build chameleon-quark
+
 build_maphys:
   stage: build
   script:

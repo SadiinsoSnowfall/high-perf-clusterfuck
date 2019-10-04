@@ -41,27 +41,6 @@ with the following snippet to request the `guix-hpc` _channel_:
 That way, `guix pull` will systematically pull not only Guix, but also
 Guix-HPC.
 
-## Hacking on Guix-HPC
-
-When working on packages of the `guix-hpc` channel, you'll need to clone
-the `guix-hpc` repository:
-
-```
-cd src
-git clone https://gitlab.inria.fr/guix-hpc/guix-hpc.git
-```
-
-From then on, you can edit package definitions, and then try them out by
-passing the location of the checkout using the `-L` flag to `guix build`
-and other command-line tools, as in this example:
-
-```
-guix build -L ~/src/guix-hpc starpu
-```
-
-When you’re satisfied with your changes, push them—your changes are now
-just a `guix pull` away for users of your channel!
-
 ## Pre-built binaries
 
 Pre-built binaries for Guix-HPC packages are served from
@@ -101,6 +80,27 @@ Pre-built binaries for Guix-HPC packages are served from
 	 ```
 
 Enjoy!
+
+## Hacking on Guix-HPC
+
+When working on packages of the `guix-hpc` channel, you'll need to clone
+the `guix-hpc` repository:
+
+```
+cd src
+git clone https://gitlab.inria.fr/guix-hpc/guix-hpc.git
+```
+
+From then on, you can edit package definitions, and then try them out by
+passing the location of the checkout using the `-L` flag to `guix build`
+and other command-line tools, as in this example:
+
+```
+guix build -L ~/src/guix-hpc starpu
+```
+
+When you’re satisfied with your changes, push them—your changes are now
+just a `guix pull` away for users of your channel!
 
 ## More information
 

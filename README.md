@@ -41,19 +41,26 @@ with the following snippet to request the `guix-hpc` _channel_:
 That way, `guix pull` will systematically pull not only Guix, but also
 Guix-HPC.
 
-Alternately, you can drop a Guix-HPC checkout in `GUIX_PACKAGE_PATH`:
+## Hacking on Guix-HPC
+
+When working on packages of the `guix-hpc` channel, you'll need to clone
+the `guix-hpc` repository:
 
 ```
-$ git clone https://gitlab.inria.fr/guix-hpc/guix-hpc.git
-$ export GUIX_PACKAGE_PATH=$PWD/guix-hpc
-$ guix package -i starpu
-The following package will be installed:
-   starpu	1.2.1	/gnu/store/rkbcfj1prdn5i0ama1qli5zw37ajv1ac-starpu-1.2.1
-
-The following derivations will be built:
-   /gnu/store/8ppai259g8xjzk42q3pygjfaqin2b29n-profile.drv
-   /gnu/store/xv5r6sxybz441jfgzn0skj7gm2p37dfa-starpu-1.2.1.drv
+cd src
+git clone https://gitlab.inria.fr/guix-hpc/guix-hpc.git
 ```
+
+From then on, you can edit package definitions, and then try them out by
+passing the location of the checkout using the `-L` flag to `guix build`
+and other command-line tools, as in this example:
+
+```
+guix build -L ~/src/guix-hpc starpu
+```
+
+When you’re satisfied with your changes, push them—your changes are now
+just a `guix pull` away for users of your channel!
 
 ## Pre-built binaries
 

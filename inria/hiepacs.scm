@@ -391,6 +391,7 @@ features, such as: namespaces, templates, exceptions, etc.")
 
        ;; The following are optional dependencies.
        ("metis" ,metis)
+       ("starpu" ,starpu)
 
        ;; Python bindings and Python tests.
        ;;
@@ -401,11 +402,7 @@ features, such as: namespaces, templates, exceptions, etc.")
 
        ("python-numpy" ,python2-numpy)
        ("python-scipy" ,python2-scipy)))
-
-    ;; 'pastix.pc' requires 'starpu-mpi-1.2.pc' and 'hwloc.pc', so propagate
-    ;; them.
     (propagated-inputs `(("hwloc" ,hwloc "lib")
-                         ("starpu" ,starpu)
                          ("scotch" ,scotch)))
     (synopsis "Sparse matrix direct solver")
     (description

@@ -25,7 +25,7 @@ update:
 lint:
   stage: lint
   script:
-    - guix lint `guix package -A | grep inria/ | cut -f1`
+    - guix lint `guix package -A | grep inria/ | cut -f1` || true
 
 ###########################
 # Stage 2: Build packages #

@@ -196,7 +196,7 @@ area (CPUs-GPUs, distributed nodes).")
 (define-public maphys
   (package
     (name "maphys")
-    (version "0.9.8.1")
+    (version "0.9.8.2")
     (home-page "https://gitlab.inria.fr/solverstack/maphys/maphys")
     (source (origin
               (method git-fetch)
@@ -208,7 +208,7 @@ area (CPUs-GPUs, distributed nodes).")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "0flmhsfkm8cn6f0vvfnc7q0628z20a6rvx1nkxbf2vsrq9jn5bf0"))))
+                "0jcgnkjhqwbbsc4x8pc2g6a4chcy2h4j66y9m108a8q93ar30ngb"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags '("-DMAPHYS_BUILD_TESTS=ON"
@@ -318,7 +318,7 @@ features, such as: namespaces, templates, exceptions, etc.")
              (patches (search-patches "inria/patches/blaspp-installation-directories.patch"))
              (sha256
               (base32
-               "0lmx2vpanxn6q9kqmzambbrcm3fhz6pr31a3v8213g4xk79xqvvx"))))
+               "0cgk9dxrc6h3bwdpfsgh3l5qlabg7rkvv76mvvsmjdlsk7v0dqss"))))
     (arguments
      '(#:tests? #f))
      ;;'(#:configure-flags '("-DBLASPP_BUILD_TESTS=ON")

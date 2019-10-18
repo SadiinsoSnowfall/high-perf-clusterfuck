@@ -22,6 +22,7 @@
   #:use-module (inria storm)
   #:use-module (inria tadaam)
   #:use-module (inria eztrace)
+  #:use-module (inria simgrid)
   #:use-module (guix utils)
   #:use-module (srfi srfi-1))
 
@@ -156,7 +157,20 @@ area (CPUs-GPUs, distributed nodes).")
                                    `(cons "-DCHAMELEON_ENABLE_TRACING=ON" ,flags))))
    (propagated-inputs `(("fxt" ,fxt)
                         ("starpu" ,starpu+fxt)
-             ,@(delete `("starpu" ,starpu) (package-inputs chameleon))))))
+                        ,@(delete `("starpu" ,starpu) (package-inputs chameleon))))))
+
+(define-public chameleon+simgrid
+  (package
+   (inherit chameleon)
+   (name "chameleon-simgrid")
+   (arguments
+    (substitute-keyword-arguments (package-arguments chameleon)
+                                  ((#:configure-flags flags '())
+                                   `(cons "-DCHAMELEON_SIMULATION=ON" (delete "-DCHAMELEON_USE_MPI=ON" ,flags)))))
+   (inputs `(("simgrid" ,simgrid)))
+   (propagated-inputs `(("starpu" ,starpu+simgrid)
+                        ,@(delete `("starpu" ,starpu) (package-inputs chameleon))
+                        ,@(delete `("mpi" ,openmpi) (package-inputs chameleon))))))
 
 (define-public chameleon+openmp
   (package

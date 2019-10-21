@@ -110,6 +110,11 @@ build_pastix:
   script:
     - guix build pastix
 
+build_pastix-5:
+  stage: build
+  script:
+    - guix build pastix@5
+
 build_pastix/aarch64:
   stage: build
   script:

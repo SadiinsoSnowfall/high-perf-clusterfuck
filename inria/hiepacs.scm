@@ -102,7 +102,8 @@ of the available resources.")
   (package
     (name "chameleon")
     (version "0.9.2")
-    (home-page "https://gitlab.inria.fr/solverstack/chameleon")
+    (home-page "https://gitlab.inria
+.fr/solverstack/chameleon")
     (synopsis "Dense linear algebra solver")
     (description
      "Chameleon is a dense linear algebra solver relying on sequential
@@ -320,10 +321,13 @@ solve massive sparse systems efficiently.")
     (home-page "https://bitbucket.org/icl/blaspp")
     (synopsis "C++ API for the Basic Linear Algebra Subroutines")
     (description
-     "The objective of BLAS++ is to provide a convenient, performance oriented
-API for development in the C++ language, that, for the most part, preserves
-established conventions, while, at the same time, takes advantages of modern C++
-features, such as: namespaces, templates, exceptions, etc.")
+     "The Basic Linear Algebra Subprograms (BLAS) have been around for many
+decades and serve as the de facto standard for performance-portable and
+numerically robust implementation of essential linear algebra functionality.The
+objective of BLAS++ is to provide a convenient, performance oriented API for
+development in the C++ language, that, for the most part, preserves established
+conventions, while, at the same time, takes advantages of modern C++ features,
+such as: namespaces, templates, exceptions, etc.")
     (source (origin
              (method hg-fetch)
              (uri (hg-reference
@@ -334,10 +338,42 @@ features, such as: namespaces, templates, exceptions, etc.")
               (base32
                "0cgk9dxrc6h3bwdpfsgh3l5qlabg7rkvv76mvvsmjdlsk7v0dqss"))))
     (arguments
-     '(#:tests? #f))
+     '(#:configure-flags '("-DBLASPP_BUILD_TESTS=OFF")
+                         #:tests? #f))
      ;;'(#:configure-flags '("-DBLASPP_BUILD_TESTS=ON")
     (build-system cmake-build-system)
-    (inputs `(("openblas" ,openblas)))
+    (inputs `(("openblas" ,openblas))) ;; technically only blas
+    (native-inputs `(("gfortran" ,gfortran)))
+    (license #f)))
+
+(define-public lapackpp
+  (package
+    (name "lapackpp")
+    (version "0.1")
+    (home-page "https://bitbucket.org/icl/lapackpp")
+    (synopsis "C++ API for the Linear Algebra PACKage")
+    (description
+     "The Linear Algebra PACKage (LAPACK) is a standard software library for
+numerical linear algebra. The objective of LAPACK++ is to provide a convenient,
+performance oriented API for development in the C++ language, that, for the most
+part, preserves established conventions, while, at the same time, takes
+advantages of modern C++ features, such as: namespaces, templates, exceptions,
+etc.")
+    (source (origin
+             (method hg-fetch)
+             (uri (hg-reference
+                   (url home-page)
+                   (changeset "154d3c06b02c1b16b36b862bd46421e19f5f17a6")))
+             ;;(patches (search-patches "inria/patches/lapackpp-installation-directories.patch"))
+             (sha256
+              (base32
+               "1n5j0myczh3ca7hndv0ziz6kd62ax59qac4njiy2q8kdvcmlmrh0"))))
+    (arguments
+     '(#:configure-flags '("-DBUILD_LAPACKPP_TESTS=OFF")
+       #:tests? #f))
+    (build-system cmake-build-system)
+    (inputs `(("openblas" ,openblas) ;; technically only lapack
+              ("blaspp" ,blaspp)))
     (native-inputs `(("gfortran" ,gfortran)))
     (license #f)))
 

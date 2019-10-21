@@ -25,7 +25,7 @@ update:
 lint:
   stage: lint
   script:
-    - guix lint `guix package -A | grep inria/ | cut -f1` || true
+    - guix lint `guix package -A | grep -E "inria\/|airbus\/" | cut -f1` || true
 
 ###########################
 # Stage 2: Build packages #
@@ -124,3 +124,8 @@ build_pampa:
   stage: build
   script:
     - guix build pampa
+
+build_gcvb:
+  stage: build
+  script:
+    - guix build gcvb

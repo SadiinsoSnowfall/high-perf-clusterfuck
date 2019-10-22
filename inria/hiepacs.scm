@@ -223,6 +223,7 @@ area (CPUs-GPUs, distributed nodes).")
                     (commit version)
                     ;; We need the submodule in 'cmake_modules/morse'.
                     (recursive? #t)))
+              (patches (search-patches "inria/patches/patch_maphys.diff"))
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
@@ -231,14 +232,18 @@ area (CPUs-GPUs, distributed nodes).")
     (arguments
      '(#:configure-flags '("-DMAPHYS_BUILD_TESTS=ON"
                            "-DMAPHYS_SDS_MUMPS=ON"
-                           "-DMAPHYS_SDS_PASTIX=ON")
+                           "-DMAPHYS_SDS_PASTIX=ON"
+                           ;;"-DCMAKE_EXE_LINKER_FLAGS=-lstdc++" ;;?
+                           ;;"-DMAPHYS_ITE_FABULOUS=ON"
+                           "-DMAPHYS_ORDERING_PADDLE=ON"
+                           )
 
        #:phases (modify-phases %standard-phases
                    (add-before 'check 'prepare-test-environment
                    (lambda _
                      ;; Allow tests with more MPI processes than available CPU cores,
                      ;; which is not allowed by default by OpenMPI
-                     (setenv "OMPI_MCA_rmaps_base_oversubscribe" "1"))))))
+                     (setenv "OMPI_MCA_rmaps_base_oversubscribe" "1") #t)))))
 
     (inputs `(("hwloc" ,hwloc "lib")
               ("openmpi" ,openmpi)
@@ -246,9 +251,11 @@ area (CPUs-GPUs, distributed nodes).")
               ("scalapack" ,scalapack)
               ("openblas" ,openblas)
               ("lapack" ,lapack)
-              ("scotch" ,pt-scotch)
+              ("scotch" ,pt-scotch32)
               ("mumps" ,mumps-openmpi)
-              ("pastix" ,pastix)
+              ("pastix" ,pastix32)
+              ;;("fabulous" ,fabulous)
+              ("paddle", paddle)
               ("metis" ,metis)))
     (native-inputs `(("gforgran" ,gfortran)
                      ("pkg-config" ,pkg-config)))
@@ -267,6 +274,84 @@ levels of parallelism (between the blocks and within the treatment of the
 blocks).  This enables it to exploit a large number of processors with a
 moderate number of blocks which ensures a reasonable convergence behavior.")
     (license license:cecill-c)))
+
+(define-public paddle
+  (package
+    (name "paddle")
+    (version "0.3.3")
+    (home-page "https://gitlab.inria.fr/solverstack/paddle")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit version)
+                    ;; We need the submodule in 'cmake_modules/morse'.
+                    (recursive? #t)))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "0r93vxl1yr2kppddqmp8qw0d4i5vww7vdrljpgv02z669x085mm6"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON"
+                           "-DPADDLE_BUILD_TESTS=ON"
+                           "-DPADDLE_ORDERING_PARMETIS=OFF")
+       #:phases (modify-phases %standard-phases
+                                (add-before 'configure 'change-directory
+                                            (lambda _ (chdir "src") #t))
+                                (add-before 'check 'prepare-test-environment
+                                            (lambda _
+                                              ;; Allow tests with more MPI processes than available CPU cores,
+                                              ;; which is not allowed by default by OpenMPI
+                                              (setenv "OMPI_MCA_rmaps_base_oversubscribe" "1") #t)))))
+    (inputs `(("openmpi" ,openmpi)
+              ("ssh" ,openssh)
+              ("scotch" ,pt-scotch32)))
+    (native-inputs `(("gforgran" ,gfortran)
+                     ("pkg-config" ,pkg-config)))
+    (synopsis "Parallel Algebraic Domain Decomposition for Linear systEms")
+    (description
+     "This  software’s goal is  to propose  a parallel
+  algebraic strategy to decompose a  sparse linear system Ax=b, enabling
+  its resolution by a domain decomposition solver.  Up to now, Paddle is
+  implemented for the MaPHyS linear solver.")
+    (license license:cecill-c)))
+
+(define-public fabulous
+  (package
+    (name "fabulous")
+    (version "1.0")
+    (home-page "https://gitlab.inria.fr/solverstack/fabulous")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit "4a63ab6a357048c96e50954663c54fb1649469a2")
+                    ;; We need the submodule in 'cmake_modules/morse'.
+                    (recursive? #t)))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "1q84a2nnzqvw4gf67rjg9mmy1qfrjpgsz9ffrpnq9j6jyqh9f6ns"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:configure-flags '("-DFABULOUS_BUILD_C_API=ON"
+                           "-DFABULOUS_BUILD_Fortran_API=ON"
+                           "-DCMAKE_EXE_LINKER_FLAGS=-lstdc++"
+                           "-DFABULOUS_LAPACKE_NANCHECK=OFF"
+                           "-DFABULOUS_USE_CHAMELEON=OFF"
+                           "-DBUILD_SHARED_LIBS=ON"
+                           "-DFABULOUS_BUILD_EXAMPLES=ON"
+                           "-DFABULOUS_BUILD_TESTS=ON")
+                         #:tests? #f))
+     (inputs `(("openblas" ,openblas)
+               ("lapack" ,lapack)))
+     (native-inputs `(("gforgran" ,gfortran)
+                      ("pkg-config" ,pkg-config)))
+     (synopsis "Fast Accurate Block Linear krylOv Solver")
+     (description
+      "Library implementing Block-GMres with Inexact Breakdown and Deflated Restarting")
+     (license license:cecill-c)))
 
 (define-public maphys++
   (package

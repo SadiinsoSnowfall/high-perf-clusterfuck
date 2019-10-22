@@ -1,0 +1,45 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 194334c..f6cd151 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -263,6 +263,7 @@ if (MORSE_DISTRIB_DIR OR EXISTS "${CMAKE_SOURCE_DIR}/cmake_modules/")
+ 
+       if (PASTIX_INCLUDE_DIRS)
+         include_directories( ${PASTIX_INCLUDE_DIRS} )
++        message(STATUS "PASTIX include directories found: ${PASTIX_LIBRARY_DIRS}")
+       endif()
+       if (PASTIX_LIBRARY_DIRS)
+         list(REMOVE_DUPLICATES PASTIX_LIBRARY_DIRS)
+@@ -423,11 +424,11 @@ if (MORSE_DISTRIB_DIR OR EXISTS "${CMAKE_SOURCE_DIR}/cmake_modules/")
+   # MaPHyS depends on Paddle
+   #----------------------------
+   if (MAPHYS_ORDERING_PADDLE)
+-    if (NOT PADDLE_LIBRARIES)
+-	message(FATAL_ERROR "Please specify PADDLE_LIBRARIES")
+-    endif()
+-    if (NOT PADDLE_INCLUDE_DIRS)
+-	message(FATAL_ERROR "Please specify PADDLE_INCLUDE_DIRS")
++    if ((NOT PADDLE_LIBRARIES) OR (NOT PADDLE_INCLUDE_DIRS))
++      if(PKG_CONFIG_FOUND AND PKG_CONFIG_EXECUTABLE)
++        message(STATUS "Looking for PADDLE - found using PkgConfig")
++        pkg_search_module(PADDLE paddle)
++      endif()
+     endif()
+     add_definitions(-DHAVE_LIBPADDLE)
+     if (PADDLE_INCLUDE_DIRS)
+@@ -436,15 +437,12 @@ if (MORSE_DISTRIB_DIR OR EXISTS "${CMAKE_SOURCE_DIR}/cmake_modules/")
+       endforeach()
+     endif()
+     if (PADDLE_LIBRARIES)
+-
+       find_package(PTSCOTCH REQUIRED)
+-
+       if(NOT PTSCOTCH_FOUND)
+         message(FATAL_ERROR "PTSCOTCH is required by PADDLE but was not found. "
+           "Please provide a PTSCOTCH library in your environment or "
+           "configure with -DMAPHYS_ORDERING_PADDLE=OFF. ")
+       endif()
+-
+       list(REMOVE_DUPLICATES PADDLE_LIBRARIES)
+       list(APPEND MAPHYS_EXTRA_LIBRARIES ${PADDLE_LIBRARIES} ${PTSCOTCH_LIBRARIES})
+       clean_liblist(PADDLE_LIBRARIES MAPHYS_EXTRA_LINK_FLAGS)

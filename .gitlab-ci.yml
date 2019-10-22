@@ -134,3 +134,8 @@ build_gcvb:
   stage: build
   script:
     - guix build gcvb
+
+build_hmat-oss:
+  stage: build
+  script:
+    - guix build hmat-oss

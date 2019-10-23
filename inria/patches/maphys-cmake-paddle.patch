@@ -1,5 +1,5 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 194334c..6d2f2de 100644
+index 194334c..99ca350 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -263,6 +263,7 @@ if (MORSE_DISTRIB_DIR OR EXISTS "${CMAKE_SOURCE_DIR}/cmake_modules/")
@@ -10,7 +10,18 @@ index 194334c..6d2f2de 100644
        endif()
        if (PASTIX_LIBRARY_DIRS)
          list(REMOVE_DUPLICATES PASTIX_LIBRARY_DIRS)
-@@ -423,11 +424,11 @@ if (MORSE_DISTRIB_DIR OR EXISTS "${CMAKE_SOURCE_DIR}/cmake_modules/")
+@@ -403,6 +404,10 @@ if (MORSE_DISTRIB_DIR OR EXISTS "${CMAKE_SOURCE_DIR}/cmake_modules/")
+   if ( MAPHYS_ITE_FABULOUS )
+     find_package(FABULOUS REQUIRED)
+     if ( FABULOUS_FOUND )
++      # Dirty way to find modules if include is found...
++      if( FABULOUS_INCLUDE_DIRS AND (NOT FABULOUS_MODULE_DIRS))
++        set( FABULOUS_MODULE_DIRS "${FABULOUS_INCLUDE_DIRS}/fabulous")
++      endif()
+       message(STATUS "Use FABuLOuS (IB-BGMRES-DR)")
+       message(STATUS "Include: ${FABULOUS_INCLUDE_DIRS}")
+       message(STATUS "Modules: ${FABULOUS_MODULE_DIRS}")
+@@ -423,11 +428,11 @@ if (MORSE_DISTRIB_DIR OR EXISTS "${CMAKE_SOURCE_DIR}/cmake_modules/")
    # MaPHyS depends on Paddle
    #----------------------------
    if (MAPHYS_ORDERING_PADDLE)
@@ -27,7 +38,7 @@ index 194334c..6d2f2de 100644
      endif()
      add_definitions(-DHAVE_LIBPADDLE)
      if (PADDLE_INCLUDE_DIRS)
-@@ -436,15 +437,12 @@ if (MORSE_DISTRIB_DIR OR EXISTS "${CMAKE_SOURCE_DIR}/cmake_modules/")
+@@ -436,15 +441,12 @@ if (MORSE_DISTRIB_DIR OR EXISTS "${CMAKE_SOURCE_DIR}/cmake_modules/")
        endforeach()
      endif()
      if (PADDLE_LIBRARIES)
@@ -43,3 +54,15 @@ index 194334c..6d2f2de 100644
        list(REMOVE_DUPLICATES PADDLE_LIBRARIES)
        list(APPEND MAPHYS_EXTRA_LIBRARIES ${PADDLE_LIBRARIES} ${PTSCOTCH_LIBRARIES})
        clean_liblist(PADDLE_LIBRARIES MAPHYS_EXTRA_LINK_FLAGS)
+diff --git a/hybrid/xmph_fabulous_mod.F90 b/hybrid/xmph_fabulous_mod.F90
+index 111a8a7..8d3b615 100644
+--- a/hybrid/xmph_fabulous_mod.F90
++++ b/hybrid/xmph_fabulous_mod.F90
+@@ -12,7 +12,6 @@ Module XMPH_Fabulous_mod
+   Use XMPH_maphys_type
+   Use XMPH_dense_matrix_mod
+   Use XMPH_schur_aux_mod
+-  Use iso_c_binding
+   Use fabulous_mod
+ 
+   Implicit None

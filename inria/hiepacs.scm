@@ -230,20 +230,24 @@ area (CPUs-GPUs, distributed nodes).")
                 "0jcgnkjhqwbbsc4x8pc2g6a4chcy2h4j66y9m108a8q93ar30ngb"))))
     (build-system cmake-build-system)
     (arguments
+
      '(#:configure-flags '("-DMAPHYS_BUILD_TESTS=ON"
                            "-DMAPHYS_SDS_MUMPS=ON"
                            "-DMAPHYS_SDS_PASTIX=ON"
-                           ;;"-DCMAKE_EXE_LINKER_FLAGS=-lstdc++" ;;?
-                           ;;"-DMAPHYS_ITE_FABULOUS=ON"
+                           "-DCMAKE_EXE_LINKER_FLAGS=-lstdc++" ;;?
+                           "-DMAPHYS_ITE_FABULOUS=ON"
                            "-DMAPHYS_ORDERING_PADDLE=ON"
                            )
 
        #:phases (modify-phases %standard-phases
-                   (add-before 'check 'prepare-test-environment
-                   (lambda _
-                     ;; Allow tests with more MPI processes than available CPU cores,
-                     ;; which is not allowed by default by OpenMPI
-                     (setenv "OMPI_MCA_rmaps_base_oversubscribe" "1") #t)))))
+                               ;; For some reason pkg-config bugs without this variable (for fabulous)
+                               (add-before 'configure 'fix-pkg-config-env
+                                           (lambda _ (setenv "PKG_CONFIG_ALLOW_SYSTEM_CFLAGS" "1") #t))
+                               (add-before 'check 'prepare-test-environment
+                                           (lambda _
+                                             ;; Allow tests with more MPI processes than available CPU cores,
+                                             ;; which is not allowed by default by OpenMPI
+                                             (setenv "OMPI_MCA_rmaps_base_oversubscribe" "1") #t)))))
 
     (inputs `(("hwloc" ,hwloc "lib")
               ("openmpi" ,openmpi)
@@ -254,7 +258,7 @@ area (CPUs-GPUs, distributed nodes).")
               ("scotch" ,pt-scotch)
               ("mumps" ,mumps-openmpi)
               ("pastix" ,pastix)
-              ;;("fabulous" ,fabulous)
+              ("fabulous" ,fabulous)
               ("paddle", paddle)
               ("metis" ,metis)))
     (native-inputs `(("gforgran" ,gfortran)
@@ -343,7 +347,7 @@ moderate number of blocks which ensures a reasonable convergence behavior.")
                            "-DFABULOUS_USE_CHAMELEON=OFF"
                            "-DBUILD_SHARED_LIBS=ON"
                            "-DFABULOUS_BUILD_EXAMPLES=ON"
-                           "-DFABULOUS_BUILD_TESTS=ON")
+                           "-DFABULOUS_BUILD_TESTS=OFF")
                          #:tests? #f))
      (inputs `(("openblas" ,openblas)
                ("lapack" ,lapack)))

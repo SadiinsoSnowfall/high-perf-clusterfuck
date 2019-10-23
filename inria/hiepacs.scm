@@ -223,7 +223,7 @@ area (CPUs-GPUs, distributed nodes).")
                     (commit version)
                     ;; We need the submodule in 'cmake_modules/morse'.
                     (recursive? #t)))
-              (patches (search-patches "inria/patches/patch_maphys.diff"))
+              (patches (search-patches "inria/patches/maphys-cmake-paddle.patch"))
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
@@ -251,9 +251,9 @@ area (CPUs-GPUs, distributed nodes).")
               ("scalapack" ,scalapack)
               ("openblas" ,openblas)
               ("lapack" ,lapack)
-              ("scotch" ,pt-scotch32)
+              ("scotch" ,pt-scotch)
               ("mumps" ,mumps-openmpi)
-              ("pastix" ,pastix32)
+              ("pastix" ,pastix)
               ;;("fabulous" ,fabulous)
               ("paddle", paddle)
               ("metis" ,metis)))
@@ -284,13 +284,14 @@ moderate number of blocks which ensures a reasonable convergence behavior.")
               (method git-fetch)
               (uri (git-reference
                     (url home-page)
-                    (commit version)
+                    ;;(commit version)
+                    (commit "c6d5e18c4662503b416052473adad8254e1a564e")
                     ;; We need the submodule in 'cmake_modules/morse'.
                     (recursive? #t)))
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "0r93vxl1yr2kppddqmp8qw0d4i5vww7vdrljpgv02z669x085mm6"))))
+                "1gdyi4nf2hyrw0kfv2i4yfgdz5c4nxws2b72iks245ryx3z3akkj"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON"
@@ -306,7 +307,7 @@ moderate number of blocks which ensures a reasonable convergence behavior.")
                                               (setenv "OMPI_MCA_rmaps_base_oversubscribe" "1") #t)))))
     (inputs `(("openmpi" ,openmpi)
               ("ssh" ,openssh)
-              ("scotch" ,pt-scotch32)))
+              ("scotch" ,pt-scotch)))
     (native-inputs `(("gforgran" ,gfortran)
                      ("pkg-config" ,pkg-config)))
     (synopsis "Parallel Algebraic Domain Decomposition for Linear systEms")

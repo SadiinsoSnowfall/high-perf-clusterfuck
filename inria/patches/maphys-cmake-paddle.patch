@@ -1,12 +1,12 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 194334c..f6cd151 100644
+index 194334c..6d2f2de 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -263,6 +263,7 @@ if (MORSE_DISTRIB_DIR OR EXISTS "${CMAKE_SOURCE_DIR}/cmake_modules/")
  
        if (PASTIX_INCLUDE_DIRS)
          include_directories( ${PASTIX_INCLUDE_DIRS} )
-+        message(STATUS "PASTIX include directories found: ${PASTIX_LIBRARY_DIRS}")
++        message(STATUS "PASTIX include directories found: ${PASTIX_INCLUDE_DIRS}")
        endif()
        if (PASTIX_LIBRARY_DIRS)
          list(REMOVE_DUPLICATES PASTIX_LIBRARY_DIRS)

@@ -105,8 +105,7 @@ of the available resources.")
   (package
     (name "chameleon")
     (version "0.9.2")
-    (home-page "https://gitlab.inria
-.fr/solverstack/chameleon")
+    (home-page "https://gitlab.inria.fr/solverstack/chameleon")
     (synopsis "Dense linear algebra solver")
     (description
      "Chameleon is a dense linear algebra solver relying on sequential

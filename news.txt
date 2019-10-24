@@ -7,6 +7,13 @@
 
  ;; Add your own news entry here!
 
+ (entry (commit "67d5cbd6c694a523d4bd63b168398785be67ba26")
+        (title (en "PadicoTM's @command{padico-launch} is now self-contained"))
+        (body (en "The @command{padico-launch} command of PadicoTM is now
+self-contained: it is wrapped to automatically find all the commands that it
+needs.  Thus, you no longer need to add all these packages to your
+environment when using PadicoTM or NewMadeleine's @command{mpirun}.")))
+
  (entry (commit "69701286bec2d43a008dd72984032312273dada1")
         (title (en "News from Guix-HPC")
                (fr "Des nouvelles de Guix-HPC"))

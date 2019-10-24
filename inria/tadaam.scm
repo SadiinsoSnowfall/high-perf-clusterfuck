@@ -119,6 +119,7 @@
             (uri (svn-reference
                   (url (string-append %padicotm-svn "/PadicoTM/PadicoTM"))
                   (revision %v2019-05-13-padicotm-revision)))
+            (file-name (string-append name "-" version "-checkout"))
             (sha256
              (base32 "1ry745qc1acr7kwri7yzhyf8pg7lp4hg2mxakqqyx4wdpkpixyr9"))
             (patches (search-patches %patch-path))))

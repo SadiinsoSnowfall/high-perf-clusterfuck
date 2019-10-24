@@ -1,0 +1,7 @@
+;; -*- Scheme -*-
+;;
+;; This is channel meta-data (info "(guix) Channels").
+
+(channel
+ (version 0)
+ (news-file "news.txt"))

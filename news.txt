@@ -7,7 +7,7 @@
 
  ;; Add your own news entry here!
 
- (entry (commit "093f054f12ca4dcabd3c8a4326e5800147161c42")
+ (entry (commit "69701286bec2d43a008dd72984032312273dada1")
         (title (en "News from Guix-HPC")
                (fr "Des nouvelles de Guix-HPC"))
         (body (en "Just to let you know that we can now write news entries

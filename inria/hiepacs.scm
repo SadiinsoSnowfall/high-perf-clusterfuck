@@ -219,33 +219,35 @@ area (CPUs-GPUs, distributed nodes).")
               (method git-fetch)
               (uri (git-reference
                     (url home-page)
-                    (commit version)
+                    (commit "c11405a13fd32e7bba58fb5468ec0f0a22e5878a")
+                    ;;(commit version)
                     ;; We need the submodule in 'cmake_modules/morse'.
                     (recursive? #t)))
-              (patches (search-patches "inria/patches/maphys-cmake-paddle.patch"))
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "0jcgnkjhqwbbsc4x8pc2g6a4chcy2h4j66y9m108a8q93ar30ngb"))))
+                "1bcg9qsn4z9861lgf5g6y6d46q427swr4d6jdx7lmmqmlpfzgxy7"))))
     (build-system cmake-build-system)
     (arguments
 
      '(#:configure-flags '("-DMAPHYS_BUILD_TESTS=ON"
                            "-DMAPHYS_SDS_MUMPS=ON"
                            "-DMAPHYS_SDS_PASTIX=ON"
-                           "-DCMAKE_EXE_LINKER_FLAGS=-lstdc++" ;;?
+                           "-DCMAKE_EXE_LINKER_FLAGS=-lstdc++"
                            "-DMAPHYS_ITE_FABULOUS=ON"
                            "-DMAPHYS_ORDERING_PADDLE=ON"
                            )
 
        #:phases (modify-phases %standard-phases
-                               ;; For some reason pkg-config bugs without this variable (for fabulous)
+                               ;; Without this variable, pkg-config removes paths in already in CFLAGS
+                               ;; However, gfortran does not check CPATH to find fortran modules
+                               ;; and and the module fabulous_mod cannot be found
                                (add-before 'configure 'fix-pkg-config-env
                                            (lambda _ (setenv "PKG_CONFIG_ALLOW_SYSTEM_CFLAGS" "1") #t))
+                               ;; Allow tests with more MPI processes than available CPU cores,
+                               ;; which is not allowed by default by OpenMPI
                                (add-before 'check 'prepare-test-environment
                                            (lambda _
-                                             ;; Allow tests with more MPI processes than available CPU cores,
-                                             ;; which is not allowed by default by OpenMPI
                                              (setenv "OMPI_MCA_rmaps_base_oversubscribe" "1") #t)))))
 
     (inputs `(("hwloc" ,hwloc "lib")
@@ -330,13 +332,14 @@ moderate number of blocks which ensures a reasonable convergence behavior.")
               (method git-fetch)
               (uri (git-reference
                     (url home-page)
-                    (commit "4a63ab6a357048c96e50954663c54fb1649469a2")
+                    (commit "00b34553587ed22806ee46f56fc671769b65dbdf")
                     ;; We need the submodule in 'cmake_modules/morse'.
                     (recursive? #t)))
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "1q84a2nnzqvw4gf67rjg9mmy1qfrjpgsz9ffrpnq9j6jyqh9f6ns"))))
+                "08596i9fxfr4var6js1m9dijfr8fymwppl3irkmrfc5yby44v6qf"
+                ))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags '("-DFABULOUS_BUILD_C_API=ON"

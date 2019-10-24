@@ -1,7 +1,7 @@
 ;;; This module extends GNU Guix and is licensed under the same terms, those
 ;;; of the GNU GPL version 3 or (at your option) any later version.
 ;;;
-;;; Copyright © 2017, 2018 Inria
+;;; Copyright © 2017, 2018, 2019 Inria
 
 (define-module (inria tadaam)
   #:use-module (guix)
@@ -17,6 +17,8 @@
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages linux)
+  #:use-module (gnu packages admin)
+  #:use-module (gnu packages base)
   #:use-module (inria eztrace)
   #:use-module (inria simgrid)
   #:use-module (ice-9 match))
@@ -136,7 +138,32 @@
                      (substitute* "building-tools/common_vars.mk.in"
                        (("/bin/sh")  (which "sh")))
                      #t))
-                 (delete 'check))))
+                 (delete 'check)
+                 (add-after 'install 'wrap-padico-launch
+                   (lambda* (#:key inputs outputs #:allow-other-keys)
+                     ;; Wrap the 'padico-launch' shell script so that it
+                     ;; finds all the commands that it needs.
+                     (define (input-directory input)
+                       (string-append (assoc-ref inputs input)
+                                      "/bin"))
+
+                     (let* ((path (map input-directory
+                                       '("util-linux" ;'setsid'
+                                         "inetutils"  ;'hostname'
+                                         "procps"     ;'ps'
+                                         "which"
+                                         "tar" "gzip"
+                                         "coreutils" "grep" "sed")))
+                            (out  (assoc-ref outputs "out"))
+                            (bin  (string-append out "/bin")))
+                       (wrap-program (string-append bin "/padico-launch")
+                         `("PATH" ":" prefix ,path))
+                       #t))))))
+   (inputs
+    `(("util-linux" ,util-linux)
+      ("procps" ,procps)
+      ("inetutils" ,inetutils)
+      ("which" ,which)))
    (native-inputs
     `(("pkg-config" ,pkg-config)
       ("autoconf" ,autoconf)

@@ -43,7 +43,7 @@
              (method git-fetch)
              (uri (git-reference
                    (url %starpu-git)
-                   (commit "341044b67809892cf4a388e482766beb50256907")))
+                   (commit (string-append "starpu-" version))))
              (file-name (string-append name "-" version "-checkout"))
              (sha256
               (base32 "18m99yl03ps3drmd6vchrz6xchw8hs5syzi1nsy0mniy1gyz7glw"))))
@@ -118,7 +118,7 @@ kernels are executed as efficiently as possible.")
              (method git-fetch)
              (uri (git-reference
                    (url %starpu-git)
-                   (commit "97c426c6e283fba8c44d0437b762faf1da8e116a")))
+                   (commit (string-append "starpu-" version))))
              (file-name (git-file-name name version))
              (sha256
               (base32 "0qp4pfvx5igw1ay01mq81693gsh1jc2lb0v6y5f50il6qm1mq1j7"))))
@@ -137,10 +137,10 @@ kernels are executed as efficiently as possible.")
              (method git-fetch)
              (uri (git-reference
                    (url %starpu-git)
-                   (commit "af22a20fc00a37addf3cc6506305f89feed940b0")))
+                   (commit (string-append "starpu-" version))))
              (file-name (git-file-name name version))
              (sha256
-              (base32 "0wgvx4033pa5qxwlbfarq6yklqpydbx0pk2gb3pck8wwanqzlnfr"))))
+              (base32 "1y6c27rdm3fdxr39vnf5qx46v17zzyx2pqm88qw605a4vk9030jl"))))
    (arguments
     (substitute-keyword-arguments (package-arguments starpu-1.2)
       ((#:configure-flags flags '())

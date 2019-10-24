@@ -1,0 +1,23 @@
+;; -*- Scheme -*-
+;;
+;; This file contains Guix channel news.
+
+(channel-news
+ (version 0)
+
+ ;; Add your own news entry here!
+
+ (entry (commit "093f054f12ca4dcabd3c8a4326e5800147161c42")
+        (title (en "News from Guix-HPC")
+               (fr "Des nouvelles de Guix-HPC"))
+        (body (en "Just to let you know that we can now write news entries
+in the @file{news.txt} file of the channel to share channel news with fellow
+users.  See
+@uref{https://guix.gnu.org/manual/devel/en/html_node/Channels.html#Writing-Channel-News}
+for more info.")
+              (fr "Juste pour vous dire qu'on peut maintenant écrire des
+infos dans le fichier @file{news.txt} du canal pour partager des infos avec
+les personnes qui utilisent le canal.
+Voir
+@uref{https://guix.gnu.org/manual/devel/en/html_node/Channels.html#Writing-Channel-News}
+pour plus d'informations."))))

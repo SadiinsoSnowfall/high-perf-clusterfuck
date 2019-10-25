@@ -229,6 +229,17 @@
                      (substitute* "building-tools/common_vars.mk.in"
                        (("/bin/sh")  (which "sh")))
                      #t))
+                 (add-after 'install 'set-libexec-dir-mpicc
+                   (lambda* (#:key outputs #:allow-other-keys)
+                     (let ((out (assoc-ref outputs "out")))
+                       (for-each (lambda (file)
+                                   (substitute* file
+                                     (("^libexec=.*")
+                                      (string-append "libexec=" out
+                                                     "/libexec\n"))))
+                                 (find-files (string-append out "/bin")
+                                             "^mpi"))
+                       #t)))
                  (delete 'check))))
    (native-inputs
     `(("pkg-config" ,pkg-config)

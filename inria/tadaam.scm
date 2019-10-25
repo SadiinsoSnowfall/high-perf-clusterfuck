@@ -151,6 +151,7 @@
                                        '("util-linux" ;'setsid'
                                          "inetutils"  ;'hostname'
                                          "procps"     ;'ps'
+                                         "hwloc"      ;for 'padico-d'
                                          "which"
                                          "tar" "gzip"
                                          "coreutils" "grep" "sed")))
@@ -163,12 +164,13 @@
     `(("util-linux" ,util-linux)
       ("procps" ,procps)
       ("inetutils" ,inetutils)
+      ("hwloc" ,hwloc)
       ("which" ,which)))
    (native-inputs
     `(("pkg-config" ,pkg-config)
       ("autoconf" ,autoconf)
       ("automake" ,automake)
-      ("hwloc" ,hwloc "lib")
+      ("hwloc:lib" ,hwloc "lib")
       ("rdma-core" ,rdma-core)
       ("psm" ,psm)
       ("psm2" ,psm2)))

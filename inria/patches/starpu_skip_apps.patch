@@ -1,0 +1,26 @@
+StarPU fails when running on a machine with 1 core and without /sys.
+The HwLoC topology is not properly processed.
+diff -ru -p0 starpu.origin/examples/sched_ctx/dummy_sched_with_ctx.c starpu/examples/sched_ctx/dummy_sched_with_ctx.c
+--- starpu.origin/examples/sched_ctx/dummy_sched_with_ctx.c     2019-10-25 13:36:55.436633272 +0200
++++ starpu/examples/sched_ctx/dummy_sched_with_ctx.c    2019-10-25 11:53:45.740595788 +0200
+@@ -167,0 +168,2 @@ int main(void)
++       return 77;
++
+diff -ru -p0 starpu.origin/examples/sched_ctx/sched_ctx.c starpu/examples/sched_ctx/sched_ctx.c
+--- starpu.origin/examples/sched_ctx/sched_ctx.c        2019-10-25 13:36:55.436633272 +0200
++++ starpu/examples/sched_ctx/sched_ctx.c       2019-10-25 11:53:17.134977524 +0200
+@@ -80,0 +81,2 @@ int main(void)
++       return 77;
++
+diff -ru -p0 starpu.origin/examples/sched_ctx/sched_ctx_empty.c starpu/examples/sched_ctx/sched_ctx_empty.c
+--- starpu.origin/examples/sched_ctx/sched_ctx_empty.c  2019-10-25 13:36:55.436633272 +0200
++++ starpu/examples/sched_ctx/sched_ctx_empty.c 2019-10-25 11:53:31.723802727 +0200
+@@ -38,0 +39,2 @@ int main(void)
++       return 77;
++
+diff -ru -p0 starpu.origin/tests/main/starpu_worker_exists.c starpu/tests/main/starpu_worker_exists.c
+--- starpu.origin/tests/main/starpu_worker_exists.c     2019-10-25 13:36:55.596642673 +0200
++++ starpu/tests/main/starpu_worker_exists.c    2019-10-25 11:54:24.682800212 +0200
+@@ -65,0 +66,2 @@ int main(int argc, char **argv)
++       return 77;
++

@@ -28,6 +28,8 @@
 (define %starpu-home-page
   "http://starpu.gforge.inria.fr")
 
+(define %patch-path "inria/patches/starpu_skip_apps.patch")
+
 (define (starpu-url version)
   (string-append %starpu-home-page "/files/starpu-"
                  version "/starpu-" version ".tar.gz"))
@@ -140,7 +142,8 @@ kernels are executed as efficiently as possible.")
                    (commit (string-append "starpu-" version))))
              (file-name (git-file-name name version))
              (sha256
-              (base32 "0rql58dkns5yw35b46wx05z2gx9jw9x61ygayqbap7xzkin8565f"))))
+              (base32 "0rql58dkns5yw35b46wx05z2gx9jw9x61ygayqbap7xzkin8565f"))
+    	     (patches (search-patches %patch-path))))
    (arguments
     (substitute-keyword-arguments (package-arguments starpu-1.2)
       ((#:configure-flags flags '())

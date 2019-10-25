@@ -131,7 +131,10 @@
       #:configure-flags '("--enable-optimize"
                           "--disable-debug"
                           "--with-pioman"
-                          "--without-pukabi")
+                          "--without-pukabi"
+
+                          ;; 'padico-d' wants to write to $localstatedir/log.
+                          "--localstatedir=/var")
       #:phases (modify-phases %standard-phases
                  (add-after 'unpack 'fix-hardcoded-paths
                    (lambda _

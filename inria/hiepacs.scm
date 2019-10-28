@@ -854,3 +854,17 @@ CTAGS    = $(CTAGSPROG)
                                        (package-propagated-inputs pastix-6))))))
 
 (define-public pastix pastix-6)
+
+(define-public pastix-nopython-notest
+  (package
+   (inherit pastix)
+   (name "pastix-nopython-notest")
+   (arguments
+    (substitute-keyword-arguments (package-arguments chameleon)
+                                  ((#:configure-flags flags '())
+                                   `(cons "-DPASTIX_BUILD_TESTING=OFF" ,flags))))
+   (inputs `(
+             ,@(delete `("python2" ,python-2) (package-inputs pastix))
+             ,@(delete `("python2-numpy" ,python2-numpy) (package-inputs pastix))
+             ,@(delete `("python2-scipy" ,python2-scipy) (package-inputs pastix))
+             ))))

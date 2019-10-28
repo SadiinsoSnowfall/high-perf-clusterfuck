@@ -533,7 +533,7 @@ etc.")
     (inputs
      `(("gfortran:lib" ,gfortran "lib")           ;for 'gcc … -lgfortran'
        ("openblas" ,openblas)
-       ("lapack" ,lapack)         ;must be built with '-DLAPACKE_WITH_TMG=ON'
+       ;; ("lapack" ,lapack)         ;must be built with '-DLAPACKE_WITH_TMG=ON'
 
        ;; The following are optional dependencies.
        ("metis" ,metis)
@@ -547,7 +547,8 @@ etc.")
        ("python2" ,python-2)
 
        ("python-numpy" ,python2-numpy)
-       ("python-scipy" ,python2-scipy)))
+       ;; ("python-scipy" ,python2-scipy)
+       ))
     (propagated-inputs `(("hwloc" ,hwloc "lib")
                          ("scotch" ,scotch)))
     (synopsis "Sparse matrix direct solver")
@@ -866,5 +867,5 @@ CTAGS    = $(CTAGSPROG)
    (inputs `(
              ,@(delete `("python2" ,python-2) (package-inputs pastix))
              ,@(delete `("python-numpy" ,python2-numpy) (package-inputs pastix))
-             ,@(delete `("python-scipy" ,python2-scipy) (package-inputs pastix))
+             ;; ,@(delete `("python-scipy" ,python2-scipy) (package-inputs pastix))
              ))))

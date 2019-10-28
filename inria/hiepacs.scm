@@ -865,6 +865,6 @@ CTAGS    = $(CTAGSPROG)
                                    `(cons "-DPASTIX_BUILD_TESTING=OFF" ,flags))))
    (inputs `(
              ,@(delete `("python2" ,python-2) (package-inputs pastix))
-             ,@(delete `("python2-numpy" ,python2-numpy) (package-inputs pastix))
-             ,@(delete `("python2-scipy" ,python2-scipy) (package-inputs pastix))
+             ,@(delete `("python-numpy" ,python2-numpy) (package-inputs pastix))
+             ,@(delete `("python-scipy" ,python2-scipy) (package-inputs pastix))
              ))))

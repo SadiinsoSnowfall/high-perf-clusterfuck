@@ -230,7 +230,8 @@ area (CPUs-GPUs, distributed nodes).")
     (build-system cmake-build-system)
     (arguments
 
-     '(#:configure-flags '("-DMAPHYS_BUILD_TESTS=ON"
+     '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON"
+                           "-DMAPHYS_BUILD_TESTS=ON"
                            "-DMAPHYS_SDS_MUMPS=ON"
                            "-DMAPHYS_SDS_PASTIX=ON"
                            "-DCMAKE_EXE_LINKER_FLAGS=-lstdc++"

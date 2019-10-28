@@ -798,7 +798,7 @@ EXTRALIB   := $(EXTRALIB) -lpthread
 # Do not forget to set BLAS_HOME if it is not in your environnement
 # BLAS_HOME=/path/to/blas
 #----  Blas    ----
-BLASLIB  = -lblas
+BLASLIB  = -lopenblas
 #---- Gotoblas ----
 #BLASLIB  = -L${BLAS_HOME} -lgoto
 #----  MKL     ----

@@ -635,12 +635,12 @@ VERSIONORD  = _scotch
 ###################################################################
 #                  SHARED LIBRARY GENERATION                      #
 ###################################################################
-#SHARED=1
-#SOEXT=.so
-#SHARED_FLAGS =  -shared -Wl,-soname,__SO_NAME__
-#CCFDEB       := ${CCFDEB} -fPIC
-#CCFOPT       := ${CCFOPT} -fPIC
-#CFPROG       := ${CFPROG} -fPIC
+SHARED=1
+SOEXT=.so
+SHARED_FLAGS =  -shared -Wl,-soname,__SO_NAME__
+CCFDEB       := ${CCFDEB} -fPIC
+CCFOPT       := ${CCFOPT} -fPIC
+CFPROG       := ${CFPROG} -fPIC
 
 ###################################################################
 #                          INTEGER TYPE                           #

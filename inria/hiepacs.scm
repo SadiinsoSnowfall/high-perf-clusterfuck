@@ -219,14 +219,14 @@ area (CPUs-GPUs, distributed nodes).")
               (method git-fetch)
               (uri (git-reference
                     (url home-page)
-                    (commit "c11405a13fd32e7bba58fb5468ec0f0a22e5878a")
+                    (commit "b074802510f7d308e87e6150da91c6b9a3fe1ef7")
                     ;;(commit version)
                     ;; We need the submodule in 'cmake_modules/morse'.
                     (recursive? #t)))
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "1bcg9qsn4z9861lgf5g6y6d46q427swr4d6jdx7lmmqmlpfzgxy7"))))
+                "1s5nbly958sqrmbkib4iln38z6w17zwgb3dmdxbw0s2xr34fx5w6"))))
     (build-system cmake-build-system)
     (arguments
 
@@ -237,6 +237,7 @@ area (CPUs-GPUs, distributed nodes).")
                            "-DCMAKE_EXE_LINKER_FLAGS=-lstdc++"
                            "-DMAPHYS_ITE_FABULOUS=ON"
                            "-DMAPHYS_ORDERING_PADDLE=ON"
+                           "-DMAPHYS_BLASMT=ON"
                            )
 
        #:phases (modify-phases %standard-phases

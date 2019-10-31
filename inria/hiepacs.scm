@@ -694,7 +694,7 @@ CCTYPESFLT := $(CCTYPESFLT) -DTYPE_COMPLEX
 
 # Uncomment the following line if your MPI doesn't support MPI_THREAD_MULTIPLE,
 # level then use IPARM_THREAD_COMM_MODE
-#CCPASTIX   := $(CCPASTIX) -DPASTIX_FUNNELED
+CCPASTIX   := $(CCPASTIX) -DPASTIX_FUNNELED
 
 # Uncomment the following line if your MPI doesn't support MPI_Datatype
 # correctly
@@ -727,10 +727,10 @@ NVCCOPT    := $(NVCCOPT) -arch sm_20
 ###################################################################
 
 # Show memory usage statistics
-#CCPASTIX   := $(CCPASTIX) -DMEMORY_USAGE
+CCPASTIX   := $(CCPASTIX) -DMEMORY_USAGE
 
 # Show memory usage statistics in solver
-#CCPASTIX   := $(CCPASTIX) -DSTATS_SOPALIN
+CCPASTIX   := $(CCPASTIX) -DSTATS_SOPALIN
 
 # Uncomment following line for dynamic thread scheduling support
 #CCPASTIX   := $(CCPASTIX) -DPASTIX_DYNSCHED
@@ -754,12 +754,12 @@ SCOTCH_INC ?= $(SCOTCH_HOME)/include
 SCOTCH_LIB ?= $(SCOTCH_HOME)/lib
 # Uncomment on of this blocks
 #scotch
-#CCPASTIX   := $(CCPASTIX) -I$(SCOTCH_INC) -DWITH_SCOTCH
-#EXTRALIB   := $(EXTRALIB) -L$(SCOTCH_LIB) -lscotch -lscotcherrexit
+CCPASTIX   := $(CCPASTIX) -I$(SCOTCH_INC) -DWITH_SCOTCH
+EXTRALIB   := $(EXTRALIB) -L$(SCOTCH_LIB) -lscotch -lscotcherrexit
 #ptscotch
-CCPASTIX   := $(CCPASTIX) -I$(SCOTCH_INC) -DDISTRIBUTED -DWITH_SCOTCH
+#CCPASTIX   := $(CCPASTIX) -I$(SCOTCH_INC) -DDISTRIBUTED -DWITH_SCOTCH
 #if scotch >= 6.0
-EXTRALIB   := $(EXTRALIB) -L$(SCOTCH_LIB) -lptscotch -lscotch -lptscotcherrexit
+#EXTRALIB   := $(EXTRALIB) -L$(SCOTCH_LIB) -lptscotch -lscotch -lptscotcherrexit
 #else
 #EXTRALIB   := $(EXTRALIB) -L$(SCOTCH_LIB) -lptscotch -lptscotcherrexit
 

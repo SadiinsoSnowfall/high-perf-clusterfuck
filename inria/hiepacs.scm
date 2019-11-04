@@ -213,20 +213,19 @@ area (CPUs-GPUs, distributed nodes).")
 (define-public maphys
   (package
     (name "maphys")
-    (version "0.9.8.2")
+    (version "0.9.8.3")
     (home-page "https://gitlab.inria.fr/solverstack/maphys/maphys")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url home-page)
-                    (commit "b074802510f7d308e87e6150da91c6b9a3fe1ef7")
-                    ;;(commit version)
+                    (commit version)
                     ;; We need the submodule in 'cmake_modules/morse'.
                     (recursive? #t)))
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "1s5nbly958sqrmbkib4iln38z6w17zwgb3dmdxbw0s2xr34fx5w6"))))
+                "0xkg87gaxq55jxyrnaxvx4gp8bff14ph2aca94wmki5j05mf8vh0"))))
     (build-system cmake-build-system)
     (arguments
 
@@ -285,20 +284,19 @@ moderate number of blocks which ensures a reasonable convergence behavior.")
 (define-public paddle
   (package
     (name "paddle")
-    (version "0.3.3")
+    (version "0.3.4")
     (home-page "https://gitlab.inria.fr/solverstack/paddle")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url home-page)
-                    ;;(commit version)
-                    (commit "c6d5e18c4662503b416052473adad8254e1a564e")
+                    (commit version)
                     ;; We need the submodule in 'cmake_modules/morse'.
                     (recursive? #t)))
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "1gdyi4nf2hyrw0kfv2i4yfgdz5c4nxws2b72iks245ryx3z3akkj"))))
+                "0znb88zi739z4lr2w116810gblw1hzd6pimsrmwivjvr94a0655i"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON"
@@ -328,20 +326,19 @@ moderate number of blocks which ensures a reasonable convergence behavior.")
 (define-public fabulous
   (package
     (name "fabulous")
-    (version "1.0")
+    (version "1.0.1")
     (home-page "https://gitlab.inria.fr/solverstack/fabulous")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url home-page)
-                    (commit "00b34553587ed22806ee46f56fc671769b65dbdf")
+                    (commit version)
                     ;; We need the submodule in 'cmake_modules/morse'.
                     (recursive? #t)))
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "08596i9fxfr4var6js1m9dijfr8fymwppl3irkmrfc5yby44v6qf"
-                ))))
+                "1cla01sf3kg9ykgsyx68j8ihg2383q0g7nw1gq4wpmnv7kxm4q9m"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags '("-DFABULOUS_BUILD_C_API=ON"

@@ -55,6 +55,11 @@ build_vite:
   script:
     - guix build vite
 
+build_paraview:
+  stage: build
+  script:
+    - guix build paraview
+
 build_starpu-1.1:
   stage: build
   script:

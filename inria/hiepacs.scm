@@ -396,11 +396,16 @@ solve massive sparse systems efficiently.")
                                                 (add-before 'configure 'fixgcc7
                                                             (lambda _
                                                               (unsetenv "C_INCLUDE_PATH")
-                                                              (unsetenv "CPLUS_INCLUDE_PATH"))))
+                                                              (unsetenv "CPLUS_INCLUDE_PATH") #t))
+                                                (add-before 'check 'prepare-test-environment
+                                                            (lambda _
+                                                              ;; Allow tests with more MPI processes than available CPU cores,
+                                                              ;; which is not allowed by default by OpenMPI
+                                                              (setenv "OMPI_MCA_rmaps_base_oversubscribe" "1") #t)))
       ))
    (build-system cmake-build-system)
-   (inputs `(("lapack" ,openblas)
-             ("blaspp" ,blaspp)
+   (inputs `(("blaspp" ,blaspp)
+             ("lapackpp" ,lapackpp)
              ("pastix" ,pastix)))
    (propagated-inputs `(("mpi" ,openmpi)
                         ("ssh" ,openssh)))
@@ -436,7 +441,7 @@ such as: namespaces, templates, exceptions, etc.")
                          #:tests? #f))
      ;;'(#:configure-flags '("-DBLASPP_BUILD_TESTS=ON")
     (build-system cmake-build-system)
-    (inputs `(("openblas" ,openblas))) ;; technically only blas
+    (propagated-inputs `(("openblas" ,openblas))) ;; technically only blas
     (native-inputs `(("gfortran" ,gfortran)))
     (license #f)))
 
@@ -466,8 +471,7 @@ etc.")
      '(#:configure-flags '("-DBUILD_LAPACKPP_TESTS=OFF")
        #:tests? #f))
     (build-system cmake-build-system)
-    (inputs `(("openblas" ,openblas) ;; technically only lapack
-              ("blaspp" ,blaspp)))
+    (inputs `(("blaspp" ,blaspp)))
     (native-inputs `(("gfortran" ,gfortran)))
     (license #f)))
 

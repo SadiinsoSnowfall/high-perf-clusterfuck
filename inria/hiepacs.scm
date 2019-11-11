@@ -478,7 +478,7 @@ etc.")
 (define-public pastix-6
   (package
     (name "pastix")
-    (version "6.0.2")
+    (version "6.0.3")
     (home-page "https://gitlab.inria.fr/solverstack/pastix")
     (source (origin
               (method git-fetch)
@@ -491,7 +491,7 @@ etc.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "05nl8y20xlmp3l0smzsapgf6yrhzf68kb50cwxxfka33zprgnf11"))))
+                "1ccj5p1zm50x3qd6yr7j5ajh2dlpmm95lhzrbyv9rbnxrk66azid"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON"

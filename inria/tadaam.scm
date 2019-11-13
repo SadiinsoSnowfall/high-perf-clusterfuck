@@ -274,3 +274,42 @@
 
 (define-public nmad-mini
   nmad-mini-2019-05-13)
+
+(define-public mpibenchmark-2019-05-13
+  (package
+   (name "mpibenchmark")
+   (version %v2019-05-13)
+   (home-page (string-append %pm2-home-page "/mpibenchmark"))
+   (source (origin
+            (method svn-fetch)
+            (uri (svn-reference
+                  (url (string-append %pm2-svn "/mpibenchmark"))
+                  (revision %v2019-05-13-pm2-revision)))
+            (sha256
+             (base32 "14xay0gij29v6q7xxyh79acvfwj3qmx2gf2whrphl8ycyh74a46g"))))
+   (build-system gnu-build-system)
+   (arguments
+    '(#:out-of-source? #t
+      #:configure-flags '("--enable-optimize"
+                          "--disable-debug")
+      #:phases (modify-phases %standard-phases
+                 (add-after 'unpack 'fix-hardcoded-paths
+                   (lambda _
+                     (substitute* "building-tools/common_vars.mk.in"
+                       (("/bin/sh")  (which "sh")))
+                     #t))
+                 (delete 'check))))
+   (native-inputs
+    `(("pkg-config" ,pkg-config)
+      ("autoconf" ,autoconf)
+      ("automake" ,automake)))
+   (inputs
+    `(("hwloc" ,hwloc "lib")
+      ("gnuplot" ,gnuplot)
+      ("mpi" ,nmad)))
+   (synopsis "dummy")
+   (description "Dummy")
+   (license license:lgpl2.0)))
+
+(define-public mpibenchmark
+  mpibenchmark-2019-05-13)

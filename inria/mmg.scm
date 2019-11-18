@@ -5,7 +5,7 @@
 
 (define-module (inria mmg)
   #:use-module (guix packages)
-  #:use-module (guix download)
+  #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
   #:use-module (guix licenses))
 
@@ -15,12 +15,14 @@
     (version "5.4.1")
     (source
      (origin
-       (method url-fetch)
-       (uri (string-append "https://github.com/MmgTools/mmg/archive/v"
-                           version ".tar.gz"))
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/MmgTools/mmg.git")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
        (sha256
         (base32
-         "0fpr0y1fy9wyda4678qzjlzravh3cns67m3b79b31bqqqjk851zb"))))
+         "1bck0pwpzd0srx03v7hk9ij91s3r3k9mc38xpw78l51q6x1nvzmd"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags '("-DBUILD_TESTING=ON"

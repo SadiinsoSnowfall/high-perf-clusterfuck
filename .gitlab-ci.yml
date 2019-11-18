@@ -144,3 +144,8 @@ build_hmat-oss:
   stage: build
   script:
     - guix build hmat-oss
+
+build_mmg:
+  stage: build
+  script:
+    - guix build mmg

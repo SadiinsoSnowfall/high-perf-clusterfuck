@@ -24,15 +24,12 @@
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags '("-DBUILD_TESTING=ON"
-                           "-DONLY_VERY_SHORT_TESTS=ON")
-       #:tests? #t))
+                           "-DONLY_VERY_SHORT_TESTS=ON")))
     (home-page "https://www.mmgtools.org/")
-    (synopsis "Library and applications for simplicial mesh adaptation.")
+    (synopsis "Library and applications for simplicial mesh adaptation")
     (description
-     "Mmg gather open-source software for simplicial mesh modifications
-     (2D, 3D surfacic and 3D volumic). It allows: mesh quality improvement,
-      mesh adaptation on an isotropic or anisotropic sizemap,
-     isovalue discretization and lagrangian movement.")
-    (license lgpl3+)
-    )
-  )
+     "Mmg gather open-source software for simplicial mesh
+modifications (2D, 3D surfacic and 3D volumic).  It allows for: mesh quality
+improvement, mesh adaptation on an isotropic or anisotropic sizemap, isovalue
+discretization, and Lagrangian movement.")
+    (license lgpl3+)))

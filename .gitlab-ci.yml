@@ -85,6 +85,11 @@ build_chameleon:
   script:
     - guix build chameleon
 
+build_chameleon-simgrid:
+  stage: build
+  script:
+    - guix build chameleon-simgrid
+
 build_chameleon-fxt:
   stage: build
   script:

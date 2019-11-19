@@ -6,7 +6,8 @@
 (define-module (inria mpi)
   #:use-module (guix)
   #:use-module (guix utils)
-  #:use-module (gnu packages mpi))
+  #:use-module (gnu packages mpi)
+  #:use-module (srfi srfi-1))
 
 (define-public openmpi-with-mpi1-compat
   ;; In Open MPI 4 the deprecated MPI1 functions are disabled by default.
@@ -17,4 +18,8 @@
     (arguments
      (substitute-keyword-arguments (package-arguments openmpi)
        ((#:configure-flags flags ''())
-        `(cons "--enable-mpi1-compatibility" ,flags))))))
+        `(cons "--enable-mpi1-compatibility" ,flags))))
+
+    ;; Depend on hwloc 1.x because that's what users of this package expect.
+    (inputs `(("hwloc" ,hwloc-1 "lib")
+              ,@(alist-delete "hwloc" (package-inputs openmpi))))))

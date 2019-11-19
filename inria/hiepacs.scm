@@ -849,12 +849,14 @@ CTAGS    = $(CTAGSPROG)
   (native-inputs `(("perl" ,perl)
                    ,@(package-native-inputs pastix-6)))
   (propagated-inputs `(("openmpi" ,openmpi-with-mpi1-compat)
+                       ("hwloc" ,hwloc-1 "lib")
                        ("openssh" ,openssh)
                        ("scotch32" ,scotch32)
                        ("pt-scotch" ,pt-scotch)
                        ,@(package-propagated-inputs pastix-6)
-                       ,@(alist-delete "scotch"
-                                       (package-propagated-inputs pastix-6))))))
+                       ,@(fold alist-delete
+                               (package-propagated-inputs pastix-6)
+                               '("hwloc" "scotch"))))))
 
 (define-public pastix pastix-6)
 

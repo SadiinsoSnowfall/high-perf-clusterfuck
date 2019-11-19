@@ -100,7 +100,7 @@
        ("automake" ,automake)))                             ;used upon test failure
     (inputs `(("fftw" ,fftw)
               ("fftwf" ,fftwf)))
-    (propagated-inputs  `(("hwloc" ,hwloc "lib")
+    (propagated-inputs  `(("hwloc" ,hwloc-1 "lib")
                           ("mpi" ,openmpi-with-mpi1-compat)))
     (synopsis "Run-time system for heterogeneous computing")
     (description
@@ -160,8 +160,10 @@ kernels are executed as efficiently as possible.")
                               (("/bin/sh")  (which "sh")))
                             #t)))))))
    (propagated-inputs  `(("mpi" ,openmpi)
-                         ,@(alist-delete "mpi"
-                                         (package-propagated-inputs starpu-1.2))))))
+                         ("hwloc" ,hwloc "lib")  ;hwloc 2.x
+                         ,@(fold alist-delete
+                                 (package-propagated-inputs starpu-1.2)
+                                 '("mpi" "hwloc"))))))
 
 (define-public starpu
   starpu-1.3)

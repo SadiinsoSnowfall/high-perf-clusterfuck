@@ -391,7 +391,8 @@ solve massive sparse systems efficiently.")
                           "-DMAPHYS_USE_EIGEN=OFF"
                           "-DMAPHYS_USE_FABULOUS=OFF"
                           "-DMAPHYS_DEV_TANGLE=OFF"
-                          "-DMAPHYS_USE_PASTIX=ON")
+                          "-DMAPHYS_USE_PASTIX=ON"
+                          "-DMAPHYS_USE_MUMPS=ON")
                         #:phases (modify-phases %standard-phases
                                                 (add-before 'configure 'fixgcc7
                                                             (lambda _
@@ -406,7 +407,8 @@ solve massive sparse systems efficiently.")
    (build-system cmake-build-system)
    (inputs `(("blaspp" ,blaspp)
              ("lapackpp" ,lapackpp)
-             ("pastix" ,pastix)))
+             ("pastix" ,pastix)
+             ("mumps" ,mumps-openmpi)))
    (propagated-inputs `(("mpi" ,openmpi)
                         ("ssh" ,openssh)))
    (native-inputs `(("gcc" ,gcc-7)
@@ -468,7 +470,8 @@ etc.")
               (base32
                "1n5j0myczh3ca7hndv0ziz6kd62ax59qac4njiy2q8kdvcmlmrh0"))))
     (arguments
-     '(#:configure-flags '("-DBUILD_LAPACKPP_TESTS=OFF")
+     '(#:configure-flags '("-DBUILD_LAPACKPP_TESTS=OFF"
+                           "-DBUILD_SHARED_LIBS=ON")
        #:tests? #f))
     (build-system cmake-build-system)
     (inputs `(("blaspp" ,blaspp)))

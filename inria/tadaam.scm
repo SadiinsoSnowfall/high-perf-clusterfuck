@@ -28,9 +28,9 @@
 (define %padicotm-svn "https://scm.gforge.inria.fr/anonscm/svn/padico/PadicoTM/trunk")
 (define %patch-path "inria/patches/autogen_building-tools.patch")
 
-(define %v2019-05-13 "2019-05-13")
-(define %v2019-05-13-pm2-revision 28048)
-(define %v2019-05-13-padicotm-revision 5248)
+(define %v2019-05-13 "2019-12-03")
+(define %v2019-05-13-pm2-revision 28521)
+(define %v2019-05-13-padicotm-revision 5374)
 
 (define-public puk-2019-05-13
   (package
@@ -43,7 +43,7 @@
                   (url (string-append %padicotm-svn "/PadicoTM/Puk"))
                   (revision %v2019-05-13-padicotm-revision)))
             (sha256
-             (base32 "1zy8wgwns1i0hazc87mfwizzyaq4c0zyhd92amaw20wflfnchwb3"))
+             (base32 "1yba43npqjrgp3p7pkdjw8yswl994456f07s1ga9207hkyz7wws8"))
             (patches (search-patches %patch-path))))
    (build-system gnu-build-system)
    (arguments
@@ -82,7 +82,7 @@
                   (url (string-append %pm2-svn "/pioman"))
                   (revision %v2019-05-13-pm2-revision)))
             (sha256
-             (base32 "1b8c1ys3vg49pnzcvjzxpygw242dn1z4xprjg971181343bbgc20"))
+             (base32 "1nx8vbp9hm7bk585g3lwj8ggx3qk1if5yjmk4zp52bz5xyldifmj"))
             (patches (search-patches %patch-path))))
    (build-system gnu-build-system)
    (arguments
@@ -123,7 +123,7 @@
                   (revision %v2019-05-13-padicotm-revision)))
             (file-name (string-append name "-" version "-checkout"))
             (sha256
-             (base32 "1ry745qc1acr7kwri7yzhyf8pg7lp4hg2mxakqqyx4wdpkpixyr9"))
+             (base32 "0z2pz084a66wdpnkfzyw1vvq75219csy48hwhww28dl3b9nhzcym"))
             (patches (search-patches %patch-path))))
    (build-system gnu-build-system)
    (arguments
@@ -212,7 +212,7 @@
                   (url (string-append %pm2-svn "/nmad"))
                   (revision %v2019-05-13-pm2-revision)))
             (sha256
-             (base32 "1i4cxan90rg0ipy7c5w3f93k6gpgx38x75b3gfy9wprjf6x0ybwm"))
+             (base32 "1a3dxprvwsll2lma7hbs3ryjn1z9dw4vm97f0qmk845y790i6zfy"))
             (patches (search-patches %patch-path))))
    (build-system gnu-build-system)
    (arguments

@@ -1,12 +1,6 @@
-diff -ruN -p0 PadicoTM.orig/autogen.sh PadicoTM/autogen.sh
---- PadicoTM.orig/autogen.sh	2019-06-06 13:31:38.787701933 +0200
-+++ PadicoTM/autogen.sh	2019-06-06 13:32:00.247799823 +0200
-@@ -3 +3 @@
--export M4PATH=../building-tools:./building-tools:${M4PATH}
-+export M4PATH=./building-tools:./building-tools:${M4PATH}
 diff -ruN -p0 PadicoTM.orig/building-tools/ax_check_compile_flag.m4 PadicoTM/building-tools/ax_check_compile_flag.m4
 --- PadicoTM.orig/building-tools/ax_check_compile_flag.m4	1970-01-01 01:00:00.000000000 +0100
-+++ PadicoTM/building-tools/ax_check_compile_flag.m4	2019-06-06 13:31:53.993771292 +0200
++++ PadicoTM/building-tools/ax_check_compile_flag.m4	2019-05-23 11:02:14.642751615 +0200
 @@ -0,0 +1,74 @@
 +# ===========================================================================
 +#   http://www.gnu.org/software/autoconf-archive/ax_check_compile_flag.html
@@ -84,7 +78,7 @@ diff -ruN -p0 PadicoTM.orig/building-tools/ax_check_compile_flag.m4 PadicoTM/bui
 +])dnl AX_CHECK_COMPILE_FLAGS
 diff -ruN -p0 PadicoTM.orig/building-tools/ax_mpi.m4 PadicoTM/building-tools/ax_mpi.m4
 --- PadicoTM.orig/building-tools/ax_mpi.m4	1970-01-01 01:00:00.000000000 +0100
-+++ PadicoTM/building-tools/ax_mpi.m4	2019-06-06 13:31:53.993771292 +0200
++++ PadicoTM/building-tools/ax_mpi.m4	2019-05-23 11:02:14.646751496 +0200
 @@ -0,0 +1,176 @@
 +# ===========================================================================
 +#          http://www.gnu.org/software/autoconf-archive/ax_mpi.html
@@ -264,7 +258,7 @@ diff -ruN -p0 PadicoTM.orig/building-tools/ax_mpi.m4 PadicoTM/building-tools/ax_
 +])dnl AX_MPI
 diff -ruN -p0 PadicoTM.orig/building-tools/ax_openmp.m4 PadicoTM/building-tools/ax_openmp.m4
 --- PadicoTM.orig/building-tools/ax_openmp.m4	1970-01-01 01:00:00.000000000 +0100
-+++ PadicoTM/building-tools/ax_openmp.m4	2019-06-06 13:31:53.993771292 +0200
++++ PadicoTM/building-tools/ax_openmp.m4	2019-05-23 11:02:14.642751615 +0200
 @@ -0,0 +1,119 @@
 +# ===========================================================================
 +#         http://www.gnu.org/software/autoconf-archive/ax_openmp.html
@@ -387,7 +381,7 @@ diff -ruN -p0 PadicoTM.orig/building-tools/ax_openmp.m4 PadicoTM/building-tools/
 +])dnl AX_OPENMP
 diff -ruN -p0 PadicoTM.orig/building-tools/common_rules.mk.in PadicoTM/building-tools/common_rules.mk.in
 --- PadicoTM.orig/building-tools/common_rules.mk.in	1970-01-01 01:00:00.000000000 +0100
-+++ PadicoTM/building-tools/common_rules.mk.in	2019-06-06 13:31:53.992771288 +0200
++++ PadicoTM/building-tools/common_rules.mk.in	2019-05-23 11:02:14.642751615 +0200
 @@ -0,0 +1,218 @@
 +
 +# common_rules.mk: begin
@@ -609,15 +603,13 @@ diff -ruN -p0 PadicoTM.orig/building-tools/common_rules.mk.in PadicoTM/building-
 +# common_rules.mk: end
 diff -ruN -p0 PadicoTM.orig/building-tools/common_vars.mk.in PadicoTM/building-tools/common_vars.mk.in
 --- PadicoTM.orig/building-tools/common_vars.mk.in	1970-01-01 01:00:00.000000000 +0100
-+++ PadicoTM/building-tools/common_vars.mk.in	2019-06-06 13:31:53.993771292 +0200
-@@ -0,0 +1,126 @@
++++ PadicoTM/building-tools/common_vars.mk.in	2019-10-15 15:57:11.017947799 +0200
+@@ -0,0 +1,122 @@
 +
 +# common_vars.mk: begin
 +# @configure_input@
 +
-+padico_builddir := @padico_builddir@
-+padico_srcdir   := @padico_srcdir@
-+prefix          := @prefix@
++prefix := @prefix@
 +
 +package_name       := @package_name@
 +package_short_name := @package_short_name@
@@ -684,8 +676,6 @@ diff -ruN -p0 PadicoTM.orig/building-tools/common_vars.mk.in PadicoTM/building-t
 +CXX_DEP    = @CXX_DEP@
 +DYNLIB_LD  = @DYNLIB_LD@
 +DYNLIB_EXT = @DYNLIB_EXT@
-+DSO_LD     = @DSO_LD@
-+DSO_EXT    = @DSO_EXT@
 +AR         = ar
 +RANLIB     = ranlib
 +
@@ -739,8 +729,8 @@ diff -ruN -p0 PadicoTM.orig/building-tools/common_vars.mk.in PadicoTM/building-t
 +# common_vars.mk: end
 diff -ruN -p0 PadicoTM.orig/building-tools/compiler.m4 PadicoTM/building-tools/compiler.m4
 --- PadicoTM.orig/building-tools/compiler.m4	1970-01-01 01:00:00.000000000 +0100
-+++ PadicoTM/building-tools/compiler.m4	2019-06-06 13:31:53.993771292 +0200
-@@ -0,0 +1,229 @@
++++ PadicoTM/building-tools/compiler.m4	2019-09-27 15:04:24.989288829 +0200
+@@ -0,0 +1,235 @@
 +dnl -*- mode: Autoconf;-*-
 +
 +m4_include([ax_check_compile_flag.m4])
@@ -841,10 +831,16 @@ diff -ruN -p0 PadicoTM.orig/building-tools/compiler.m4 PadicoTM/building-tools/c
 +        OPT_LDFLAGS="-Wl,-O1"
 +        dnl gcc
 +        BASE_CFLAGS="-Wall -pipe"
-+        DEBUG_CFLAGS="-g"
++        AX_CHECK_COMPILE_FLAG([-g3], [CFLAGS_G3="-g3"], [])
++        AX_CHECK_COMPILE_FLAG([-Og], [CFLAGS_OG="-Og"], [])
++	if test "x${CFLAGS_G3}" != "x"; then
++	   DEBUG_CFLAGS="${CFLAGS_G3}"
++	else	
++	   DEBUG_CFLAGS="-g"
++	fi
 +        AX_CHECK_COMPILE_FLAG([-xHOST], [OPT_CFLAGS_NATIVE="-xHOST"], [])
 +	if test "x${OPT_CFLAGS_NATIVE}" = "x"; then
-+          AX_CHECK_COMPILE_FLAG([-march=native], [OPT_CFLAGS_NATIVE="-march=native"], [])
++          AX_CHECK_COMPILE_FLAG([-mtune=native], [OPT_CFLAGS_NATIVE="-mtune=native"], [])
 +	fi
 +        AX_CHECK_COMPILE_FLAG([-ipo], [OPT_CFLAGS_LTO="-ipo"], [])
 +	if test "x${OPT_CFLAGS_LTO}" = "x"; then
@@ -906,11 +902,11 @@ diff -ruN -p0 PadicoTM.orig/building-tools/compiler.m4 PadicoTM/building-tools/c
 +
 +
 +AC_DEFUN([AC_PADICO_GCC_VERSION],
-+	 [ AC_REQUIRE([AC_PADICO_VERSION])
++	 [ AC_REQUIRE([AC_PADICO_PACKAGE])
 +	   AC_REQUIRE([AC_PADICO_COMPILER])
 +	   AC_MSG_CHECKING([for gcc version])
 +	   if test "x$GCC" != "xyes"; then
-+	     AC_MSG_ERROR([ $PACKAGE_STRING requires GNU C compiler.])
++	     AC_MSG_ERROR([ $PACKAGE_NAME requires GNU C compiler.])
 +	   else
 +	     gcc_version="`${CC} -dumpversion`"
 +	     case $gcc_version in
@@ -928,11 +924,11 @@ diff -ruN -p0 PadicoTM.orig/building-tools/compiler.m4 PadicoTM/building-tools/c
 +	  ])
 +
 +AC_DEFUN([AC_PADICO_GXX_VERSION],
-+	 [ AC_REQUIRE([AC_PADICO_VERSION])
++	 [ AC_REQUIRE([AC_PADICO_PACKAGE])
 +	   AC_REQUIRE([AC_PADICO_CXX])
 +           AC_MSG_CHECKING([for g++ version])
 +	   if test "x$GXX" != "xyes"; then
-+	     AC_MSG_ERROR([ $PACKAGE_STRING requires GNU C++ compiler.])
++	     AC_MSG_ERROR([ $PACKAGE_NAME requires GNU C++ compiler.])
 +	   else
 +	     gxx_version="`${CXX} -dumpversion`"
 +	     case $gxx_version in
@@ -972,7 +968,7 @@ diff -ruN -p0 PadicoTM.orig/building-tools/compiler.m4 PadicoTM/building-tools/c
 +	 ])
 diff -ruN -p0 PadicoTM.orig/building-tools/COPYING PadicoTM/building-tools/COPYING
 --- PadicoTM.orig/building-tools/COPYING	1970-01-01 01:00:00.000000000 +0100
-+++ PadicoTM/building-tools/COPYING	2019-06-06 13:31:53.993771292 +0200
++++ PadicoTM/building-tools/COPYING	2019-05-23 11:02:14.642751615 +0200
 @@ -0,0 +1,339 @@
 +		    GNU GENERAL PUBLIC LICENSE
 +		       Version 2, June 1991
@@ -1315,7 +1311,7 @@ diff -ruN -p0 PadicoTM.orig/building-tools/COPYING PadicoTM/building-tools/COPYI
 +Public License instead of this License.
 diff -ruN -p0 PadicoTM.orig/building-tools/COPYRIGHT PadicoTM/building-tools/COPYRIGHT
 --- PadicoTM.orig/building-tools/COPYRIGHT	1970-01-01 01:00:00.000000000 +0100
-+++ PadicoTM/building-tools/COPYRIGHT	2019-06-06 13:31:53.993771292 +0200
++++ PadicoTM/building-tools/COPYRIGHT	2019-05-23 11:02:14.642751615 +0200
 @@ -0,0 +1,21 @@
 + Padico -- a High Performance Parallel and Distributed Computing Environment
 + Copyright (c) 2002-2010 INRIA and the University of Rennes 1
@@ -1340,8 +1336,8 @@ diff -ruN -p0 PadicoTM.orig/building-tools/COPYRIGHT PadicoTM/building-tools/COP
 + Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 diff -ruN -p0 PadicoTM.orig/building-tools/features.m4 PadicoTM/building-tools/features.m4
 --- PadicoTM.orig/building-tools/features.m4	1970-01-01 01:00:00.000000000 +0100
-+++ PadicoTM/building-tools/features.m4	2019-06-06 13:31:53.993771292 +0200
-@@ -0,0 +1,341 @@
++++ PadicoTM/building-tools/features.m4	2019-10-02 09:08:21.419837027 +0200
+@@ -0,0 +1,393 @@
 +dnl -*- mode: Autoconf;-*-
 +
 +dnl -- Optionnal features
@@ -1569,12 +1565,62 @@ diff -ruN -p0 PadicoTM.orig/building-tools/features.m4 PadicoTM/building-tools/f
 +      AC_MSG_ERROR([ required library OFI (libfabric) not found.])
 +    fi
 +    if test "${HAVE_OFI}" = "yes"; then
-+      AC_CHECK_HEADER(rdma/fabric.h, [ HAVE_FABRIC_H=yes ], [ HAVE_FABRIC_H=no ])
-+      requires_ofi=libfabric
++      AC_CHECK_HEADER(rdma/fabric.h,
++	[ HAVE_FABRIC_H=yes ],
++      	[
++          HAVE_FABRIC_H=no
++	  AC_MSG_WARN([ libfabric detected, but rdma/fabric.h not detected. Disable OFI. ])
++          HAVE_OFI=no
++        ])
++      AC_CHECK_DECLS([FI_CONTEXT], [], [], [[#include <rdma/fabric.h>]])
++      AC_CHECK_DECLS([FI_CONTEXT2], [], [], [[#include <rdma/fabric.h>]])
 +    fi
 +    AC_SUBST([HAVE_OFI])
 +    AC_SUBST([ofi_CFLAGS])
 +    AC_SUBST([ofi_LIBS])
++  ])
++
++dnl -- check for slurm PMI2
++dnl --
++AC_DEFUN([AC_PADICO_CHECK_PMI2],
++  [
++  HAVE_PMI2=no
++  AC_ARG_WITH([pmi2],
++		[AS_HELP_STRING([--with-pmi2],
++	    	 [use slurm pmi2 support @<:@default=check@:>@] )],
++		 [], [ with_pmi2=check ])
++  if test "x${with_pmi2}" != "xno"; then
++    save_CPPFLAGS="${CPPFLAGS}"
++    save_LIBS="${LIBS}"
++    if test "x${with_pmi2}" != "xyes" -a "x${with_pmi2}" != "xcheck"; then
++      PMI2_DIR="${with_pmi2}"
++    fi
++    if test "x${PMI2_DIR}" != "x"; then
++      pmi2_CPPFLAGS="-I${PMI2_DIR}/include/"
++      pmi2_LIBS="-Wl,-rpath,${PMI2_DIR}/lib64 -L${PMI2_DIR}/lib64"
++    fi
++    CPPFLAGS="${CPPFLAGS} ${pmi2_CPPFLAGS}"
++    LIBS="${LIBS} ${pmi2_LIBS}"
++    AC_CHECK_HEADER(slurm/pmi2.h, [ HAVE_PMI2_H=yes ], [ HAVE_PMI2_H=no ])
++    AC_CHECK_LIB(pmi2, PMI2_Init, [ HAVE_LIBPMI2=yes ], [ HAVE_LIBPMI2=no ])
++    if test ${HAVE_PMI2_H} = yes -a ${HAVE_LIBPMI2} = yes; then
++      HAVE_PMI2=yes
++      pmi2_LIBS="${pmi2_LIBS} -lpmi2"
++      AC_DEFINE([HAVE_PMI2], [1], [whether slurm pmi2 is present])
++    else
++      HAVE_PMI2=no
++      pmi2_CPPFLAGS=
++      pmi2_LIBS=
++      if test "x${with_pmi2}" != "xcheck"; then
++        AC_MSG_FAILURE([--with-pmi2 was given but slurm/pmi2.h is not found.])
++      fi
++    fi
++    CPPFLAGS="${save_CPPFLAGS}"
++    LIBS="${save_LIBS}"
++  fi
++  AC_SUBST(HAVE_PMI2)
++  AC_SUBST([pmi2_CPPFLAGS])
++  AC_SUBST([pmi2_LIBS])
 +  ])
 +
 +dnl --- Types
@@ -1621,6 +1667,8 @@ diff -ruN -p0 PadicoTM.orig/building-tools/features.m4 PadicoTM/building-tools/f
 +	   AC_CHECK_SIZEOF(long)
 +	   AC_CHECK_SIZEOF(long long)
 +	   AC_CHECK_SIZEOF(ssize_t)
++	   AC_CHECK_SIZEOF(float)
++	   AC_CHECK_SIZEOF(double)
 +	   AC_TYPE_SOCKLEN_T
 +	   AC_TYPE_OFF_T
 +	   AC_TYPE_OFF64_T
@@ -1685,13 +1733,13 @@ diff -ruN -p0 PadicoTM.orig/building-tools/features.m4 PadicoTM/building-tools/f
 +
 diff -ruN -p0 PadicoTM.orig/building-tools/html_footer.html PadicoTM/building-tools/html_footer.html
 --- PadicoTM.orig/building-tools/html_footer.html	1970-01-01 01:00:00.000000000 +0100
-+++ PadicoTM/building-tools/html_footer.html	2019-06-06 13:31:53.993771292 +0200
++++ PadicoTM/building-tools/html_footer.html	2019-05-23 11:02:14.642751615 +0200
 @@ -0,0 +1,2 @@
 +</body>
 +</html>
 diff -ruN -p0 PadicoTM.orig/building-tools/html_header.html PadicoTM/building-tools/html_header.html
 --- PadicoTM.orig/building-tools/html_header.html	1970-01-01 01:00:00.000000000 +0100
-+++ PadicoTM/building-tools/html_header.html	2019-06-06 13:31:53.993771292 +0200
++++ PadicoTM/building-tools/html_header.html	2019-05-23 11:02:14.642751615 +0200
 @@ -0,0 +1,24 @@
 +
 +<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN""http://www.w3.org/TR/REC-html40/loose.dtd">
@@ -1720,8 +1768,8 @@ diff -ruN -p0 PadicoTM.orig/building-tools/html_header.html PadicoTM/building-to
 \ Pas de fin de ligne à la fin du fichier
 diff -ruN -p0 PadicoTM.orig/building-tools/misc.m4 PadicoTM/building-tools/misc.m4
 --- PadicoTM.orig/building-tools/misc.m4	1970-01-01 01:00:00.000000000 +0100
-+++ PadicoTM/building-tools/misc.m4	2019-06-06 13:31:53.992771288 +0200
-@@ -0,0 +1,101 @@
++++ PadicoTM/building-tools/misc.m4	2019-09-27 15:04:24.989288829 +0200
+@@ -0,0 +1,94 @@
 +dnl -*- mode: Autoconf;-*-
 +
 +# ## detect padico building-tools
@@ -1803,29 +1851,22 @@ diff -ruN -p0 PadicoTM.orig/building-tools/misc.m4 PadicoTM/building-tools/misc.
 +	   AC_REQUIRE([AC_PADICO_PACKAGE])
 +           AC_REQUIRE([AC_PADICO_SRCDIR])
 +           AC_MSG_CHECKING([${PACKAGE_NAME} version])
-+	   if test -r ${building_tools}/VERSION; then
-+	     PACKAGE_VERSION="`cat ${building_tools}/VERSION`"
-+ 	   else
-+	     AC_MSG_ERROR([ cannot find VERSION. ])
-+           fi
-+	   PACKAGE_STRING="${PACKAGE_NAME}-${PACKAGE_VERSION}"
-+ 	   PACKAGE_TARNAME="${PACKAGE_STRING}.tar.gz"
-+           PACKAGE_BUGREPORT="<Alexandre.Denis@inria.fr>"
++	   version=`${building_tools}/package-version.sh ${building_tools} ${padico_srcdir}`
++	   padico_VERSION=${version}
++	   padico_VERSION_STRING="${PACKAGE_NAME}-${padico_VERSION}"
++	   padico_VERSION_ALPHANUM=`echo ${PADICO_VERSION} | tr -c "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" "_"`
++           padico_BUILD_STRING="${padico_version_STRING} (build `date`)"
 +
-+	   AC_MSG_RESULT([ $PACKAGE_STRING ])
++	   AC_MSG_RESULT([ ${padico_version_STRING} ])
 +
-+	   PADICO_VERSION=${PACKAGE_VERSION}
-+	   AC_SUBST(PADICO_VERSION)
-+
-+           padico_build_string="${PACKAGE_STRING} (`date`)"
-+	   AC_DEFINE_UNQUOTED(PADICO_BUILD_STRING, "${padico_build_string}", [date of the build])
-+
-+	   AC_DEFINE_UNQUOTED(PADICO_VERSION_STRING, "${PACKAGE_STRING}",
-+			      [Padico version as string])
++	   AC_SUBST([$1]_VERSION, ${padico_VERSION})
++	   AC_SUBST([$1]_VERSION_ALPHANUM, ${padico_VERSION_ALPHANUM})
++	   AC_DEFINE_UNQUOTED([$1]_BUILD_STRING, "${padico_BUILD_STRING}", [date of the build])
++	   AC_DEFINE_UNQUOTED([$1]_VERSION_STRING, "${padico_VERSION_STRING}", [[$1] version as string])
 +	 ])
 diff -ruN -p0 PadicoTM.orig/building-tools/out.m4 PadicoTM/building-tools/out.m4
 --- PadicoTM.orig/building-tools/out.m4	1970-01-01 01:00:00.000000000 +0100
-+++ PadicoTM/building-tools/out.m4	2019-06-06 13:31:53.993771292 +0200
++++ PadicoTM/building-tools/out.m4	2019-05-23 11:02:14.642751615 +0200
 @@ -0,0 +1,51 @@
 +dnl -*- mode: Autoconf;-*-
 +
@@ -1878,9 +1919,35 @@ diff -ruN -p0 PadicoTM.orig/building-tools/out.m4 PadicoTM/building-tools/out.m4
 +	   AC_SUBST([PADICO_OUT_FILES])
 +	   AC_OUTPUT
 +	 ])
+diff -ruN -p0 PadicoTM.orig/building-tools/package-version.sh PadicoTM/building-tools/package-version.sh
+--- PadicoTM.orig/building-tools/package-version.sh	1970-01-01 01:00:00.000000000 +0100
++++ PadicoTM/building-tools/package-version.sh	2019-09-27 15:04:24.989288829 +0200
+@@ -0,0 +1,22 @@
++#! /bin/sh
++
++# $1: building-tools directory to consider
++# $2: srcdir
++p="$1"
++if [ -r "${p}/VERSION" ]; then
++    VERSION="`cat ${p}/VERSION`"
++else
++    exit 1
++fi
++
++srcdir="$2"
++if [ "x${srcdir}" != "x" ]; then
++    svn info "${srcdir}" > /dev/null
++    rc=$?
++    if [ ${rc} = 0 ]; then
++	svn="+r`svnversion ${srcdir}`"
++    fi
++fi
++
++# strip newline for m4 parsing
++echo "${VERSION}${svn}" | tr '\n' ' '
 diff -ruN -p0 PadicoTM.orig/building-tools/pkg.m4 PadicoTM/building-tools/pkg.m4
 --- PadicoTM.orig/building-tools/pkg.m4	1970-01-01 01:00:00.000000000 +0100
-+++ PadicoTM/building-tools/pkg.m4	2019-06-06 13:31:53.993771292 +0200
++++ PadicoTM/building-tools/pkg.m4	2019-05-23 11:02:14.642751615 +0200
 @@ -0,0 +1,157 @@
 +# pkg.m4 - Macros to locate and utilise pkg-config.            -*- Autoconf -*-
 +# serial 1 (pkg-config-0.24)
@@ -2041,7 +2108,7 @@ diff -ruN -p0 PadicoTM.orig/building-tools/pkg.m4 PadicoTM/building-tools/pkg.m4
 +])# PKG_CHECK_MODULES
 diff -ruN -p0 PadicoTM.orig/building-tools/tools.m4 PadicoTM/building-tools/tools.m4
 --- PadicoTM.orig/building-tools/tools.m4	1970-01-01 01:00:00.000000000 +0100
-+++ PadicoTM/building-tools/tools.m4	2019-06-06 13:31:53.992771288 +0200
++++ PadicoTM/building-tools/tools.m4	2019-05-23 11:02:14.642751615 +0200
 @@ -0,0 +1,166 @@
 +dnl -*- mode: Autoconf;-*-
 +
@@ -2211,6 +2278,7 @@ diff -ruN -p0 PadicoTM.orig/building-tools/tools.m4 PadicoTM/building-tools/tool
 +	 ])
 diff -ruN -p0 PadicoTM.orig/building-tools/VERSION PadicoTM/building-tools/VERSION
 --- PadicoTM.orig/building-tools/VERSION	1970-01-01 01:00:00.000000000 +0100
-+++ PadicoTM/building-tools/VERSION	2019-06-06 13:31:53.993771292 +0200
++++ PadicoTM/building-tools/VERSION	2019-09-27 15:04:24.989288829 +0200
 @@ -0,0 +1 @@
-+0.5.0
++2019-09-06
+\ Pas de fin de ligne à la fin du fichier

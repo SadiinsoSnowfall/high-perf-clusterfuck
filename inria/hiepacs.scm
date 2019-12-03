@@ -408,11 +408,14 @@ solve massive sparse systems efficiently.")
    (inputs `(("blaspp" ,blaspp)
              ("lapackpp" ,lapackpp)
              ("pastix" ,pastix)
-             ("mumps" ,mumps-openmpi)))
+             ("mumps" ,mumps-openmpi)
+             ("scalapack" ,scalapack) ;; should be inherited from mumps?
+             ))
    (propagated-inputs `(("mpi" ,openmpi)
                         ("ssh" ,openssh)))
    (native-inputs `(("gcc" ,gcc-7)
                     ("gcc-lib" ,gcc-7 "lib")
+                    ("gfortran" ,gfortran)
                     ("pkg-config" ,pkg-config)))))
 
 (define-public blaspp

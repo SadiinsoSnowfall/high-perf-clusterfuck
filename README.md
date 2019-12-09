@@ -1,6 +1,8 @@
 GNU Guix for High-Performance Computing
 ===========================================
 
+[![SWH](https://archive.softwareheritage.org/badge/origin/https://gitlab.inria.fr/guix-hpc/guix-hpc/)](https://archive.softwareheritage.org/browse/origin/https://gitlab.inria.fr/guix-hpc/guix-hpc/)
+
 Hello!  This repository contains package recipes and extensions of the
 [GNU Guix package manager](https://gnu.org/s/guix) for high-performance
 computing (HPC).  Notably, it contains packages for HPC software

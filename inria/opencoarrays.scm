@@ -42,7 +42,6 @@
       (propagated-inputs
        `(
          ("gfortran" , gfortran)
-         ("hwloc" , hwloc-1 "lib")
          ("openmpi", openmpi-with-mpi1-compat)))
 (synopsis
        "OpenCoArrays Fortran")

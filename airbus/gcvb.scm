@@ -1,7 +1,7 @@
 ;;; This module extends GNU Guix and is licensed under the same terms, those
 ;;; of the GNU GPL version 3 or (at your option) any later version.
 ;;;
-;;; Copyright © 2017, 2019 Inria
+;;; Copyright © 2017, 2019, 2020 Inria
 
 (define-module (airbus gcvb)
   #:use-module (guix)
@@ -15,6 +15,7 @@
   #:use-module (gnu packages python)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages python-web)
+  #:use-module (gnu packages xml)
   #:use-module (guix utils)
   #:use-module (srfi srfi-1))
   

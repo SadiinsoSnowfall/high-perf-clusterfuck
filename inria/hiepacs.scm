@@ -879,3 +879,31 @@ CTAGS    = $(CTAGSPROG)
              ,@(delete `("python-numpy" ,python2-numpy) (package-inputs pastix))
              ;; ,@(delete `("python-scipy" ,python2-scipy) (package-inputs pastix))
              ))))
+
+(define-public scalable-python
+  (package
+   (inherit python-2.7)
+   (name "scalable-python")
+   (home-page "https://github.com/CSCfi/scalable-python.git")
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url home-page)
+                  (commit "b0b9d3f29298b719f9e4f684deae713c0a224b0e")
+                  ))
+            (sha256
+             (base32
+              "0ivxsf17x7vjxr5h4g20rb5i3k705vgd502ma024z95fnyzd0bqi"))))
+   (arguments
+    (substitute-keyword-arguments (package-arguments python-2.7)
+                                  ((#:configure-flags flags '())
+                                   `(cons "--enable-mpi" ,flags))
+                                  ((#:make-flags makeflags '())
+                                   `(cons "install-mpi" (cons "mpi" ,makeflags)))
+                                  ))
+   (description
+    "Modified python 2.7.13. Scalable Python performs the I/O operations used
+e.g. by import statements in a single process and uses MPI to transmit data
+to/from all other processes.")
+   (propagated-inputs `(("openmpi" ,openmpi)))
+   ))

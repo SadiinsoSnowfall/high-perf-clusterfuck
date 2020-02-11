@@ -1,0 +1,22 @@
+diff --git a/Modules/Setup.dist b/Modules/Setup.dist
+index 40c10fa..8ae763e 100644
+--- a/Modules/Setup.dist
++++ b/Modules/Setup.dist
+@@ -122,7 +122,7 @@ _weakref _weakref.c             # weak references
+ 
+ # The zipimport module is always imported at startup. Having it as a
+ # builtin module avoids some bootstrapping problems and reduces overhead.
+-zipimport zipimport.c
++# zipimport zipimport.c
+ 
+ # The rest of the modules listed in this file are all commented out by
+ # default.  Usually they can be detected and built as dynamically
+@@ -170,7 +170,7 @@ GLHACK=-Dclear=__GLclear
+ 
+ array arraymodule.c	# array objects
+ cmath cmathmodule.c _math.c # -lm # complex math library functions
+-math mathmodule.c _math.c # -lm # math library functions, e.g. sin()
++math mathmodule.c #_math.c # -lm # math library functions, e.g. sin()
+ _struct _struct.c	# binary structure packing/unpacking
+ time timemodule.c # -lm # time operations and variables
+ operator operator.c	# operator.add() and similar goodies

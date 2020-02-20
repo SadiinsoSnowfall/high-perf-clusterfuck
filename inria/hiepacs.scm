@@ -27,7 +27,8 @@
   #:use-module (inria eztrace)
   #:use-module (inria simgrid)
   #:use-module (guix utils)
-  #:use-module (srfi srfi-1))
+  #:use-module (srfi srfi-1)
+  )
 
 (define-public parsec
   (package
@@ -884,6 +885,7 @@ CTAGS    = $(CTAGSPROG)
   (package
    (inherit python-2.7)
    (name "scalable-python")
+   (version "2.7.13")
    (home-page "https://github.com/CSCfi/scalable-python.git")
    (source (origin
             (method git-fetch)
@@ -891,7 +893,12 @@ CTAGS    = $(CTAGSPROG)
                   (url home-page)
                   (commit "b0b9d3f29298b719f9e4f684deae713c0a224b0e")
                   ))
-            (patches (search-patches "inria/patches/scalable-python.patch"))
+            (patches (search-patches
+                      "inria/patches/scalable-python.patch"
+                      "python-2.7-search-paths.patch"
+                      "python-2-deterministic-build-info.patch"
+                      "python-2.7-site-prefixes.patch"
+                      ))
             (sha256
              (base32
               "0ivxsf17x7vjxr5h4g20rb5i3k705vgd502ma024z95fnyzd0bqi"))))
@@ -910,12 +917,12 @@ CTAGS    = $(CTAGSPROG)
                                                    (replace 'move-tk-inter (lambda _ #t)) ;; Not sure what this is anyway
                                                    ))
                                   ((#:configure-flags flags '())
-                                   `(cons "--enable-mpi" (cons "--without-ensurepip" (delete "--with-ensurepip=install",flags)))
-                                   )
+                                   `(cons "--enable-mpi" (cons "--without-ensurepip" (delete "--with-ensurepip=install",flags))))
                                   ((#:make-flags makeflags '())
-                                   `(cons "mpi" (cons "install-mpi",makeflags)))
+                                   `(cons "mpi" (cons "install" (cons "install-mpi",makeflags))))
                                   ((#:tests? runtests '())
-                                   #f)))
+                                   #f)
+                                  ))
    (description
     "Modified python 2.7.13. Scalable Python performs the I/O operations used
 e.g. by import statements in a single process and uses MPI to transmit data

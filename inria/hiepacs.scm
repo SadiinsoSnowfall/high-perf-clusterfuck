@@ -28,6 +28,7 @@
   #:use-module (inria simgrid)
   #:use-module (guix utils)
   #:use-module (srfi srfi-1)
+  #:use-module (guix build-system python)
   )
 
 (define-public parsec
@@ -929,3 +930,20 @@ e.g. by import statements in a single process and uses MPI to transmit data
 to/from all other processes.")
    (propagated-inputs `(("openmpi" ,openmpi)))
    ))
+
+(define-public fixed-python2-sympy
+  (package
+   (inherit (package-with-python2 python-sympy))
+   (name "fixed-python2-sympy")
+   (arguments
+    `(#:python ,python-2
+               #:phases
+               (modify-phases %standard-phases
+                              ;; Run the core tests after installation.  By default it would run
+                              ;; *all* tests, which take a very long time to complete and are known
+                              ;; to be flaky.
+                              (delete 'check)
+                              (add-after 'install 'check
+                                         (lambda* (#:key outputs #:allow-other-keys)
+                                                  (invoke "python" "-c" "import sympy; sympy.test(\"/core\")")
+                                                  #t)))))))

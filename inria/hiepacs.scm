@@ -28,6 +28,8 @@
   #:use-module (inria simgrid)
   #:use-module (guix utils)
   #:use-module (srfi srfi-1)
+  ;; To remove when/if python2 packages sympy and mpi4py
+  ;; are fixed in official repo
   #:use-module (guix build-system python)
   )
 
@@ -931,6 +933,7 @@ to/from all other processes.")
    (propagated-inputs `(("openmpi" ,openmpi)))
    ))
 
+;; Fix python2-sympy
 (define-public fixed-python2-sympy
   (package
    (inherit (package-with-python2 python-sympy))
@@ -947,3 +950,6 @@ to/from all other processes.")
                                          (lambda* (#:key outputs #:allow-other-keys)
                                                   (invoke "python" "-c" "import sympy; sympy.test(\"/core\")")
                                                   #t)))))))
+;; Add mpi4py with python2
+(define-public python2-mpi4py
+  (package-with-python2 python-mpi4py))

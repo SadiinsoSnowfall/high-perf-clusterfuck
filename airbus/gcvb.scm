@@ -335,6 +335,19 @@
       "Bootstrap themed components for use in Plotly Dash")
     (license #f)))
 
+(define-public python-pyyaml-5
+  (package
+    (inherit python-pyyaml)
+    (name "python-pyyaml-5")
+    (version "5.3")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "PyYAML" version))
+       (sha256
+        (base32
+         "058nd4p8f25wwzy2aiwh18wcrdm6663cqbfdkgjp8y9cp7ampx79"))))))
+
 (define-public gcvb
   (package
     (name "gcvb")
@@ -348,7 +361,7 @@
           (base32
             "1ai9yh4hg7crgrx3p3wkdiqhqg79gjqs10ry273ihx89rx3xzzsl"))))
     (build-system python-build-system)
-    (propagated-inputs `(("PyYAML" ,python-pyyaml)))
+    (propagated-inputs `(("PyYAML" ,python-pyyaml-5)))
     (native-inputs
      `(("python-dash-bootstrap-components" ,python-dash-bootstrap-components)))
     (home-page "https://github.com/jm-cc/gcvb")

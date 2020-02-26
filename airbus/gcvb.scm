@@ -343,10 +343,10 @@
         (method git-fetch)
         (uri (git-reference
           (url "https://github.com/jm-cc/gcvb")
-          (commit "a62cd85c5e631524fcade39542e992f5cec577fd")))
+          (commit "cba5f72c5da761cfb3f3e9960f12dd4b68ae0f44")))
         (sha256
           (base32
-            "00qk7v9q9xl7qlgcgswb196fyb77n3rrg4nf9ia50ix4d0hycjzd"))))
+            "1ai9yh4hg7crgrx3p3wkdiqhqg79gjqs10ry273ihx89rx3xzzsl"))))
     (build-system python-build-system)
     (propagated-inputs `(("PyYAML" ,python-pyyaml)))
     (native-inputs

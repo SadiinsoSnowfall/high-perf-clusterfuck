@@ -108,7 +108,7 @@ of the available resources.")
 (define-public chameleon
   (package
     (name "chameleon")
-    (version "0.9.2")
+    (version "1.0.0")
     (home-page "https://gitlab.inria.fr/solverstack/chameleon")
     (synopsis "Dense linear algebra solver")
     (description
@@ -124,47 +124,46 @@ area (CPUs-GPUs, distributed nodes).")
               (method git-fetch)
               (uri (git-reference
                     (url home-page)
-                    (commit "d2b4cab3a6b860f068979ecc2a532a3249060ba8")
+                    (commit "da81c248e229dc879b06bec41b1f5468416b7d9a")
                     ;; We need the submodule in 'CMakeModules/morse_cmake'.
                     (recursive? #t)))
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "03sjykh24ms4h2vzylkxcc6v7nshl3w0dhyyrv9grzckmxvmvzij"))))
+                "13yz75yqd6ilnw4s5ksb5qbvp18v2q4kgwq8w9ic8lfcw96p1bh9"))))
     (build-system cmake-build-system)
     (outputs '("debug" "out"))
     (arguments
      '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON"
                            "-DCHAMELEON_USE_MPI=ON")
 
-       ;; FIXME: Test too long for gitlab-runner CI
+       ;; FIXME: MPI tests too long for gitlab-runner CI
        #:tests? #f
 
        #:phases  (modify-phases %standard-phases
-                   (add-before 'check 'set-home
-                     (lambda _
-                       ;; Some of the tests use StarPU, which expects $HOME
-                       ;; to be writable.
-                       (setenv "HOME" (getcwd))
-                       #t)))))
+                                ;; Without this variable, pkg-config removes paths in already in CFLAGS
+                                ;; However, gfortran does not check CPATH to find fortran modules
+                                ;; and and the module fabulous_mod cannot be found
+                                (add-before 'configure 'fix-pkg-config-env
+                                            (lambda _ (setenv "PKG_CONFIG_ALLOW_SYSTEM_CFLAGS" "1") #t))
+                                ;; Allow tests with more MPI processes than available CPU cores,
+                                ;; which is not allowed by default by OpenMPI
+                                (add-before 'check 'prepare-test-environment
+                                            (lambda _
+                                              (setenv "OMPI_MCA_rmaps_base_oversubscribe" "1") #t))
+                                ;; Some of the tests use StarPU, which expects $HOME
+                                ;; to be writable.
+                                (add-before 'check 'set-home
+                                            (lambda _
+                                              (setenv "HOME" (getcwd))
+                                              #t)))))
     (inputs `(("lapack" ,openblas)))
     (propagated-inputs `(("starpu" ,starpu)
                          ("mpi" ,openmpi)))
     (native-inputs `(("pkg-config" ,pkg-config)
                      ("gfortran" ,gfortran)
-                     ("python" ,python-2)))))
-
-(define-public chameleon+fxt
-  (package
-   (inherit chameleon)
-   (name "chameleon-fxt")
-   (arguments
-    (substitute-keyword-arguments (package-arguments chameleon)
-                                  ((#:configure-flags flags '())
-                                   `(cons "-DCHAMELEON_ENABLE_TRACING=ON" ,flags))))
-   (propagated-inputs `(("fxt" ,fxt)
-                        ("starpu" ,starpu+fxt)
-                        ,@(delete `("starpu" ,starpu) (package-inputs chameleon))))))
+                     ("python" ,python)
+                     ("openssh" ,openssh)))))
 
 (define-public chameleon+simgrid
   (package

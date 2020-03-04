@@ -90,11 +90,6 @@ build_chameleon-simgrid:
   script:
     - guix build chameleon-simgrid
 
-build_chameleon-fxt:
-  stage: build
-  script:
-    - guix build chameleon-fxt
-
 build_chameleon-openmp:
   stage: build
   script:

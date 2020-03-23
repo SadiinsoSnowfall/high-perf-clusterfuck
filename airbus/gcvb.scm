@@ -356,14 +356,14 @@
         (method git-fetch)
         (uri (git-reference
           (url "https://github.com/jm-cc/gcvb")
-          (commit "cba5f72c5da761cfb3f3e9960f12dd4b68ae0f44")))
+          (commit "8ba8e5ed4c96e0e93aed8963806d5d7203b17bdc")))
         (sha256
           (base32
-            "1ai9yh4hg7crgrx3p3wkdiqhqg79gjqs10ry273ihx89rx3xzzsl"))))
+           "03fnk9ia02ml8pjgyvyip2szi4d9nsr5hl6y9m4a1hhf6r3119qg"))))
     (build-system python-build-system)
-    (propagated-inputs `(("PyYAML" ,python-pyyaml-5)))
-    (native-inputs
-     `(("python-dash-bootstrap-components" ,python-dash-bootstrap-components)))
+    (propagated-inputs
+     `(("PyYAML" ,python-pyyaml-5)
+       ("python-dash-bootstrap-components" ,python-dash-bootstrap-components)))
     (home-page "https://github.com/jm-cc/gcvb")
     (synopsis
       "Python 3 module aiming at facilitating non-regression, validation and

@@ -351,15 +351,15 @@
 (define-public gcvb
   (package
     (name "gcvb")
-    (version "0.0.1")
+    (version "0.0.1-git.b4f79d2")
     (source (origin
         (method git-fetch)
         (uri (git-reference
           (url "https://github.com/jm-cc/gcvb")
-          (commit "960596698b5d4381969956203c965369194fab65")))
+          (commit "b4f79d2564f7072d7455b5f2fb1ee77e1062ff74")))
         (sha256
           (base32
-           "07p3dpqv234b3f4q3h63hg25wi83p903wvn299lphb0vn9q0ypkz"))))
+           "0aqwqq3wjmhqd84wg3qw85f37dwaxhiq8c8c9ydd8yscj9hkn001"))))
     (build-system python-build-system)
     (propagated-inputs
      `(("PyYAML" ,python-pyyaml-5)

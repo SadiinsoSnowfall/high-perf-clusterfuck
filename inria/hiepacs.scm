@@ -551,15 +551,11 @@ etc.")
        ("metis" ,metis)
        ("starpu" ,starpu)
 
-       ;; Python bindings and Python tests.
-       ;;
-       ;; XXX: The "Generate precision dependencies" CMake machinery uses the
-       ;; "import imp", which is deprecated in Python 3 and leads to failures
-       ;; down the road.  Thus, stick to Python 2 for now.
-       ("python2" ,python-2)
+       ;; Python bindings and Python tests. Python3
+       ("python" ,python)
 
-       ("python-numpy" ,python2-numpy)
-       ;; ("python-scipy" ,python2-scipy)
+       ("python-numpy" ,python-numpy)
+       ;;("python-scipy" ,python-scipy)
        ))
     (propagated-inputs `(("hwloc" ,hwloc "lib")
                          ("scotch" ,scotch)))

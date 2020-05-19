@@ -1,12 +1,13 @@
 ;;; This module extends GNU Guix and is licensed under the same terms, those
 ;;; of the GNU GPL version 3 or (at your option) any later version.
 ;;;
-;;; Copyright © 2017, 2019 Inria
+;;; Copyright © 2017, 2019, 2020 Inria
 
 (define-module (inria eztrace)
   #:use-module (guix)
   #:use-module (guix build-system gnu)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages perl)
@@ -41,12 +42,28 @@
                                               (assoc-ref %build-inputs
                                                          "openmpi")))
 
+       #:phases (modify-phases %standard-phases
+                  (add-before 'configure 'ensure-ld-wrapper-is-first
+                    (lambda* (#:key inputs #:allow-other-keys)
+                      ;; Make sure the ld wrapper comes before the 'ld'
+                      ;; command of BINUTILS-2.33.
+                      (let ((ld-wrapper (assoc-ref inputs "ld-wrapper")))
+                        (setenv "PATH"
+                                (string-append ld-wrapper "/bin:"
+                                               (getenv "PATH")))
+                        #t))))
+
        ;; FIXME: There are test failures in bundled libraries.
        #:tests? #f))
     (inputs `(("litl" ,litl)
               ("gfortran" ,gfortran)
               ("libiberty" ,libiberty)            ;for bfd
               ("zlib" ,zlib)                      ;for bfd
+
+              ;; Pptrace needs 'bfd_get_section', which is no longer
+              ;; available in Binutils 2.34.
+              ("binutils-2.33" ,binutils-2.33)
+
               ("openmpi" ,openmpi)))
     (synopsis "Collect program execution traces")
     (description

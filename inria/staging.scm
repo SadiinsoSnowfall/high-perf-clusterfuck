@@ -1,7 +1,7 @@
 ;;; This module extends GNU Guix and is licensed under the same terms, those
 ;;; of the GNU GPL version 3 or (at your option) any later version.
 ;;;
-;;; Copyright © 2019 Inria
+;;; Copyright © 2019, 2020 Inria
 
 (define-module (inria staging)
   #:use-module (guix)
@@ -29,7 +29,7 @@
   ;; unbundling VTK.
   (package
     (name "paraview")
-    (version "5.7.0")
+    (version "5.8.0")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -39,7 +39,7 @@
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0v67fvjdv4x5p69qdknnsbsqvp1znvbi8pmmzrz50dp33p1gd44z"))))
+                "1mka6wwg9mbkqi3phs29mvxq6qbc44sspbm4awwamqhilh4grhrj"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags '("-DPARAVIEW_ENABLE_PYTHON=ON"
@@ -56,6 +56,7 @@
      `(("qttools" ,qttools)))
     (inputs
      `(("qtbase" ,qtbase)
+       ("qtsvg" ,qtsvg)
        ("qtx11extras" ,qtx11extras)
        ("qtxmlpatterns" ,qtxmlpatterns)
        ("libx11" ,libx11)

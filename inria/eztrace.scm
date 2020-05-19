@@ -5,8 +5,10 @@
 
 (define-module (inria eztrace)
   #:use-module (guix)
+  #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages compression)
@@ -17,13 +19,16 @@
 (define-public eztrace
   (package
     (name "eztrace")
-    (version "1.1-7")
+    (version "1.1-10")
     (source (origin
-              (uri "https://gforge.inria.fr/frs/download.php/file/37155/eztrace-1.1-7.tar.gz")
-              (method url-fetch)
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.com/eztrace/eztrace")
+                    (commit (string-append "eztrace-" version))))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0cr2d4fdv4ljvag55dsz3rpha1jan2gc3jhr06ycyk43450pl58p"))
+                "0m0gw183nka2z7mkski1zzphdyqggxgi0blrgml6dww3z3bqhlic"))
               ;; (modules '((guix build utils)))
 
               ;; Remove bundled libraries.
@@ -43,6 +48,12 @@
                                                          "openmpi")))
 
        #:phases (modify-phases %standard-phases
+                  (add-after 'unpack 'make-source-writable
+                    (lambda _
+                      ;; Make sure 'autoreconf' can write 'configure' files.
+                      (for-each make-file-writable
+                                (find-files "." "^configure$"))
+                      #t))
                   (add-before 'configure 'ensure-ld-wrapper-is-first
                     (lambda* (#:key inputs #:allow-other-keys)
                       ;; Make sure the ld wrapper comes before the 'ld'
@@ -51,10 +62,20 @@
                         (setenv "PATH"
                                 (string-append ld-wrapper "/bin:"
                                                (getenv "PATH")))
-                        #t))))
+                        #t)))
+                  (add-before 'bootstrap 'patch-build-tool-shebangs
+                    (lambda _
+                      ;; These scripts are executed from 'autoreconf'.
+                      (for-each patch-shebang
+                                (find-files "." "\\.sh$"))
+                      #t)))
 
        ;; FIXME: There are test failures in bundled libraries.
        #:tests? #f))
+    (native-inputs
+     `(("autoconf" ,autoconf)
+       ("automake" ,automake)
+       ("libtool" ,libtool)))
     (inputs `(("litl" ,litl)
               ("gfortran" ,gfortran)
               ("libiberty" ,libiberty)            ;for bfd

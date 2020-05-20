@@ -149,3 +149,8 @@ build_mmg:
   stage: build
   script:
     - guix build mmg
+
+build_librsb:
+  stage: build
+  script:
+    - guix build librsb

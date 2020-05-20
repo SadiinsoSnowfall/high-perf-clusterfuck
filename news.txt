@@ -7,6 +7,10 @@
 
  ;; Add your own news entry here!
 
+ (entry (commit "bb976949d8c36bc3a7780156bcef7841608c7497")
+        (title (en "librsb is now available"))
+        (body (en "The librsb library for sparse matrix computations is now available.")))
+
  (entry (commit "67d5cbd6c694a523d4bd63b168398785be67ba26")
         (title (en "PadicoTM's @command{padico-launch} is now self-contained"))
         (body (en "The @command{padico-launch} command of PadicoTM is now

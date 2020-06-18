@@ -35,7 +35,7 @@
   (string-append %starpu-home-page "/files/starpu-"
                  version "/starpu-" version ".tar.gz"))
 
-(define %starpu-git "git@gitlab.inria.fr:starpu/starpu.git")
+(define %starpu-git "https://gitlab.inria.fr/starpu/starpu.git")
 
 (define-public starpu-1.1
   (package

@@ -135,7 +135,7 @@ kernels are executed as efficiently as possible.")
   (package
     (inherit starpu-1.2)
     (name "starpu")
-    (version "1.3.3")
+    (version "1.3.4")
     (source (origin
              (method git-fetch)
              (uri (git-reference

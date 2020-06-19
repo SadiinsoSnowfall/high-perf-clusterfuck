@@ -93,7 +93,8 @@
                                         (find-files "." "^test-suite\\.log$"))
                               #f))))))))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
+     `(("gforgran" ,gfortran)
+       ("pkg-config" ,pkg-config)
        ("gdb" ,gdb)
        ("libtool" ,libtool)
        ("autoconf" ,autoconf)

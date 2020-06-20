@@ -336,13 +336,13 @@ moderate number of blocks which ensures a reasonable convergence behavior.")
               (method git-fetch)
               (uri (git-reference
                     (url home-page)
-                    (commit version)
+                    (commit "96b3922b981ccc1de4c13bc5341f380f1a72e900")
                     ;; We need the submodule in 'cmake_modules/morse'.
                     (recursive? #t)))
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "1cla01sf3kg9ykgsyx68j8ihg2383q0g7nw1gq4wpmnv7kxm4q9m"))))
+                "01idl58vslrdv9srijmba0gb85ygnzr6z818q9kqc8sbqpljqarw"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags '("-DFABULOUS_BUILD_C_API=ON"
@@ -949,3 +949,4 @@ to/from all other processes.")
 ;; Add mpi4py with python2
 (define-public python2-mpi4py
   (package-with-python2 python-mpi4py))
+

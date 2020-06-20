@@ -342,7 +342,7 @@ moderate number of blocks which ensures a reasonable convergence behavior.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "01idl58vslrdv9srijmba0gb85ygnzr6z818q9kqc8sbqpljqarw"))))
+                "1nmhr50vhgj8jj4xsd1iswydl4yz1xm4kmyhkbdqvam2nfdjp1y2"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags '("-DFABULOUS_BUILD_C_API=ON"

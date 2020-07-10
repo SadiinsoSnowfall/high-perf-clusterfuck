@@ -118,7 +118,7 @@ kernels are executed as efficiently as possible.")
   (package
     (inherit starpu-1.1)
     (name "starpu")
-    (version "1.2.8")
+    (version "1.2.10")
     (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -126,7 +126,7 @@ kernels are executed as efficiently as possible.")
                    (commit (string-append "starpu-" version))))
              (file-name (git-file-name name version))
              (sha256
-              (base32 "0qp4pfvx5igw1ay01mq81693gsh1jc2lb0v6y5f50il6qm1mq1j7"))))
+              (base32 "1mlpc0zn1ra8b7whv1vfqxh6n935aj05c8n7sxgv8dky22bj56qw"))))
     (native-inputs
      ;; Some tests require bc and Gnuplot.
      `(("bc" ,bc)
@@ -137,7 +137,7 @@ kernels are executed as efficiently as possible.")
   (package
     (inherit starpu-1.2)
     (name "starpu")
-    (version "1.3.3")
+    (version "1.3.4")
     (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -145,7 +145,7 @@ kernels are executed as efficiently as possible.")
                    (commit (string-append "starpu-" version))))
              (file-name (git-file-name name version))
              (sha256
-              (base32 "0rql58dkns5yw35b46wx05z2gx9jw9x61ygayqbap7xzkin8565f"))
+              (base32 "1mlpc0zn1ra8b7whv1vfqxh6n935aj05c8n7sxgv8dky22bj56qw"))
     	     (patches (search-patches %patch-path))))
    (arguments
     (substitute-keyword-arguments (package-arguments starpu-1.2)

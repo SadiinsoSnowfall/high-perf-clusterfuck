@@ -9,7 +9,7 @@ diff -ru -p0 starpu.origin/examples/sched_ctx/dummy_sched_with_ctx.c starpu/exam
 diff -ru -p0 starpu.origin/examples/sched_ctx/sched_ctx.c starpu/examples/sched_ctx/sched_ctx.c
 --- starpu.origin/examples/sched_ctx/sched_ctx.c        2019-10-25 13:36:55.436633272 +0200
 +++ starpu/examples/sched_ctx/sched_ctx.c       2019-10-25 11:53:17.134977524 +0200
-@@ -80,0 +81,2 @@ int main(void)
+@@ -90,0 +91,2 @@ int main(void)
 +       return 77;
 +
 diff -ru -p0 starpu.origin/examples/sched_ctx/sched_ctx_empty.c starpu/examples/sched_ctx/sched_ctx_empty.c

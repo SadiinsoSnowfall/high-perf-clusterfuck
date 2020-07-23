@@ -33,7 +33,7 @@ Guix](https://gnu.org/s/guix/packages).  To make them visible to the
 `guix` command-line tools, create the `~/.config/guix/channels.scm` file
 with the following snippet to request the `guix-hpc` _channel_:
 
-```
+```scheme
 (cons (channel
         (name 'guix-hpc)
         (url "https://gitlab.inria.fr/guix-hpc/guix-hpc.git"))

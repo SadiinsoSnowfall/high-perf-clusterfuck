@@ -172,7 +172,7 @@ area (CPUs-GPUs, distributed nodes).")
    (arguments
     (substitute-keyword-arguments (package-arguments chameleon)
                                   ((#:configure-flags flags '())
-                                   `(cons "-DCHAMELEON_SIMULATION=ON" (delete "-DCHAMELEON_USE_MPI=ON" ,flags)))))
+                                   `(cons "-DCHAMELEON_SIMULATION=ON -DCHAMELEON_UDE_CUDA=ON" (delete "-DCHAMELEON_USE_MPI=ON" ,flags)))))
    (inputs `(("simgrid" ,simgrid)
              ,@(package-inputs chameleon)))
    (propagated-inputs `(("starpu" ,starpu+simgrid)
@@ -949,4 +949,3 @@ to/from all other processes.")
 ;; Add mpi4py with python2
 (define-public python2-mpi4py
   (package-with-python2 python-mpi4py))
-

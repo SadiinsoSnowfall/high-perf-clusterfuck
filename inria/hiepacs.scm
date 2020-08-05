@@ -172,7 +172,7 @@ area (CPUs-GPUs, distributed nodes).")
    (arguments
     (substitute-keyword-arguments (package-arguments chameleon)
                                   ((#:configure-flags flags '())
-                                   `(cons "-DCHAMELEON_SIMULATION=ON -DCHAMELEON_UDE_CUDA=ON" (delete "-DCHAMELEON_USE_MPI=ON" ,flags)))))
+                                   `(cons "-DCHAMELEON_SIMULATION=ON -DCHAMELEON_USE_CUDA=ON" (delete "-DCHAMELEON_USE_MPI=ON" ,flags)))))
    (inputs `(("simgrid" ,simgrid)
              ,@(package-inputs chameleon)))
    (propagated-inputs `(("starpu" ,starpu+simgrid)

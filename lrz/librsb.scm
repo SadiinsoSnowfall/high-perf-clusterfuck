@@ -19,13 +19,13 @@
 (define-public librsb
   (package
     (name "librsb")
-    (version "1.2.0.8")
+    (version "1.2.0.9")
     (source (origin
-              (uri "http://download.sourceforge.net/librsb/librsb-1.2.0.8.tar.gz")
+              (uri "http://download.sourceforge.net/librsb/librsb-1.2.0.9.tar.gz")
               (method url-fetch)
               (sha256
                (base32
-                "1jw09lhaqcgm2mfmp5qbbi48lzmf0w7xvgza2gg0mn3632dd3swb"))
+                "1ynrsgnvv1jfm8dv3jwjrip9x9icxv7w3qrk149025j6fbaza8gl"))
               ))
     (build-system gnu-build-system)
     (inputs `(

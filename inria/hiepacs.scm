@@ -12,6 +12,8 @@
   #:use-module (guix build-system gnu)
   #:use-module (gnu packages)
   #:use-module (gnu packages bison)
+  #:use-module (gnu packages commencement)
+  #:use-module (gnu packages databases)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages maths)
@@ -879,6 +881,40 @@ CTAGS    = $(CTAGSPROG)
              ,@(delete `("python-numpy" ,python2-numpy) (package-inputs pastix))
              ;; ,@(delete `("python-scipy" ,python2-scipy) (package-inputs pastix))
              ))))
+
+(define-public pmtool
+  (package
+    (name "pmtool")
+    (version "1.0.0")
+    (home-page "https://gitlab.inria.fr/eyrauddu/pmtool")
+    (synopsis "pmtool: Post-Mortem Tool")
+    (description
+     "pmtool aims at performing post-mortem analyses of the behavior
+of StarPU applications. Provide lower bounds on makespan. Study the
+performance of different schedulers in a simple context. Limitations:
+ignore communications for the moment; branch comms attempts to remove
+this limitation.")
+    (license license:gpl3+)
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit "e11dc2996ab976275ac678c2686db2afcf480137")
+                    (recursive? #f)))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "18dad0w21av8jps8mfzj99mb237lrr27mmgbh3s16g94lfpnffd9"))))
+    (build-system cmake-build-system)
+    (outputs '("debug" "out"))
+    (arguments
+     '(#:configure-flags '("-DBUILD_SHARED_LIBS=OFF")
+
+       ;; FIXME: no make test available for now in pmtool
+       #:tests? #f))
+
+    (inputs `(("recutils" ,recutils)))
+    (native-inputs `(("gcc-toolchain" ,gcc-toolchain)))))
 
 (define-public scalable-python
   (package

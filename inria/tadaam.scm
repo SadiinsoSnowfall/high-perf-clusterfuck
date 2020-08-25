@@ -28,22 +28,22 @@
 (define %padicotm-svn "https://scm.gforge.inria.fr/anonscm/svn/padico/PadicoTM/trunk")
 (define %patch-path "inria/patches/autogen_building-tools.patch")
 
-(define %v2019-05-13 "2019-12-03")
-(define %v2019-05-13-pm2-revision 28521)
-(define %v2019-05-13-padicotm-revision 5374)
+(define %v2020-08-21 "2020-08-21")
+(define %v2020-08-21-pm2-revision 28844)
+(define %v2020-08-21-padicotm-revision 5458)
 
-(define-public puk-2019-05-13
+(define-public puk-2020-08-21
   (package
    (name "puk")
-   (version %v2019-05-13)
+   (version %v2020-08-21)
    (home-page (string-append %pm2-home-page "/PadicoTM"))
    (source (origin
             (method svn-fetch)
             (uri (svn-reference
                   (url (string-append %padicotm-svn "/PadicoTM/Puk"))
-                  (revision %v2019-05-13-padicotm-revision)))
+                  (revision %v2020-08-21-padicotm-revision)))
             (sha256
-             (base32 "1yba43npqjrgp3p7pkdjw8yswl994456f07s1ga9207hkyz7wws8"))
+             (base32 "0fgjvsq2mbx7fj00vd968832rr9fny4d195cs834kl39cl2jlfz9"))
             (patches (search-patches %patch-path))))
    (build-system gnu-build-system)
    (arguments
@@ -69,20 +69,20 @@
    (license license:lgpl2.0)))
 
 (define-public puk
-  puk-2019-05-13)
+  puk-2020-08-21)
 
-(define-public pioman-2019-05-13
+(define-public pioman-2020-08-21
   (package
    (name "pioman")
-   (version %v2019-05-13)
+   (version %v2020-08-21)
    (home-page (string-append %pm2-home-page "/pioman"))
    (source (origin
             (method svn-fetch)
             (uri (svn-reference
                   (url (string-append %pm2-svn "/pioman"))
-                  (revision %v2019-05-13-pm2-revision)))
+                  (revision %v2020-08-21-pm2-revision)))
             (sha256
-             (base32 "1nx8vbp9hm7bk585g3lwj8ggx3qk1if5yjmk4zp52bz5xyldifmj"))
+             (base32 "1yiagsdlr3j5v6dadgpv47kac1k5k9w7r4x6xpv3p8l6f3ka4843"))
             (patches (search-patches %patch-path))))
    (build-system gnu-build-system)
    (arguments
@@ -109,21 +109,21 @@
    (license license:lgpl2.0)))
 
 (define-public pioman
-  pioman-2019-05-13)
+  pioman-2020-08-21)
 
-(define-public padicotm-2019-05-13
+(define-public padicotm-2020-08-21
   (package
    (name "padicotm")
-   (version %v2019-05-13)
+   (version %v2020-08-21)
    (home-page (string-append %pm2-home-page "/PadicoTM"))
    (source (origin
             (method svn-fetch)
             (uri (svn-reference
                   (url (string-append %padicotm-svn "/PadicoTM/PadicoTM"))
-                  (revision %v2019-05-13-padicotm-revision)))
+                  (revision %v2020-08-21-padicotm-revision)))
             (file-name (string-append name "-" version "-checkout"))
             (sha256
-             (base32 "0z2pz084a66wdpnkfzyw1vvq75219csy48hwhww28dl3b9nhzcym"))
+             (base32 "1a2daga6r9xcrm6nrmmnv1p0p60z30s1vd30jklv0p9ajy1mgy9l"))
             (patches (search-patches %patch-path))))
    (build-system gnu-build-system)
    (arguments
@@ -185,9 +185,9 @@
    (license license:lgpl2.0)))
 
 (define-public padicotm
-  padicotm-2019-05-13)
+  padicotm-2020-08-21)
 
-(define-public padicotm-mini-2019-05-13
+(define-public padicotm-mini-2020-08-21
   (package
    (inherit padicotm)
    (name "padicotm-mini")
@@ -199,20 +199,20 @@
     `(("puk" ,puk)))))
 
 (define-public padicotm-mini
-  padicotm-mini-2019-05-13)
+  padicotm-mini-2020-08-21)
 
-(define-public nmad-2019-05-13
+(define-public nmad-2020-08-21
   (package
    (name "nmad")
-   (version %v2019-05-13)
+   (version %v2020-08-21)
    (home-page (string-append %pm2-home-page "/NewMadeleine"))
    (source (origin
             (method svn-fetch)
             (uri (svn-reference
                   (url (string-append %pm2-svn "/nmad"))
-                  (revision %v2019-05-13-pm2-revision)))
+                  (revision %v2020-08-21-pm2-revision)))
             (sha256
-             (base32 "1a3dxprvwsll2lma7hbs3ryjn1z9dw4vm97f0qmk845y790i6zfy"))
+             (base32 "0rinwqhi82csparw7ihbnysr452aikammqa33zq5ydp2jhmmvyyl"))
             (patches (search-patches %patch-path))))
    (build-system gnu-build-system)
    (arguments
@@ -258,9 +258,9 @@
    (license license:lgpl2.0)))
 
 (define-public nmad
-  nmad-2019-05-13)
+  nmad-2020-08-21)
 
-(define-public nmad-mini-2019-05-13
+(define-public nmad-mini-2020-08-21
   (package
    (inherit nmad)
    (name "nmad-mini")
@@ -273,20 +273,20 @@
       ,@(delete `("padicotm" ,padicotm) (package-inputs nmad))))))
 
 (define-public nmad-mini
-  nmad-mini-2019-05-13)
+  nmad-mini-2020-08-21)
 
-(define-public mpibenchmark-2019-05-13
+(define-public mpibenchmark-2020-08-21
   (package
    (name "mpibenchmark")
-   (version %v2019-05-13)
+   (version %v2020-08-21)
    (home-page (string-append %pm2-home-page "/mpibenchmark"))
    (source (origin
             (method svn-fetch)
             (uri (svn-reference
                   (url (string-append %pm2-svn "/mpibenchmark"))
-                  (revision %v2019-05-13-pm2-revision)))
+                  (revision %v2020-08-21-pm2-revision)))
             (sha256
-             (base32 "14xay0gij29v6q7xxyh79acvfwj3qmx2gf2whrphl8ycyh74a46g"))))
+             (base32 "1gyn7lp44fmvkgq6fcw5x3i379kff1nwjvif8mizm1dbjahh4i33"))))
    (build-system gnu-build-system)
    (arguments
     '(#:out-of-source? #t
@@ -312,4 +312,4 @@
    (license license:lgpl2.0)))
 
 (define-public mpibenchmark
-  mpibenchmark-2019-05-13)
+  mpibenchmark-2020-08-21)

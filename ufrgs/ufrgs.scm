@@ -11,10 +11,12 @@
   #:use-module (guix build-system r)
   #:use-module (gnu packages)
   #:use-module (gnu packages bison)
+  #:use-module (gnu packages boost)
   #:use-module (gnu packages commencement)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cran)
   #:use-module (gnu packages databases)
+  #:use-module (gnu packages documentation)
   #:use-module (gnu packages flex)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages maths)
@@ -37,12 +39,12 @@
   #:use-module (guix build-system python)
   )
 
-(define-public starvz
+(define-public r-starvz
   (package
-    (name "starvz")
+    (name "r-starvz")
     (version "0.4.0")
     (home-page "https://github.com/schnorr/starvz")
-    (synopsis "pmtool: Post-Mortem Tool")
+    (synopsis "StarVZ performance analysis workflow")
     (description
      "StarVZ consists in a performance analysis workflow that combines the power of the R language (and the tidyverse realm) and many auxiliary tools to provide a consistent, flexible, extensible, fast, and versatile framework for the performance analysis of task-based applications that run on top of the StarPU runtime (with its MPI layer for multi-node support). Its goal is to provide a fruitful prototypical environment to conduct performance analysis hypothesis-checking for task-based applications that run on heterogeneous (multi-GPU, multi-core) multi-node HPC platforms.")
     (license license:gpl3+)
@@ -68,21 +70,6 @@
 			 ("r-zoo" ,r-zoo)
 			 ("r-car" ,r-car)
 			 ("r-devtools" ,r-devtools)))))
-
-;; (outputs '("debug" "out"))
-;;     (arguments
-;;      '(#:configure-flags '("-DBUILD_SHARED_LIBS=OFF")
-
-;;        ;; FIXME: no make test available for now in pmtool
-;;        #:tests? #f))
-
-;;     (inputs `(("asciidoc", asciidoc)
-;; 	      ("libtool" ,libtool)
-;; 	      ("recutils" ,recutils)
-;; 	      ))
-;;     (native-inputs `(("gcc-toolchain" ,gcc-toolchain)
-;; 		     ("bison" ,bison)
-;; 		     ("flex" ,flex)))))
 
 (define-public r-arrow
 (package
@@ -137,3 +124,33 @@
   (description
     "Create tree structures from hierarchical data, and traverse the tree in various orders.  Aggregate, cumulate, print, plot, convert to and from data.frame and more.  Useful for decision trees, machine learning, finance, conversion from and to JSON, and many other applications.")
   (license license:gpl2+)))
+
+(define-public pageng
+  (package
+    (name "pageng")
+    (version "1.3.6")
+    (home-page "https://github.com/schnorr/pajeng")
+    (synopsis "PajeNG - Trace Visualization Tool")
+    (description
+     "PajeNG (Paje Next Generation) is a re-implementation (in C++) and direct heir of the well-known Paje visualization tool for the analysis of execution traces (in the Paje File Format) through trace visualization (space/time view). The tool is released under the GNU General Public License 3. PajeNG comprises the libpaje library, and a set of auxiliary tools to manage Paje trace files (such as pj_dump and pj_validate). The space-time visualization tool called pajeng is deprecated (removed from the sources) since modern tools do a better job (see pj_gantt, for instance, or take a more general approach using R+ggplot2 to visualize the output of pj_dump). This effort was started as part of the french INFRA-SONGS ANR project. Development has continued through a collaboration between INF/UFRGS and INRIA.")
+    (license license:gpl3+)
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit "ce7bfb9b2c0e5bee13a2d55921abf289c3644ae9")
+                    (recursive? #f)))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "03vigx28spmn8smngkcw43mqw7b1cp8574f63fzb4g5sjd379am0"))))
+    (build-system cmake-build-system)
+    (outputs '("debug" "out"))
+    (inputs `(("asciidoc" ,asciidoc)
+	      ("boost" ,boost)
+	      ("recutils" ,recutils)
+	      ))
+    (native-inputs `(("gcc-toolchain" ,gcc-toolchain)
+		     ("bison" ,bison)
+		     ("flex" ,flex)
+		     ("perl" ,perl)))))

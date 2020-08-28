@@ -37,3 +37,29 @@ and sometimes for the better.  In the latter case it would be nice to be able to
 pull those external changes back into the original org src block it originated
 from.")
      (license license:gpl3+))))
+
+(define-public emacs-ox-ipynb
+  (package
+    (name "emacs-ox-ipynb")
+    (version "20200820")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jkitchin/ox-ipynb")
+             (commit "bded0e58e2a028c69f036c5704b36705221ddadd")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "0csamnvilkcs101m27p45300h8ijg7n04cf1mr47n62yj4ph8yzn"))))
+    (build-system emacs-build-system)
+    (propagated-inputs
+     `(("emacs-dash" ,emacs-dash)
+       ("emacs-s" ,emacs-s)))
+    (home-page "https://github.com/jkitchin/ox-ipynb")
+    (synopsis "ox-ipynb — Convert an org-file to an ipynb")
+    (description
+     "This module allows you to export an org-file to an Ipython
+notebook.  Python and R notebooks are currently supported.  It is not
+currently possible to mix these languages.")
+    (license license:gpl3+)))

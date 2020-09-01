@@ -177,7 +177,7 @@ area (CPUs-GPUs, distributed nodes).")
                                    `(cons "-DCHAMELEON_SIMULATION=ON" (cons "-DCHAMELEON_USE_CUDA=ON" (delete "-DCHAMELEON_USE_MPI=ON" ,flags))))))
    (inputs `(("simgrid" ,simgrid)
              ,@(package-inputs chameleon)))
-   (propagated-inputs `(("starpu" ,starpu+simgrid)
+   (propagated-inputs `(("starpu" ,starpu+simgrid+fxt)
                         ,@(delete `("starpu" ,starpu) (package-inputs chameleon))
                         ,@(delete `("mpi" ,openmpi) (package-inputs chameleon))))))
 

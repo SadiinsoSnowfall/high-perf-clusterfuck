@@ -196,4 +196,9 @@ kernels are executed as efficiently as possible.")
     (arguments
      (substitute-keyword-arguments (package-arguments starpu)
        ((#:configure-flags flags '())
-        `(cons "--enable-simgrid" (cons "--with-fxt" ,flags)))))))
+        `(cons "--enable-simgrid" (cons "--with-fxt" ,flags)))))
+    ;; some tests require python.
+    (native-inputs
+     `(("python" ,python-2)
+       ,@(package-native-inputs starpu)))))
+

@@ -73,7 +73,7 @@ build_starpu:
 build_starpu-simgrid:
   stage: build
   script:
-    - guix build starpu-simgrid
+    - guix build starpu-simgrid-fxt
 
 build_starpu-fxt:
   stage: build

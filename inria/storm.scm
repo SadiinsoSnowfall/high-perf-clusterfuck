@@ -186,13 +186,14 @@ kernels are executed as efficiently as possible.")
      `(("python" ,python-2)
        ,@(package-native-inputs starpu)))))
 
-(define-public starpu+simgrid
+(define-public starpu+simgrid+fxt
   (package
     (inherit starpu)
-    (name "starpu-simgrid")
+    (name "starpu-simgrid-fxt")
     (inputs `(("simgrid" ,simgrid)
+	      ("fxt" ,fxt)
               ,@(package-inputs starpu)))
     (arguments
      (substitute-keyword-arguments (package-arguments starpu)
        ((#:configure-flags flags '())
-        `(cons "--enable-simgrid" ,flags))))))
+        `(cons "--enable-simgrid" (cons "--with-fxt" ,flags)))))))

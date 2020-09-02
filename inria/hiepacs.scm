@@ -422,7 +422,7 @@ solve massive sparse systems efficiently.")
 (define-public blaspp
   (package
     (name "blaspp")
-    (version "0.1")
+    (version "2020.08.00")
     (home-page "https://bitbucket.org/icl/blaspp")
     (synopsis "C++ API for the Basic Linear Algebra Subroutines")
     (description
@@ -434,52 +434,53 @@ development in the C++ language, that, for the most part, preserves established
 conventions, while, at the same time, takes advantages of modern C++ features,
 such as: namespaces, templates, exceptions, etc.")
     (source (origin
-             (method hg-fetch)
-             (uri (hg-reference
+             (method git-fetch)
+             (uri (git-reference
                    (url home-page)
-                   (changeset "7859f573d9d04dfd38176fb7612edfa6d6d3ac0b")))
-             (patches (search-patches "inria/patches/blaspp-installation-directories.patch"))
+                   (commit "049c515c1fafee62b4c1d2870621d6819698f71a")))
+             (file-name (string-append name "-" version "-checkout"))
+             ;;(patches (search-patches "inria/patches/blaspp-installation-directories.patch"))
              (sha256
               (base32
-               "0cgk9dxrc6h3bwdpfsgh3l5qlabg7rkvv76mvvsmjdlsk7v0dqss"))))
+               "1p3a7sgmy5m2j28m1qnj70fzzmqn2qdrk1bsv4yzpk2a55hfrlqb"))))
     (arguments
      '(#:configure-flags '("-DBLASPP_BUILD_TESTS=OFF")
                          #:tests? #f))
-     ;;'(#:configure-flags '("-DBLASPP_BUILD_TESTS=ON")
+    ;; tests would need testsweeper https://bitbucket.org/icl/testsweeper
+    ;;'(#:configure-flags '("-DBLASPP_BUILD_TESTS=ON")))
     (build-system cmake-build-system)
     (propagated-inputs `(("openblas" ,openblas))) ;; technically only blas
-    (native-inputs `(("gfortran" ,gfortran)))
     (license #f)))
 
 (define-public lapackpp
   (package
-    (name "lapackpp")
-    (version "0.1")
-    (home-page "https://bitbucket.org/icl/lapackpp")
-    (synopsis "C++ API for the Linear Algebra PACKage")
-    (description
-     "The Linear Algebra PACKage (LAPACK) is a standard software library for
+   (name "lapackpp")
+   (version "0.1")
+   (home-page "https://bitbucket.org/icl/lapackpp")
+   (synopsis "C++ API for the Linear Algebra PACKage")
+   (description
+    "The Linear Algebra PACKage (LAPACK) is a standard software library for
 numerical linear algebra. The objective of LAPACK++ is to provide a convenient,
 performance oriented API for development in the C++ language, that, for the most
 part, preserves established conventions, while, at the same time, takes
 advantages of modern C++ features, such as: namespaces, templates, exceptions,
 etc.")
-    (source (origin
-             (method hg-fetch)
-             (uri (hg-reference
-                   (url home-page)
-                   (changeset "154d3c06b02c1b16b36b862bd46421e19f5f17a6")))
-             ;;(patches (search-patches "inria/patches/lapackpp-installation-directories.patch"))
-             (sha256
-              (base32
-               "1n5j0myczh3ca7hndv0ziz6kd62ax59qac4njiy2q8kdvcmlmrh0"))))
-    (arguments
-     '(#:configure-flags '("-DBUILD_LAPACKPP_TESTS=OFF"
-                           "-DBUILD_SHARED_LIBS=ON")
-       #:tests? #f))
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url home-page)
+                  (commit "e3052eb11b9bab7a7adfe246a53abe8a31c52b3b")))
+            (file-name (string-append name "-" version "-checkout"))
+            (sha256
+             (base32
+              "039lyh829xvjc7jgmv39bgy87ap94pqffh52457d0x16mp64qbhn"))))
+   (arguments
+    '(#:configure-flags '("-DBUILD_LAPACKPP_TESTS=OFF"
+                          "-DBUILD_SHARED_LIBS=ON")
+                        #:tests? #f))
+    ;; tests would need testsweeper https://bitbucket.org/icl/testsweeper
     (build-system cmake-build-system)
     (inputs `(("blaspp" ,blaspp)))
-    (native-inputs `(("gfortran" ,gfortran)))
     (license #f)))
 
 (define-public pastix-6

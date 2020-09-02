@@ -383,7 +383,7 @@ solve massive sparse systems efficiently.")
             (method git-fetch)
             (uri (git-reference
                   (url home-page)
-                  (commit "f0b91e98efab1324323d5bdf0f0163bc0695d45a")
+                  (commit "14ce2b79d227d5cddb908eac018ed3d7efee734e")
                   ;; We need the submodule in 'cmake_modules/morse_cmake'.
                   (recursive? #t)))
             (file-name (string-append name "-" version "-checkout"))
@@ -400,16 +400,12 @@ solve massive sparse systems efficiently.")
                           "-DMAPHYS_USE_PASTIX=ON"
                           "-DMAPHYS_USE_MUMPS=ON")
                         #:phases (modify-phases %standard-phases
-                                                (add-before 'configure 'fixgcc7
-                                                            (lambda _
-                                                              (unsetenv "C_INCLUDE_PATH")
-                                                              (unsetenv "CPLUS_INCLUDE_PATH") #t))
                                                 (add-before 'check 'prepare-test-environment
                                                             (lambda _
                                                               ;; Allow tests with more MPI processes than available CPU cores,
                                                               ;; which is not allowed by default by OpenMPI
                                                               (setenv "OMPI_MCA_rmaps_base_oversubscribe" "1") #t)))
-      ))
+                        ))
    (build-system cmake-build-system)
    (inputs `(("blaspp" ,blaspp)
              ("lapackpp" ,lapackpp)
@@ -419,10 +415,9 @@ solve massive sparse systems efficiently.")
              ))
    (propagated-inputs `(("mpi" ,openmpi)
                         ("ssh" ,openssh)))
-   (native-inputs `(("gcc" ,gcc-7)
-                    ("gcc-lib" ,gcc-7 "lib")
-                    ("gfortran" ,gfortran)
-                    ("pkg-config" ,pkg-config)))))
+   (native-inputs `(("gfortran" ,gfortran)
+                    ("pkg-config" ,pkg-config)))
+   ))
 
 (define-public blaspp
   (package

@@ -111,6 +111,45 @@
 (define-public pioman
   pioman-2020-09-01)
 
+(define-public pukabi-2020-09-01
+  (package
+   (name "pukabi")
+   (version %v2020-09-01)
+   (home-page (string-append %pm2-home-page "/PadicoTM"))
+   (source (origin
+            (method svn-fetch)
+            (uri (svn-reference
+                  (url (string-append %padicotm-svn "/PadicoTM/PukABI"))
+                  (revision %v2020-09-01-padicotm-revision)))
+            (sha256
+             (base32 "0d8jscxbz67vr53v0v0r8amw0q6qgv8qrq43nwjkj56z9alz6ah8"))
+            (patches (search-patches %patch-path))))
+   (build-system gnu-build-system)
+   (arguments
+    '(#:out-of-source? #t
+      #:configure-flags '("--enable-optimize"
+                          "--disable-debug"
+			  "--enable-mem")
+      #:phases (modify-phases %standard-phases
+                 (add-after 'unpack 'fix-hardcoded-paths
+                   (lambda _
+                     (substitute* "building-tools/common_vars.mk.in"
+                       (("/bin/sh")  (which "sh")))
+                     #t))
+                 (delete 'check))))
+   (native-inputs
+    `(("pkg-config" ,pkg-config)
+      ("autoconf", autoconf)
+      ("automake", automake)))
+   (propagated-inputs
+    `(("puk" ,puk)))
+   (synopsis "dummy")
+   (description "Dummy")
+   (license license:lgpl2.0)))
+
+(define-public pukabi
+  pukabi-2020-09-01)
+
 (define-public padicotm-2020-09-01
   (package
    (name "padicotm")
@@ -131,7 +170,6 @@
       #:configure-flags '("--enable-optimize"
                           "--disable-debug"
                           "--with-pioman"
-                          "--without-pukabi"
 
                           ;; 'padico-d' wants to write to $localstatedir/log.
                           "--localstatedir=/var")
@@ -179,7 +217,8 @@
       ("psm2" ,psm2)))
    (propagated-inputs
     `(("puk" ,puk)
-      ("pioman" ,pioman)))
+      ("pioman" ,pioman)
+      ("pukabi" ,pukabi)))
    (synopsis "dummy")
    (description "Dummy")
    (license license:lgpl2.0)))
@@ -196,10 +235,39 @@
       ((#:configure-flags flags '())
        `(cons "--without-pioman" (delete "--with-pioman" ,flags)))))
    (propagated-inputs
-    `(("puk" ,puk)))))
+    `(,@(delete `("pioman" ,pioman) (package-propagated-inputs padicotm))))))
 
 (define-public padicotm-mini
   padicotm-mini-2020-09-01)
+
+;;see comment above nmad*-pukabi packages definition
+(define-public padicotm-pukabi-2020-09-01
+  (package
+   (inherit padicotm)
+   (name "padicotm-pukabi")
+   (arguments
+    (substitute-keyword-arguments (package-arguments padicotm)
+      ((#:configure-flags flags '())
+       `(cons "--without-pukabi"  ,flags))))
+   (propagated-inputs
+    `(,@(delete `("pukabi" ,pukabi) (package-propagated-inputs padicotm))))))
+
+(define-public padicotm-pukabi
+  padicotm-pukabi-2020-09-01)
+
+(define-public padicotm-mini-pukabi-2020-09-01
+  (package
+   (inherit padicotm-mini)
+   (name "padicotm-mini-pukabi")
+   (arguments
+    (substitute-keyword-arguments (package-arguments padicotm-mini)
+      ((#:configure-flags flags '())
+       `(cons "--without-pukabi" ,flags))))
+   (propagated-inputs
+    `(,@(delete `("pukabi" ,pukabi) (package-propagated-inputs padicotm-mini))))))
+
+(define-public padicotm-mini-pukabi
+  padicotm-mini-pukabi-2020-09-01)
 
 (define-public nmad-2020-09-01
   (package
@@ -220,7 +288,7 @@
       #:configure-flags '("--enable-optimize"
                           "--disable-debug"
                           "--with-pioman"
-                          "--without-pukabi"
+			  "--with-pukabi"
                           "--enable-mpi"
                           "--disable-sampling")
       #:phases (modify-phases %standard-phases
@@ -270,10 +338,37 @@
        `(cons "--without-pioman" (delete "--with-pioman" ,flags)))))
    (propagated-inputs
     `(("padicotm" ,padicotm-mini)
-      ,@(delete `("padicotm" ,padicotm) (package-inputs nmad))))))
+      ,@(delete `("padicotm" ,padicotm) (package-propagated-inputs nmad))))))
 
 (define-public nmad-mini
   nmad-mini-2020-09-01)
+
+;;nmad-pukabi and nmad-mini-pukabi corresponds to old packages that were not using pukabi
+;;they should only be used in case something goes wrong with the default ones
+;;they are not meant to be maintained
+(define-public nmad-pukabi-2020-09-01
+  (package
+   (inherit nmad)
+   (name "nmad-pukabi")
+   (arguments
+    (substitute-keyword-arguments (package-arguments nmad)
+      ((#:configure-flags flags '())
+       `(cons "--without-pukabi" (delete "--with-pukabi" ,flags)))))
+   (propagated-inputs
+    `(("padicotm" ,padicotm-pukabi)
+      ,@(delete `("padicotm" ,padicotm) (package-propagated-inputs nmad))))))
+
+(define-public nmad-mini-pukabi-2020-09-01
+  (package
+   (inherit nmad-mini)
+   (name "nmad-mini-pukabi")
+   (arguments
+    (substitute-keyword-arguments (package-arguments nmad-mini)
+      ((#:configure-flags flags '())
+       `(cons "--without-pukabi" (delete "--with-pukabi" ,flags)))))
+   (propagated-inputs
+    `(("padicotm" ,padicotm-mini-pukabi)
+      ,@(delete `("padicotm" ,padicotm-mini) (package-propagated-inputs nmad-mini))))))
 
 (define-public mpibenchmark-2020-09-01
   (package

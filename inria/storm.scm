@@ -1,7 +1,7 @@
 ;;; This module extends GNU Guix and is licensed under the same terms, those
 ;;; of the GNU GPL version 3 or (at your option) any later version.
 ;;;
-;;; Copyright © 2017, 2018, 2019 Inria
+;;; Copyright © 2017, 2018, 2019, 2020 Inria
 
 (define-module (inria storm)
   #:use-module (guix)
@@ -196,7 +196,11 @@ kernels are executed as efficiently as possible.")
     (arguments
      (substitute-keyword-arguments (package-arguments starpu)
        ((#:configure-flags flags '())
-        `(cons "--enable-simgrid" (cons "--with-fxt" ,flags)))))
+        `(append (list "--enable-simgrid" "--with-fxt"
+                       "--enable-maxcpus=1000"
+                       "--enable-maxcudadev=1000"
+                       "--enable-maxnodes=32")
+                 ,flags))))
     ;; some tests require python.
     (native-inputs
      `(("python" ,python-2)

@@ -573,12 +573,14 @@ memory footprint and/or the time-to-solution.")
   (inherit pastix-6)
   (name "pastix")
   (version "5.2.3")
-  (source (origin
-            (method url-fetch)
-            (uri (string-append "https://gforge.inria.fr/frs/download.php/file/36212/pastix_5.2.3.tar.bz2"))
-            (sha256
-             (base32
-              "0iqyxr5lzjpavmxzrjj4kwayq62nip3ssjcm80d20zk0n3k7h6b4"))))
+  (source
+   (origin
+    (method url-fetch)
+    (uri
+     "https://gforge.inria.fr/frs/download.php/file/36212/pastix_5.2.3.tar.bz2")
+    (sha256
+     (base32
+      "0iqyxr5lzjpavmxzrjj4kwayq62nip3ssjcm80d20zk0n3k7h6b4"))))
   (build-system gnu-build-system)
   (arguments
    '(#:make-flags (list (string-append "PREFIX=" (assoc-ref %outputs "out")))
@@ -786,7 +788,8 @@ EXTRALIB   := $(EXTRALIB) -L$(HWLOC_LIB) -lhwloc
 
 # Uncomment following lines for marcel thread support
 #VERSIONSMP := $(VERSIONSMP)_marcel
-#CCPASTIX   := $(CCPASTIX) `pm2-config --cflags` -I${PM2_ROOT}/marcel/include/pthread
+#CCPASTIX   := $(CCPASTIX) `pm2-config --cflags`
+#CCPASTIX   := -I${PM2_ROOT}/marcel/include/pthread
 #EXTRALIB   := $(EXTRALIB) `pm2-config --libs`
 # ---- Thread Posix ------
 EXTRALIB   := $(EXTRALIB) -lpthread
@@ -856,7 +859,6 @@ CTAGS    = $(CTAGSPROG)
                        ("hwloc" ,hwloc-1 "lib")
                        ("openssh" ,openssh)
                        ("scotch32" ,scotch32)
-                       ("pt-scotch" ,pt-scotch)
                        ,@(package-propagated-inputs pastix-6)
                        ,@(fold alist-delete
                                (package-propagated-inputs pastix-6)

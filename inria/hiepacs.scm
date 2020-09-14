@@ -570,9 +570,9 @@ memory footprint and/or the time-to-solution.")
 
 (define-public pastix-5
   (package
-  (inherit pastix-6)
-  (name "pastix")
+  (name "pastix-5")
   (version "5.2.3")
+  (home-page "https://gitlab.inria.fr/solverstack/pastix")
   (source
    (origin
     (method url-fetch)
@@ -590,7 +590,7 @@ memory footprint and/or the time-to-solution.")
                              (lambda _
                                (chdir "src") #t))
                     (replace 'configure
-                             (lambda _
+                             (lambda* (#:key inputs #:allow-other-keys)
                                (call-with-output-file "config.in"
                                  (lambda (port)
                                    (format port "
@@ -702,7 +702,7 @@ CCTYPESFLT := $(CCTYPESFLT) -DTYPE_COMPLEX
 
 # Uncomment the following line if your MPI doesn't support MPI_THREAD_MULTIPLE,
 # level then use IPARM_THREAD_COMM_MODE
-CCPASTIX   := $(CCPASTIX) -DPASTIX_FUNNELED
+#CCPASTIX   := $(CCPASTIX) -DPASTIX_FUNNELED
 
 # Uncomment the following line if your MPI doesn't support MPI_Datatype
 # correctly
@@ -738,7 +738,7 @@ NVCCOPT    := $(NVCCOPT) -arch sm_20
 CCPASTIX   := $(CCPASTIX) -DMEMORY_USAGE
 
 # Show memory usage statistics in solver
-CCPASTIX   := $(CCPASTIX) -DSTATS_SOPALIN
+#CCPASTIX   := $(CCPASTIX) -DSTATS_SOPALIN
 
 # Uncomment following line for dynamic thread scheduling support
 #CCPASTIX   := $(CCPASTIX) -DPASTIX_DYNSCHED
@@ -757,9 +757,9 @@ CCPASTIX   := $(CCPASTIX) -DSTATS_SOPALIN
 #EXTRALIB   := $(EXTRALIB) -L$(METIS_HOME) -lmetis
 
 # Scotch always needed to compile
-SCOTCH_HOME ?= ${HOME}/scotch_5.1/
-SCOTCH_INC ?= $(SCOTCH_HOME)/include
-SCOTCH_LIB ?= $(SCOTCH_HOME)/lib
+SCOTCH_HOME  = ~a
+SCOTCH_INC  ?= $(SCOTCH_HOME)/include
+SCOTCH_LIB  ?= $(SCOTCH_HOME)/lib
 # Uncomment on of this blocks
 #scotch
 CCPASTIX   := $(CCPASTIX) -I$(SCOTCH_INC) -DWITH_SCOTCH
@@ -776,7 +776,7 @@ EXTRALIB   := $(EXTRALIB) -L$(SCOTCH_LIB) -lscotch -lscotcherrexit
 ###################################################################
 # By default PaStiX uses hwloc to bind threads,
 # comment this lines if you don't want it (not recommended)
-HWLOC_HOME ?= /opt/hwloc/
+HWLOC_HOME  = ~a
 HWLOC_INC  ?= $(HWLOC_HOME)/include
 HWLOC_LIB  ?= $(HWLOC_HOME)/lib
 CCPASTIX   := $(CCPASTIX) -I$(HWLOC_INC) -DWITH_HWLOC
@@ -848,21 +848,36 @@ FFLAGS   = $(CCFOPT)
 LDFLAGS  = $(EXTRALIB) $(BLASLIB)
 CTAGS    = $(CTAGSPROG)
 "
+                                           (assoc-ref inputs "scotch32")
+                                           (assoc-ref inputs "hwloc")
                                    ))) #t))
                     (replace 'check
                              (lambda _
                                (invoke "make" "examples")
                                (invoke "./example/bin/simple" "-lap" "100"))))))
-  (native-inputs `(("perl" ,perl)
-                   ,@(package-native-inputs pastix-6)))
-  (propagated-inputs `(("openmpi" ,openmpi-with-mpi1-compat)
-                       ("hwloc" ,hwloc-1 "lib")
-                       ("openssh" ,openssh)
-                       ("scotch32" ,scotch32)
-                       ,@(package-propagated-inputs pastix-6)
-                       ,@(fold alist-delete
-                               (package-propagated-inputs pastix-6)
-                               '("hwloc" "scotch"))))))
+  (inputs
+   `(("gfortran:lib" ,gfortran "lib")
+     ("openblas" ,openblas)))
+  (native-inputs
+   `(("pkg-config" ,pkg-config)
+     ("gfortran" ,gfortran)
+     ("perl" ,perl)))
+  (propagated-inputs
+   `(("openmpi" ,openmpi-with-mpi1-compat)
+     ("hwloc" ,hwloc-1 "lib")
+     ("openssh" ,openssh)
+     ("scotch32" ,scotch32)))
+  (outputs '( "out" "debug" ))
+  (synopsis "Sparse matrix direct solver (version 5)")
+  (description
+   "PaStiX (Parallel Sparse matriX package, version 5) is a scientific library
+that provides a high performance parallel solver for very large sparse linear
+systems based on direct methods.  Numerical algorithms are implemented in single
+or double precision (real or complex) using LLt, LDLt and LU with static
+pivoting (for non symmetric matrices having a symmetric pattern). This solver
+also provides some low-rank compression methods to reduce the memory footprint
+and/or the time-to-solution.")
+  (license license:cecill)))
 
 (define-public pastix pastix-6)
 

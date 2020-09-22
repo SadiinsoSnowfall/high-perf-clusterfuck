@@ -43,7 +43,61 @@
 
 (define-public r-starvz
   (package
-    (name "r-starvz")
+   (name "r-starvz")
+   (version "0.4.0")
+   (source
+    (origin
+     (method url-fetch)
+     (uri (cran-uri "starvz" version))
+     (sha256
+      (base32
+       "1nzfpvdvfsi4a4x667k74l9c8nbsvwdgyn6ipsdr7n30k2sxlm6k"))))
+   (properties `((upstream-name . "starvz")))
+   (build-system r-build-system)
+   (inputs
+    ;; `(("bash" ,bash) ("c++" ,c++) ("starpu" ,starpu)))
+    `(("bash" ,bash) ("starpu-fxt" ,starpu-fxt)))
+   (propagated-inputs
+    `(("r-arrow" ,r-arrow)
+      ("r-bh" ,r-bh)
+      ("r-car" ,r-car)
+      ("r-data-tree" ,r-data-tree)
+      ("r-dplyr" ,r-dplyr)
+      ("r-ggplot2" ,r-ggplot2)
+      ("r-gtools" ,r-gtools)
+      ("r-lpsolve" ,r-lpsolve)
+      ("r-magrittr" ,r-magrittr)
+      ("r-patchwork" ,r-patchwork)
+      ("r-purrr" ,r-purrr)
+      ("r-rcolorbrewer" ,r-rcolorbrewer)
+      ("r-rcpp" ,r-rcpp)
+      ("r-readr" ,r-readr)
+      ("r-rlang" ,r-rlang)
+      ("r-stringr" ,r-stringr)
+      ("r-tibble" ,r-tibble)
+      ("r-tidyr" ,r-tidyr)
+      ("r-yaml" ,r-yaml)
+      ("r-zoo" ,r-zoo)))
+   (home-page "https://github.com/schnorr/starvz")
+   (synopsis
+    "R-Based Visualization Techniques for Task-Based Applications")
+   (description
+    "Performance analysis workflow that combines the power of the R
+language (and the tidyverse realm) and many auxiliary tools to provide a
+consistent, flexible, extensible, fast, and versatile framework for the
+performance analysis of task-based applications that run on top of the StarPU
+runtime (with its MPI (Message Passing Interface) layer for multi-node support).
+Its goal is to provide a fruitful prototypical environment to conduct
+performance analysis hypothesis-checking for task-based applications that run on
+heterogeneous (multi-GPU, multi-core) multi-node HPC (High-performance
+computing) platforms.")
+   (license gpl3)))
+
+
+;; This version is too much manual and shall be deprecated and removed when the above one works fine.
+(define-public r-starvz-manual
+  (package
+    (name "r-starvz-manual")
     (version "0.4.0")
     (home-page "https://github.com/schnorr/starvz")
     (synopsis "StarVZ performance analysis workflow")

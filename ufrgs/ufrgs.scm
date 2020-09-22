@@ -20,6 +20,7 @@
   #:use-module (gnu packages databases)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages flex)
+  #:use-module (gnu packages gawk)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages mpi)
@@ -45,18 +46,23 @@
 (define-public r-starvz
   (package
    (name "r-starvz")
-   (version "0.4.0")
-   (source
-    (origin
-     (method url-fetch)
-     (uri (cran-uri "starvz" version))
-     (sha256
-      (base32
-       "1nzfpvdvfsi4a4x667k74l9c8nbsvwdgyn6ipsdr7n30k2sxlm6k"))))
+   (version "CRAN_0.4.0")
+   (home-page "https://github.com/schnorr/starvz")
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url home-page)
+                  (commit "ce80b8ec74b982a4d02f38fa1ceab6beee3335b6")
+                  (recursive? #f)))
+            (file-name (string-append name "-" version "-checkout"))
+            (sha256
+             (base32
+              "1w1wxk8043r2q46dqwz0kqi4av21dfdix4gzgsdhrka2dsyxd17i"))))
    (properties `((upstream-name . "starvz")))
    (build-system r-build-system)
    (propagated-inputs
-    `(("bash" ,bash)
+    `(("awk" ,gawk)
+      ("bash" ,bash)
       ("gcc-toolchain" ,gcc-toolchain)
       ("grep" ,grep)
       ("gzip" ,gzip)
@@ -86,7 +92,6 @@
       ("sed" ,sed)
       ("starpu" ,starpu+fxt)
       ("which" ,which)))
-   (home-page "https://github.com/schnorr/starvz")
    (synopsis
     "R-Based Visualization Techniques for Task-Based Applications")
    (description
@@ -102,7 +107,7 @@ computing) platforms.")
    (license license:gpl3)))
 
 
-;; This version is too much manual and shall be deprecated and removed when the above one works fine.
+;; This version is too much manual and shall be deprecated and removed when the above -- done after the 0.4.0 was put  in CRAN :-) - one works fine.
 (define-public r-starvz-manual
   (package
     (name "r-starvz-manual")

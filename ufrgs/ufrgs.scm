@@ -63,6 +63,7 @@
    (propagated-inputs
     `(("awk" ,gawk)
       ("bash" ,bash)
+      ("coreutils" ,coreutils)
       ("gcc-toolchain" ,gcc-toolchain)
       ("grep" ,grep)
       ("gzip" ,gzip)

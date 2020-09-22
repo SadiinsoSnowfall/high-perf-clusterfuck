@@ -6,11 +6,11 @@
 (define-module (ufrgs ufrgs)
   #:use-module (guix)
   #:use-module (guix git-download)
-  #:use-module (guix licenses)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system r)
   #:use-module (gnu packages)
+  #:use-module (gnu packages base)
   #:use-module (gnu packages bash)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages boost)
@@ -29,6 +29,7 @@
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages perl)
+  #:use-module (inria hiepacs)
   #:use-module (inria mpi)
   #:use-module (inria storm)
   #:use-module (inria tadaam)
@@ -54,11 +55,14 @@
        "1nzfpvdvfsi4a4x667k74l9c8nbsvwdgyn6ipsdr7n30k2sxlm6k"))))
    (properties `((upstream-name . "starvz")))
    (build-system r-build-system)
-   (inputs
-    ;; `(("bash" ,bash) ("c++" ,c++) ("starpu" ,starpu)))
-    `(("bash" ,bash) ("starpu" ,starpu+fxt)))
    (propagated-inputs
-    `(("r-arrow" ,r-arrow)
+    `(("bash" ,bash)
+      ("gcc-toolchain" ,gcc-toolchain)
+      ("grep" ,grep)
+      ("gzip" ,gzip)
+      ("pageng" ,pageng)
+      ("pmtool" ,pmtool)
+      ("r-arrow" ,r-arrow)
       ("r-bh" ,r-bh)
       ("r-car" ,r-car)
       ("r-data-tree" ,r-data-tree)
@@ -77,7 +81,11 @@
       ("r-tibble" ,r-tibble)
       ("r-tidyr" ,r-tidyr)
       ("r-yaml" ,r-yaml)
-      ("r-zoo" ,r-zoo)))
+      ("r-zoo" ,r-zoo)
+      ("rectutils" ,recutils)
+      ("sed" ,sed)
+      ("starpu" ,starpu+fxt)
+      ("which" ,which)))
    (home-page "https://github.com/schnorr/starvz")
    (synopsis
     "R-Based Visualization Techniques for Task-Based Applications")
@@ -91,7 +99,7 @@ Its goal is to provide a fruitful prototypical environment to conduct
 performance analysis hypothesis-checking for task-based applications that run on
 heterogeneous (multi-GPU, multi-core) multi-node HPC (High-performance
 computing) platforms.")
-   (license gpl3)))
+   (license license:gpl3)))
 
 
 ;; This version is too much manual and shall be deprecated and removed when the above one works fine.

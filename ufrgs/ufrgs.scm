@@ -56,7 +56,7 @@
    (build-system r-build-system)
    (inputs
     ;; `(("bash" ,bash) ("c++" ,c++) ("starpu" ,starpu)))
-    `(("bash" ,bash) ("starpu-fxt" ,starpu-fxt)))
+    `(("bash" ,bash) ("starpu" ,starpu+fxt)))
    (propagated-inputs
     `(("r-arrow" ,r-arrow)
       ("r-bh" ,r-bh)

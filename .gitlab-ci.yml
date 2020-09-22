@@ -120,11 +120,6 @@ build_pastix-5:
   script:
     - guix build pastix@5
 
-build_pastix/aarch64:
-  stage: build
-  script:
-    - guix build pastix -s aarch64-linux
-
 build_nmad:
   stage: build
   script:

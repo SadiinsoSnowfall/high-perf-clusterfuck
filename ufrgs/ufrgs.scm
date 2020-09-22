@@ -46,7 +46,14 @@
     (home-page "https://github.com/schnorr/starvz")
     (synopsis "StarVZ performance analysis workflow")
     (description
-     "StarVZ consists in a performance analysis workflow that combines the power of the R language (and the tidyverse realm) and many auxiliary tools to provide a consistent, flexible, extensible, fast, and versatile framework for the performance analysis of task-based applications that run on top of the StarPU runtime (with its MPI layer for multi-node support). Its goal is to provide a fruitful prototypical environment to conduct performance analysis hypothesis-checking for task-based applications that run on heterogeneous (multi-GPU, multi-core) multi-node HPC platforms.")
+     "StarVZ consists in a performance analysis workflow that combines the power
+of the R language (and the tidyverse realm) and many auxiliary tools to provide
+a consistent, flexible, extensible, fast, and versatile framework for the
+performance analysis of task-based applications that run on top of the StarPU
+runtime (with its MPI layer for multi-node support). Its goal is to provide a
+fruitful prototypical environment to conduct performance analysis
+hypothesis-checking for task-based applications that run on heterogeneous
+(multi-GPU, multi-core) multi-node HPC platforms.")
     (license license:gpl3+)
     (source (origin
               (method git-fetch)
@@ -99,7 +106,11 @@
   (home-page "https://github.com/apache/arrow/")
   (synopsis "Integration to 'Apache' 'Arrow'")
   (description
-    "'Apache' 'Arrow' <https://arrow.apache.org/> is a cross-language development platform for in-memory data.  It specifies a standardized language-independent columnar memory format for flat and hierarchical data, organized for efficient analytic operations on modern hardware.  This package provides an interface to the 'Arrow C++' library.")
+    "'Apache' 'Arrow' <https://arrow.apache.org/> is a cross-language
+development platform for in-memory data.  It specifies a standardized
+language-independent columnar memory format for flat and hierarchical data,
+organized for efficient analytic operations on modern hardware. This package
+provides an interface to the 'Arrow C++' library.")
   (license #f)))
 
 (define-public r-data-tree
@@ -122,7 +133,10 @@
   (synopsis
     "General Purpose Hierarchical Data Structure")
   (description
-    "Create tree structures from hierarchical data, and traverse the tree in various orders.  Aggregate, cumulate, print, plot, convert to and from data.frame and more.  Useful for decision trees, machine learning, finance, conversion from and to JSON, and many other applications.")
+    "Create tree structures from hierarchical data, and traverse the tree in
+various orders.  Aggregate, cumulate, print, plot, convert to and from
+data.frame and more.  Useful for decision trees, machine learning, finance,
+conversion from and to JSON, and many other applications.")
   (license license:gpl2+)))
 
 (define-public pageng
@@ -132,7 +146,17 @@
     (home-page "https://github.com/schnorr/pajeng")
     (synopsis "PajeNG - Trace Visualization Tool")
     (description
-     "PajeNG (Paje Next Generation) is a re-implementation (in C++) and direct heir of the well-known Paje visualization tool for the analysis of execution traces (in the Paje File Format) through trace visualization (space/time view). The tool is released under the GNU General Public License 3. PajeNG comprises the libpaje library, and a set of auxiliary tools to manage Paje trace files (such as pj_dump and pj_validate). The space-time visualization tool called pajeng is deprecated (removed from the sources) since modern tools do a better job (see pj_gantt, for instance, or take a more general approach using R+ggplot2 to visualize the output of pj_dump). This effort was started as part of the french INFRA-SONGS ANR project. Development has continued through a collaboration between INF/UFRGS and INRIA.")
+     "PajeNG (Paje Next Generation) is a re-implementation (in C++) and direct
+heir of the well-known Paje visualization tool for the analysis of execution
+traces (in the Paje File Format) through trace visualization (space/time view).
+The tool is released under the GNU General Public License 3. PajeNG comprises
+the libpaje library, and a set of auxiliary tools to manage Paje trace files
+(such as pj_dump and pj_validate). The space-time visualization tool called
+pajeng is deprecated (removed from the sources) since modern tools do a better
+job (see pj_gantt, for instance, or take a more general approach using R+ggplot2
+to visualize the output of pj_dump). This effort was started as part of the
+french INFRA-SONGS ANR project. Development has continued through a
+collaboration between INF/UFRGS and INRIA.")
     (license license:gpl3+)
     (source (origin
               (method git-fetch)
@@ -145,11 +169,23 @@
                (base32
                 "03vigx28spmn8smngkcw43mqw7b1cp8574f63fzb4g5sjd379am0"))))
     (build-system cmake-build-system)
+    (arguments
+     '(#:phases
+       (modify-phases
+        %standard-phases
+        ;; Otherwise, build fails for a currently unknown reason.
+        (delete 'validate-runpath)
+        ;; Test scripts require trace files to be at '../traces' during the
+        ;; check phase. Given that 'make test' is executed from the 'build'
+        ;; directory, we must copy the trace files from '../source/traces' to
+        ;; '../traces'.
+        (add-before 'check 'copy-trace-files-for-testing
+                    (lambda _
+                      (copy-recursively "../source/traces" "../traces") #t)))))
     (outputs '("debug" "out"))
     (inputs `(("asciidoc" ,asciidoc)
 	      ("boost" ,boost)
-	      ("recutils" ,recutils)
-	      ))
+	      ("recutils" ,recutils)))
     (native-inputs `(("gcc-toolchain" ,gcc-toolchain)
 		     ("bison" ,bison)
 		     ("flex" ,flex)

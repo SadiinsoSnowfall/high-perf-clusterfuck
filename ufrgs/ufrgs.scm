@@ -211,12 +211,12 @@ conversion from and to JSON, and many other applications.")
 
 (define-public pageng
   (package
-    (name "pageng")
-    (version "1.3.6")
-    (home-page "https://github.com/schnorr/pajeng")
-    (synopsis "PajeNG - Trace Visualization Tool")
-    (description
-     "PajeNG (Paje Next Generation) is a re-implementation (in C++) and direct
+   (name "pageng")
+   (version "1.3.6")
+   (home-page "https://github.com/schnorr/pajeng")
+   (synopsis "PajeNG - Trace Visualization Tool")
+   (description
+    "PajeNG (Paje Next Generation) is a re-implementation (in C++) and direct
 heir of the well-known Paje visualization tool for the analysis of execution
 traces (in the Paje File Format) through trace visualization (space/time view).
 The tool is released under the GNU General Public License 3. PajeNG comprises
@@ -227,36 +227,37 @@ job (see pj_gantt, for instance, or take a more general approach using R+ggplot2
 to visualize the output of pj_dump). This effort was started as part of the
 french INFRA-SONGS ANR project. Development has continued through a
 collaboration between INF/UFRGS and INRIA.")
-    (license license:gpl3+)
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url home-page)
-                    (commit "ce7bfb9b2c0e5bee13a2d55921abf289c3644ae9")
-                    (recursive? #f)))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "03vigx28spmn8smngkcw43mqw7b1cp8574f63fzb4g5sjd379am0"))))
-    (build-system cmake-build-system)
-    (arguments
-     '(#:phases
-       (modify-phases
-        %standard-phases
-        ;; Otherwise, build fails for a currently unknown reason.
-        (delete 'validate-runpath)
-        ;; Test scripts require trace files to be at '../traces' during the
-        ;; check phase. Given that 'make test' is executed from the 'build'
-        ;; directory, we must copy the trace files from '../source/traces' to
-        ;; '../traces'.
-        (add-before 'check 'copy-trace-files-for-testing
-                    (lambda _
-                      (copy-recursively "../source/traces" "../traces") #t)))))
-    (outputs '("debug" "out"))
-    (inputs `(("asciidoc" ,asciidoc)
-	      ("boost" ,boost)
-	      ("recutils" ,recutils)))
-    (native-inputs `(("gcc-toolchain" ,gcc-toolchain)
-		     ("bison" ,bison)
-		     ("flex" ,flex)
-		     ("perl" ,perl)))))
+   (license license:gpl3+)
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url home-page)
+                  (commit "ce7bfb9b2c0e5bee13a2d55921abf289c3644ae9")
+                  (recursive? #f)))
+            (file-name (string-append name "-" version "-checkout"))
+            (sha256
+             (base32
+              "03vigx28spmn8smngkcw43mqw7b1cp8574f63fzb4g5sjd379am0"))))
+   (build-system cmake-build-system)
+   (arguments
+    '(#:phases
+      (modify-phases
+       %standard-phases
+       ;; Otherwise, build fails for a currently unknown reason.
+       (delete 'validate-runpath)
+       ;; Test scripts require trace files to be at '../traces' during the
+       ;; check phase. Given that 'make test' is executed from the 'build'
+       ;; directory, we must copy the trace files from '../source/traces' to
+       ;; '../traces'.
+       (add-before 'check 'copy-trace-files-for-testing
+                   (lambda _
+                     (copy-recursively "../source/traces" "../traces") #t)))))
+   (outputs '("debug" "out"))
+   (inputs `(("asciidoc" ,asciidoc)
+	           ("boost" ,boost)
+             ("r" ,r)
+	           ("recutils" ,recutils)))
+   (native-inputs `(("gcc-toolchain" ,gcc-toolchain)
+		                ("bison" ,bison)
+		                ("flex" ,flex)
+		                ("perl" ,perl)))))

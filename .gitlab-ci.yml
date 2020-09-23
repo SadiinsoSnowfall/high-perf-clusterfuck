@@ -149,3 +149,23 @@ build_librsb:
   stage: build
   script:
     - guix build librsb
+
+build_r-starvz:
+  stage: build
+  script:
+    - guix build r-starvz
+
+build_r-arrow:
+  stage: build
+  script:
+    - guix build r-arrow
+
+build_r-data-tree:
+  stage: build
+  script:
+    - guix build r-data-tree
+
+build_pageng:
+  stage: build
+  script:
+    - guix build pageng

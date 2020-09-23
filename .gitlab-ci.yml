@@ -118,7 +118,7 @@ build_pastix:
 build_pastix-5:
   stage: build
   script:
-    - guix build pastix@5
+    - guix build pastix-5
 
 build_nmad:
   stage: build

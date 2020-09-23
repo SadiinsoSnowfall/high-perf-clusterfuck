@@ -17,6 +17,7 @@
   #:use-module (gnu packages commencement)
   #:use-module (gnu packages compression)
   #:use-module (gnu packages cran)
+  #:use-module (gnu packages crypto)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages documentation)
   #:use-module (gnu packages flex)
@@ -46,19 +47,21 @@
 (define-public r-starvz
   (package
    (name "r-starvz")
-   (version "CRAN_0.4.0")
+   (version "0.4.0")
    (home-page "https://github.com/schnorr/starvz")
-   (source (origin
-            (method git-fetch)
-            (uri (git-reference
-                  (url home-page)
-                  (commit "ce80b8ec74b982a4d02f38fa1ceab6beee3335b6")
-                  (recursive? #f)))
-            (file-name (string-append name "-" version "-checkout"))
-            (sha256
-             (base32
-              "1w1wxk8043r2q46dqwz0kqi4av21dfdix4gzgsdhrka2dsyxd17i"))))
-   (properties `((upstream-name . "starvz")))
+   (source
+    (origin
+     (method git-fetch)
+     (uri (git-reference
+           (url home-page)
+           (commit "ce80b8ec74b982a4d02f38fa1ceab6beee3335b6")
+           (recursive? #f)))
+     (file-name (string-append name "-" version "-checkout"))
+     (sha256
+      (base32
+       "1w1wxk8043r2q46dqwz0kqi4av21dfdix4gzgsdhrka2dsyxd17i"))))
+   (properties
+    `((upstream-name . "starvz")))
    (build-system r-build-system)
    (propagated-inputs
     `(("awk" ,gawk)
@@ -107,62 +110,84 @@ heterogeneous (multi-GPU, multi-core) multi-node HPC (High-performance
 computing) platforms.")
    (license license:gpl3)))
 
-
-;; This version is too much manual and shall be deprecated and removed when the above -- done after the 0.4.0 was put  in CRAN :-) - one works fine.
-(define-public r-starvz-manual
-  (package
-    (name "r-starvz-manual")
-    (version "0.4.0")
-    (home-page "https://github.com/schnorr/starvz")
-    (synopsis "StarVZ performance analysis workflow")
-    (description
-     "StarVZ consists in a performance analysis workflow that combines the power
-of the R language (and the tidyverse realm) and many auxiliary tools to provide
-a consistent, flexible, extensible, fast, and versatile framework for the
-performance analysis of task-based applications that run on top of the StarPU
-runtime (with its MPI layer for multi-node support). Its goal is to provide a
-fruitful prototypical environment to conduct performance analysis
-hypothesis-checking for task-based applications that run on heterogeneous
-(multi-GPU, multi-core) multi-node HPC platforms.")
-    (license license:gpl3+)
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url home-page)
-                    (commit "0e270312978010350528469dcd1bbf4aaa762c3f")
-                    (recursive? #f)))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "0bbzk3501839amv8plr30ralngv6p8dhqc596nra614hj8q4z42d"))))
-    (build-system r-build-system)
-    (propagated-inputs `(("r-arrow" ,r-arrow)
-			 ("r-data-tree" ,r-data-tree)
-			 ("r-dplyr",r-dplyr)
-			 ("r-tidyr" ,r-tidyr)
-			 ("r-patchwork" ,r-patchwork)
-			 ("r-readr" ,r-readr)
-			 ("r-lpsolve" ,r-lpsolve)
-			 ("r-gtools" ,r-gtools)
-			 ("r-zoo" ,r-zoo)
-			 ("r-car" ,r-car)
-			 ("r-devtools" ,r-devtools)))))
-
 (define-public r-arrow
-(package
-  (name "r-arrow")
-  (version "1.0.0")
-  (source
+  (package
+   (name "r-arrow")
+   ;; The version of 'r-arrow' must match the version of the 'apache-arrow'
+   ;; dependency which is currently '0.17.1'!
+   (version "0.17.1")
+   (source
     (origin
-      (method url-fetch)
-      (uri (cran-uri "arrow" version))
-      (sha256
-        (base32
-          "1j0n5sapgwim8qk4vrdy9gw4zrsd11a51c50pllk33xnd9p30v3k"))))
-  (properties `((upstream-name . "arrow")))
-  (build-system r-build-system)
-  (inputs `(("zlib" ,zlib)))
-  (propagated-inputs
+     (method url-fetch)
+     (uri (cran-uri "arrow" version))
+     (sha256
+      (base32
+       "18rssakj0z81hh8x9qv7gbxdpbf2f2yix3sg3ffdi0ij3a7nipn6"))))
+   (properties `((upstream-name . "arrow")))
+   (build-system r-build-system)
+   (arguments
+    '(#:phases
+      (modify-phases
+       %standard-phases
+       (add-before
+        'install
+        ;; Some files are changed during the shebang patching phase which makes
+        ;; MD5 checksum validation fail for these files. Therefore, we need to
+        ;; recompute the checksums and update the checksum file called 'MD5'.
+        'update-checksums
+        (lambda _
+          (substitute*
+           "MD5"
+           (("b42138af7af04ffb1c62af0bbca3e73c")
+            (begin
+              (use-modules (ice-9 rdelim))
+              (use-modules (ice-9 popen))
+              (let*
+                  ((port (open-input-pipe
+                          "rhash --md5 -p %m cleanup"))
+                   (hash (read-line port))
+                   (close-pipe port))
+                hash))))
+          (substitute*
+           "MD5"
+           (("bb1348983f9da016353f648ee223c725")
+            (begin
+              (use-modules (ice-9 rdelim))
+              (use-modules (ice-9 popen))
+              (let*
+                  ((port (open-input-pipe
+                          "rhash --md5 -p %m configure"))
+                   (hash (read-line port))
+                   (close-pipe port))
+                hash))))
+          (substitute*
+           "MD5"
+           (("90383499dacaad811dbc26c8dcad74ae")
+            (begin
+              (use-modules (ice-9 rdelim))
+              (use-modules (ice-9 popen))
+              (let*
+                  ((port (open-input-pipe
+                          "rhash --md5 -p %m configure.win"))
+                   (hash (read-line port))
+                   (close-pipe port))
+                hash))))
+          (substitute*
+           "MD5"
+           (("c571fa1c92925077d0a2131d2aea0d8d")
+            (begin
+              (use-modules (ice-9 rdelim))
+              (use-modules (ice-9 popen))
+              (let*
+                  ((port (open-input-pipe
+                          "rhash --md5 -p %m inst/build_arrow_static.sh"))
+                   (hash (read-line port))
+                   (close-pipe port))
+                hash)))) #t)))))
+   (inputs
+    `(("zlib" ,zlib)
+      ("rhash", rhash)))
+   (propagated-inputs
     `(("r-assertthat" ,r-assertthat)
       ("r-bit64" ,r-bit64)
       ("r-purrr" ,r-purrr)
@@ -170,18 +195,22 @@ hypothesis-checking for task-based applications that run on heterogeneous
       ("r-rcpp" ,r-rcpp)
       ("r-rlang" ,r-rlang)
       ("r-tidyselect" ,r-tidyselect)
-      ("r-vctrs" ,r-vctrs)))
-  (native-inputs
-    `(("pkg-config" ,pkg-config) ("r-knitr" ,r-knitr)))
-  (home-page "https://github.com/apache/arrow/")
-  (synopsis "Integration to 'Apache' 'Arrow'")
-  (description
+      ("r-vctrs" ,r-vctrs)
+      ;; Necessary for a compilation using the Arrow C++ libraries from Apache
+      ("arrow:lib", apache-arrow "lib")
+      ("arrow:include", apache-arrow "include")))
+   (native-inputs
+    `(("pkg-config" ,pkg-config)
+      ("r-knitr" ,r-knitr)))
+   (home-page "https://github.com/apache/arrow/")
+   (synopsis "Integration to 'Apache' 'Arrow'")
+   (description
     "'Apache' 'Arrow' <https://arrow.apache.org/> is a cross-language
 development platform for in-memory data.  It specifies a standardized
 language-independent columnar memory format for flat and hierarchical data,
 organized for efficient analytic operations on modern hardware. This package
 provides an interface to the 'Arrow C++' library.")
-  (license #f)))
+   (license #f)))
 
 (define-public r-data-tree
 (package
@@ -194,11 +223,14 @@ provides an interface to the 'Arrow C++' library.")
       (sha256
         (base32
           "0pizmx2312zsym4m42b97q2184bg3hibvbdrblcga05xln84qrs0"))))
-  (properties `((upstream-name . "data.tree")))
+  (properties
+   `((upstream-name . "data.tree")))
   (build-system r-build-system)
   (propagated-inputs
-    `(("r-r6" ,r-r6) ("r-stringi" ,r-stringi)))
-  (native-inputs `(("r-knitr" ,r-knitr)))
+   `(("r-r6" ,r-r6)
+     ("r-stringi" ,r-stringi)))
+  (native-inputs
+   `(("r-knitr" ,r-knitr)))
   (home-page "http://github.com/gluc/data.tree")
   (synopsis
     "General Purpose Hierarchical Data Structure")
@@ -228,18 +260,20 @@ to visualize the output of pj_dump). This effort was started as part of the
 french INFRA-SONGS ANR project. Development has continued through a
 collaboration between INF/UFRGS and INRIA.")
    (license license:gpl3+)
-   (source (origin
-            (method git-fetch)
-            (uri (git-reference
-                  (url home-page)
-                  (commit "ce7bfb9b2c0e5bee13a2d55921abf289c3644ae9")
-                  (recursive? #f)))
-            (file-name (string-append name "-" version "-checkout"))
-            (sha256
-             (base32
-              "03vigx28spmn8smngkcw43mqw7b1cp8574f63fzb4g5sjd379am0"))))
+   (source
+    (origin
+     (method git-fetch)
+     (uri (git-reference
+           (url home-page)
+           (commit "ce7bfb9b2c0e5bee13a2d55921abf289c3644ae9")
+           (recursive? #f)))
+     (file-name (string-append name "-" version "-checkout"))
+     (sha256
+      (base32
+       "03vigx28spmn8smngkcw43mqw7b1cp8574f63fzb4g5sjd379am0"))))
    (build-system cmake-build-system)
    (arguments
+    ;; To satisfy the 'runpath-validation' phase
     '(#:configure-flags  (list (string-append "-DCMAKE_EXE_LINKER_FLAGS="
                                               "-Wl,-rpath="
                                               (assoc-ref %outputs "out")
@@ -254,12 +288,15 @@ collaboration between INF/UFRGS and INRIA.")
        (add-before 'check 'copy-trace-files-for-testing
                    (lambda _
                      (copy-recursively "../source/traces" "../traces") #t)))))
-   (outputs '("debug" "out"))
-   (inputs `(("asciidoc" ,asciidoc)
-	           ("boost" ,boost)
-             ("r" ,r)
-	           ("recutils" ,recutils)))
-   (native-inputs `(("gcc-toolchain" ,gcc-toolchain)
-		                ("bison" ,bison)
-		                ("flex" ,flex)
-		                ("perl" ,perl)))))
+   (outputs
+    '("debug" "out"))
+   (inputs
+    `(("asciidoc" ,asciidoc)
+      ("boost" ,boost)
+      ("r" ,r)
+      ("recutils" ,recutils)))
+   (native-inputs
+    `(("gcc-toolchain" ,gcc-toolchain)
+      ("bison" ,bison)
+      ("flex" ,flex)
+      ("perl" ,perl)))))

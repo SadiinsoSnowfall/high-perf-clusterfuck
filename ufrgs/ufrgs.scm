@@ -240,11 +240,13 @@ collaboration between INF/UFRGS and INRIA.")
               "03vigx28spmn8smngkcw43mqw7b1cp8574f63fzb4g5sjd379am0"))))
    (build-system cmake-build-system)
    (arguments
-    '(#:phases
+    '(#:configure-flags  (list (string-append "-DCMAKE_EXE_LINKER_FLAGS="
+                                              "-Wl,-rpath="
+                                              (assoc-ref %outputs "out")
+                                              "/lib"))
+      #:phases
       (modify-phases
        %standard-phases
-       ;; Otherwise, build fails for a currently unknown reason.
-       (delete 'validate-runpath)
        ;; Test scripts require trace files to be at '../traces' during the
        ;; check phase. Given that 'make test' is executed from the 'build'
        ;; directory, we must copy the trace files from '../source/traces' to

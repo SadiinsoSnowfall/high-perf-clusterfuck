@@ -7,6 +7,19 @@
 
  ;; Add your own news entry here!
 
+ (entry
+  (commit "e875734b0969661a1b3d6032b9c520580f50c111")
+  (title
+   (en "r-starvz is now available")
+   (fr "r-starvz est désormais disponible")
+   (sk "r-starvz je teraz dostupný"))
+  (body
+   (en "The R package for plotting StarPU FXT traces is now available.")
+   (fr "Le paquet R pour générer des graphiques à partir des traces de type FXT
+produites par StarPU est désormais disponible.")
+   (sk "Balík R na tvorbu grafov zo záznamov typu FXT, ktoré poskytuje StarPU je
+teraz dostupný.")))
+
  (entry (commit "bb976949d8c36bc3a7780156bcef7841608c7497")
         (title (en "librsb is now available"))
         (body (en "The librsb library for sparse matrix computations is now available.")))

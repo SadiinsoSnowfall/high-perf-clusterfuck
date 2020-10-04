@@ -113,7 +113,20 @@ with this repository.
             (service cups-service-type))
       %my-services))
      ```
+
+     Once the /etc/config.scm has been set up, the system can be reconfigured:
+     ```
+     sudo guix system reconfigure /etc/config.scm
+     ```
      
+     The machine does not need to be globally restarted, it is sufficient to restart the service:
+     ```
+     sudo herd restart guix-daemon
+     ```
+
+     The correctness of the set up can then be checked with the ```ps aux | grep
+     guix-daemon``` command.
+
 
   2. [Authorize](https://www.gnu.org/software/guix/manual/en/html_node/Substitute-Server-Authorization.html)
      the key used to sign substitutes:

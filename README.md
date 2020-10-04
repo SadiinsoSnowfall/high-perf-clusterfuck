@@ -46,14 +46,21 @@ Guix-HPC.
 ## Pre-built binaries
 
 Pre-built binaries for Guix-HPC packages are served from
-`https://guix.bordeaux.inria.fr`.  To benefit from them, you must:
+`https://guix.bordeaux.inria.fr`. To benefit from them, you must (1) add this
+repository to the list of substitute-urls and (2) authorize the key associated
+with this repository.
 
   1. Add `https://guix.bordeaux.inria.fr` to the `--substitute-urls`
      option [of
      `guix-daemon`](https://www.gnu.org/software/guix/manual/en/html_node/Invoking-guix_002ddaemon.html#daemon_002dsubstitute_002durls)
      or that [of client
      tools](https://www.gnu.org/software/guix/manual/en/html_node/Common-Build-Options.html#client_002dsubstitute_002durls).
-     To enable it globally, do:
+     
+     To enable it globally, you must modify the guix-daemon. How to do that
+     depends how your services are handled on the system. If you are running
+     guix on top of a foreign distribution (such as Debian, Ubuntu, ...), your
+     system is likely to rely on systemd to handle services. In this case, you
+     may enable the guix-daemon as follows and proceed to (2):
 	 
 	 ```
 	 $EDITOR /etc/systemd/system/guix-daemon.service
@@ -64,6 +71,49 @@ Pre-built binaries for Guix-HPC packages are served from
      systemctl daemon-reload
 	 systemctl restart guix-daemon.service
 	 ```
+     
+     On guix system itself, services are handled with shepherd. You can for
+     instance declare a customized list of services %my-service (here derived
+     from %desktop-services but you may want to derive it from %base-services on
+     a server-only system) in your /etc/config.scm configuration file:
+     
+     ```
+     (define %my-services
+     (modify-services %desktop-services
+     (guix-service-type config =>
+      (guix-configuration
+       (inherit config)
+       (substitute-urls '("https://ci.guix.gnu.org" "https://guix.bordeaux.inria.fr"))))))
+     ```
+
+     These customized services can then be used in the declaration of your
+     operating system further in the same /etc/config.scm configuration file:
+     
+     ```
+     (operating-system
+      ;; ...
+      (services %my-services)
+      ;; ...
+     )
+     ```
+     
+     In practice, instead of declaring your services with this customized list
+     only, you will likely append typical additional services you use to it,
+     such as in the following example:
+     
+     ```
+     (services
+      (append
+      (list (service gnome-desktop-service-type)
+	        (service openssh-service-type)
+            (set-xorg-configuration
+             (xorg-configuration
+              (keyboard-layout keyboard-layout)))
+            ;; ...
+            (service cups-service-type))
+      %my-services))
+     ```
+     
 
   2. [Authorize](https://www.gnu.org/software/guix/manual/en/html_node/Substitute-Server-Authorization.html)
      the key used to sign substitutes:

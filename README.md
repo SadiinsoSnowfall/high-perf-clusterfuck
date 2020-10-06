@@ -72,24 +72,25 @@ with this repository.
 	 systemctl restart guix-daemon.service
 	 ```
      
-     On guix system itself, services are handled with shepherd. You can for
-     instance declare a customized list of services %my-service (here derived
-     from %desktop-services but you may want to derive it from %base-services on
-     a server-only system) in your /etc/config.scm configuration file:
+     On Guix System itself, services are handled by the Shepherd.  You can for
+     instance declare a customized list of services `%my-service` (here derived
+     from `%desktop-services` but you may want to derive it from `%base-services` on
+     a server-only system) in your `/etc/config.scm` configuration file:
      
-     ```
+     ```scheme
      (define %my-services
-     (modify-services %desktop-services
-     (guix-service-type config =>
-      (guix-configuration
-       (inherit config)
-       (substitute-urls '("https://ci.guix.gnu.org" "https://guix.bordeaux.inria.fr"))))))
+	   (modify-services %desktop-services
+		 (guix-service-type config =>
+		  (guix-configuration
+		   (inherit config)
+		   (substitute-urls '("https://ci.guix.gnu.org"
+                              "https://guix.bordeaux.inria.fr"))))))
      ```
 
      These customized services can then be used in the declaration of your
      operating system further in the same /etc/config.scm configuration file:
      
-     ```
+     ```scheme
      (operating-system
       ;; ...
       (services %my-services)
@@ -101,7 +102,7 @@ with this repository.
      only, you will likely append typical additional services you use to it,
      such as in the following example:
      
-     ```
+     ```scheme
      (services
       (append
       (list (service gnome-desktop-service-type)
@@ -114,7 +115,7 @@ with this repository.
       %my-services))
      ```
 
-     Once the /etc/config.scm has been set up, the system can be reconfigured:
+     Once the `/etc/config.scm` has been set up, the system can be reconfigured:
      ```
      sudo guix system reconfigure /etc/config.scm
      ```

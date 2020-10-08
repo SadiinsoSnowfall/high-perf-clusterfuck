@@ -38,6 +38,31 @@ pull those external changes back into the original org src block it originated
 from.")
      (license license:gpl3+))))
 
+(define-public emacs-ox-json
+  (package
+   (name "emacs-ox-json")
+   (version "0.3.0")
+   (home-page "https://github.com/jlumpe/ox-json")
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url home-page)
+                  (commit "8ce0fae6e8b596b93e05dd512be13973cb3cfa54")))
+            (file-name (git-file-name name version))
+            (sha256
+             (base32
+              "1fwwvp4jvdx8namdy0nb68c2jj3nfw7adwp7vk2c2b5cp6fc6cl7"))))
+   (build-system emacs-build-system)
+   (propagated-inputs
+    `(("emacs-s" ,emacs-s)))
+   (synopsis "JSON export back end for Emacs Org mode")
+   (description "Usage: (require 'ox-json') somewhere and then use the
+org-export-dispatch interactive command and select the J key for JSON export.
+You can also use the ox-json-export-to-buffer and ox-json-export-to-file
+functions or any of the built-in org-export- functions by passing 'json as the
+backend argument.")
+   (license license:expat)))
+
 (define-public emacs-ox-ipynb
   (package
     (name "emacs-ox-ipynb")

@@ -144,7 +144,7 @@ kernels are executed as efficiently as possible.")
                    (commit (string-append "starpu-" version))))
              (file-name (git-file-name name version))
              (sha256
-              (base32 "1nhrzajqqxj56fxiq80rnjbv6m840bs3bsf9c488c2l00fp71xd9"))
+              (base32 "04skaqxkn79rkc40q8fykyb500cls71g6kdsaw262digy0qa2221"))
     	     (patches (search-patches %patch-path))))
    (arguments
     (substitute-keyword-arguments (package-arguments starpu-1.2)

@@ -12,7 +12,7 @@
 (define-public mmg
   (package
     (name "mmg")
-    (version "5.4.1")
+    (version "5.5.1")
     (source
      (origin
        (method git-fetch)
@@ -22,7 +22,7 @@
        (file-name (git-file-name name version))
        (sha256
         (base32
-         "1bck0pwpzd0srx03v7hk9ij91s3r3k9mc38xpw78l51q6x1nvzmd"))))
+         "0v8388d31058qv67fcqkfr1n7mav061aw1f2asg5fzwrbpsv13x7"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags '("-DBUILD_TESTING=ON"

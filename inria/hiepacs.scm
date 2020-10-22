@@ -219,7 +219,7 @@ area (CPUs-GPUs, distributed nodes).")
 (define-public maphys
   (package
     (name "maphys")
-    (version "0.9.8.3")
+    (version "1.0.0")
     (home-page "https://gitlab.inria.fr/solverstack/maphys/maphys")
     (source (origin
               (method git-fetch)
@@ -231,7 +231,7 @@ area (CPUs-GPUs, distributed nodes).")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "0xkg87gaxq55jxyrnaxvx4gp8bff14ph2aca94wmki5j05mf8vh0"))))
+                "0pcwfac2x574f6ggfdmahhx9v2hfswyd3nkf3bmc3cd3173312h3"))))
     (build-system cmake-build-system)
     (arguments
 

@@ -6,7 +6,7 @@
 (define-module (utils utils)
   #:use-module (guix)
   #:use-module (guix git-download)
-  #:use-module (guix licenses)
+  #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (guix build-system r)
@@ -50,7 +50,7 @@
   "A Toolbox for Non-Tabular Data Manipulation")
  (description
   "This package provides a set of functions for data manipulation with list objects, including mapping, filtering, grouping, sorting, updating, searching, and other useful functions.  Most functions are designed to be pipeline friendly so that data processing with lists can be chained.")
- (license expat)))
+ (license license:expat)))
 
 (define-public sz-compressor
   (package
@@ -69,4 +69,4 @@
     '(#:build-type "Release"))
    (synopsis "GUIX package for the SZ compressor.")
    (description "GUIX package for the SZ compressor.")
-   (license gpl3+)))
+   (license license:gpl3+)))

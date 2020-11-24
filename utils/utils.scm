@@ -55,16 +55,18 @@
 (define-public sz-compressor
   (package
    (name "sz-compressor")
-   (version "2.1.8.3")
+   (version "2.1.11")
+   (home-page "https://github.com/szcompressor/SZ")
    (source (origin
             (method git-fetch)
             (uri (git-reference
-                  (url "https://github.com/disheng222/SZ")
+                  (url home-page)
                   (commit (string-append "v" version))))
             (file-name (git-file-name name version))
-            (sha256 (base32 "0rs6vr02qp6k68wyf74iq1ahyywyy1rqpa5935njx1w8mai84ycd"))))
-   (build-system gnu-build-system)
+            (sha256 (base32 "0kzmiigh12aysaq5nnapsh5vrcpvqc7nl21km4hz4xrmp94n2x9c"))))
+   (build-system cmake-build-system)
+   (arguments
+    '(#:build-type "Release"))
    (synopsis "GUIX package for the SZ compressor.")
    (description "GUIX package for the SZ compressor.")
-   (home-page "https://github.com/disheng222/SZ")
    (license gpl3+)))

@@ -1,7 +1,7 @@
 ;;; This module extends GNU Guix and is licensed under the same terms, those
 ;;; of the GNU GPL version 3 or (at your option) any later version.
 ;;;
-;;; Copyright © 2017, 2018, 2019 Inria
+;;; Copyright © 2017, 2018, 2019, 2020 Inria
 
 (define-module (inria tadaam)
   #:use-module (guix)
@@ -28,20 +28,20 @@
 (define %padicotm-svn "https://scm.gforge.inria.fr/anonscm/svn/padico/PadicoTM/trunk")
 (define %patch-path "inria/patches/autogen_building-tools.patch")
 
-(define %v2020-09-01 "2020-09-01")
-(define %v2020-09-01-pm2-revision 28858)
-(define %v2020-09-01-padicotm-revision 5459)
+(define %v2020-11-26 "2020-11-26")
+(define %v2020-11-26-pm2-revision 29045)
+(define %v2020-11-26-padicotm-revision 5464)
 
-(define-public puk-2020-09-01
+(define-public puk-2020-11-26
   (package
    (name "puk")
-   (version %v2020-09-01)
+   (version %v2020-11-26)
    (home-page (string-append %pm2-home-page "/PadicoTM"))
    (source (origin
             (method svn-fetch)
             (uri (svn-reference
                   (url (string-append %padicotm-svn "/PadicoTM/Puk"))
-                  (revision %v2020-09-01-padicotm-revision)))
+                  (revision %v2020-11-26-padicotm-revision)))
             (sha256
              (base32 "0fgjvsq2mbx7fj00vd968832rr9fny4d195cs834kl39cl2jlfz9"))
             (patches (search-patches %patch-path))))
@@ -69,20 +69,20 @@
    (license license:lgpl2.0)))
 
 (define-public puk
-  puk-2020-09-01)
+  puk-2020-11-26)
 
-(define-public pioman-2020-09-01
+(define-public pioman-2020-11-26
   (package
    (name "pioman")
-   (version %v2020-09-01)
+   (version %v2020-11-26)
    (home-page (string-append %pm2-home-page "/pioman"))
    (source (origin
             (method svn-fetch)
             (uri (svn-reference
                   (url (string-append %pm2-svn "/pioman"))
-                  (revision %v2020-09-01-pm2-revision)))
+                  (revision %v2020-11-26-pm2-revision)))
             (sha256
-             (base32 "1yiagsdlr3j5v6dadgpv47kac1k5k9w7r4x6xpv3p8l6f3ka4843"))
+             (base32 "065y87ppi72dz7lqddk2ff9bmj2dv4j647af2gd3pqlc2nv0acfz"))
             (patches (search-patches %patch-path))))
    (build-system gnu-build-system)
    (arguments
@@ -109,18 +109,18 @@
    (license license:lgpl2.0)))
 
 (define-public pioman
-  pioman-2020-09-01)
+  pioman-2020-11-26)
 
-(define-public pukabi-2020-09-01
+(define-public pukabi-2020-11-26
   (package
    (name "pukabi")
-   (version %v2020-09-01)
+   (version %v2020-11-26)
    (home-page (string-append %pm2-home-page "/PadicoTM"))
    (source (origin
             (method svn-fetch)
             (uri (svn-reference
                   (url (string-append %padicotm-svn "/PadicoTM/PukABI"))
-                  (revision %v2020-09-01-padicotm-revision)))
+                  (revision %v2020-11-26-padicotm-revision)))
             (sha256
              (base32 "0d8jscxbz67vr53v0v0r8amw0q6qgv8qrq43nwjkj56z9alz6ah8"))
             (patches (search-patches %patch-path))))
@@ -148,18 +148,18 @@
    (license license:lgpl2.0)))
 
 (define-public pukabi
-  pukabi-2020-09-01)
+  pukabi-2020-11-26)
 
-(define-public padicotm-2020-09-01
+(define-public padicotm-2020-11-26
   (package
    (name "padicotm")
-   (version %v2020-09-01)
+   (version %v2020-11-26)
    (home-page (string-append %pm2-home-page "/PadicoTM"))
    (source (origin
             (method svn-fetch)
             (uri (svn-reference
                   (url (string-append %padicotm-svn "/PadicoTM/PadicoTM"))
-                  (revision %v2020-09-01-padicotm-revision)))
+                  (revision %v2020-11-26-padicotm-revision)))
             (file-name (string-append name "-" version "-checkout"))
             (sha256
              (base32 "1a2daga6r9xcrm6nrmmnv1p0p60z30s1vd30jklv0p9ajy1mgy9l"))
@@ -224,9 +224,9 @@
    (license license:lgpl2.0)))
 
 (define-public padicotm
-  padicotm-2020-09-01)
+  padicotm-2020-11-26)
 
-(define-public padicotm-mini-2020-09-01
+(define-public padicotm-mini-2020-11-26
   (package
    (inherit padicotm)
    (name "padicotm-mini")
@@ -238,10 +238,10 @@
     `(,@(delete `("pioman" ,pioman) (package-propagated-inputs padicotm))))))
 
 (define-public padicotm-mini
-  padicotm-mini-2020-09-01)
+  padicotm-mini-2020-11-26)
 
 ;;see comment above nmad*-pukabi packages definition
-(define-public padicotm-pukabi-2020-09-01
+(define-public padicotm-pukabi-2020-11-26
   (package
    (inherit padicotm)
    (name "padicotm-pukabi")
@@ -253,9 +253,9 @@
     `(,@(delete `("pukabi" ,pukabi) (package-propagated-inputs padicotm))))))
 
 (define-public padicotm-pukabi
-  padicotm-pukabi-2020-09-01)
+  padicotm-pukabi-2020-11-26)
 
-(define-public padicotm-mini-pukabi-2020-09-01
+(define-public padicotm-mini-pukabi-2020-11-26
   (package
    (inherit padicotm-mini)
    (name "padicotm-mini-pukabi")
@@ -267,20 +267,20 @@
     `(,@(delete `("pukabi" ,pukabi) (package-propagated-inputs padicotm-mini))))))
 
 (define-public padicotm-mini-pukabi
-  padicotm-mini-pukabi-2020-09-01)
+  padicotm-mini-pukabi-2020-11-26)
 
-(define-public nmad-2020-09-01
+(define-public nmad-2020-11-26
   (package
    (name "nmad")
-   (version %v2020-09-01)
+   (version %v2020-11-26)
    (home-page (string-append %pm2-home-page "/NewMadeleine"))
    (source (origin
             (method svn-fetch)
             (uri (svn-reference
                   (url (string-append %pm2-svn "/nmad"))
-                  (revision %v2020-09-01-pm2-revision)))
+                  (revision %v2020-11-26-pm2-revision)))
             (sha256
-             (base32 "0g2yglbnzr2740f5zi6r1llmpdm5cal6anb8ly6ch30qxsj661j5"))
+             (base32 "103k9523ikc8y5gahkd20l4pv5sb2qq2vcm6ixjc2dyid8wp7wq2"))
             (patches (search-patches %patch-path))))
    (build-system gnu-build-system)
    (arguments
@@ -326,9 +326,9 @@
    (license license:lgpl2.0)))
 
 (define-public nmad
-  nmad-2020-09-01)
+  nmad-2020-11-26)
 
-(define-public nmad-mini-2020-09-01
+(define-public nmad-mini-2020-11-26
   (package
    (inherit nmad)
    (name "nmad-mini")
@@ -341,12 +341,12 @@
       ,@(delete `("padicotm" ,padicotm) (package-propagated-inputs nmad))))))
 
 (define-public nmad-mini
-  nmad-mini-2020-09-01)
+  nmad-mini-2020-11-26)
 
 ;;nmad-pukabi and nmad-mini-pukabi corresponds to old packages that were not using pukabi
 ;;they should only be used in case something goes wrong with the default ones
 ;;they are not meant to be maintained
-(define-public nmad-pukabi-2020-09-01
+(define-public nmad-pukabi-2020-11-26
   (package
    (inherit nmad)
    (name "nmad-pukabi")
@@ -358,7 +358,7 @@
     `(("padicotm" ,padicotm-pukabi)
       ,@(delete `("padicotm" ,padicotm) (package-propagated-inputs nmad))))))
 
-(define-public nmad-mini-pukabi-2020-09-01
+(define-public nmad-mini-pukabi-2020-11-26
   (package
    (inherit nmad-mini)
    (name "nmad-mini-pukabi")
@@ -370,18 +370,18 @@
     `(("padicotm" ,padicotm-mini-pukabi)
       ,@(delete `("padicotm" ,padicotm-mini) (package-propagated-inputs nmad-mini))))))
 
-(define-public mpibenchmark-2020-09-01
+(define-public mpibenchmark-2020-11-26
   (package
    (name "mpibenchmark")
-   (version %v2020-09-01)
+   (version %v2020-11-26)
    (home-page (string-append %pm2-home-page "/mpibenchmark"))
    (source (origin
             (method svn-fetch)
             (uri (svn-reference
                   (url (string-append %pm2-svn "/mpibenchmark"))
-                  (revision %v2020-09-01-pm2-revision)))
+                  (revision %v2020-11-26-pm2-revision)))
             (sha256
-             (base32 "1gyn7lp44fmvkgq6fcw5x3i379kff1nwjvif8mizm1dbjahh4i33"))))
+             (base32 "1bm1xagi7nnd09g9vrdijbs7gacsja3cl3h2091bkzh376zfvl51"))))
    (build-system gnu-build-system)
    (arguments
     '(#:out-of-source? #t
@@ -407,4 +407,4 @@
    (license license:lgpl2.0)))
 
 (define-public mpibenchmark
-  mpibenchmark-2020-09-01)
+  mpibenchmark-2020-11-26)

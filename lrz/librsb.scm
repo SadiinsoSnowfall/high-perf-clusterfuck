@@ -14,6 +14,8 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages mpi) ;; for hwloc
+  #:use-module (gnu packages m4)
+  #:use-module (gnu packages autotools)
   )
 
 (define-public librsb
@@ -21,19 +23,15 @@
     (name "librsb")
     (version "1.2.0.9")
     (source (origin
-              (uri "http://download.sourceforge.net/librsb/librsb-1.2.0.9.tar.gz")
               (method url-fetch)
-              (sha256
-               (base32
-                "1ynrsgnvv1jfm8dv3jwjrip9x9icxv7w3qrk149025j6fbaza8gl"))
-              ))
+              (uri "file:///home/matthieu/Repositories/librsb")
+              (sha256 (base64 "Bxi6NDhEefD5PCvxJQPchcTlVE57XVqW3HS3hc8LOOU="))
+    ))
     (build-system gnu-build-system)
-    (inputs `(
-              ("gfortran" ,gfortran "lib")
-              ("gfortran" ,gfortran)
-              ("hwloc" ,hwloc)
-              ("zlib" ,zlib)
-              ))
+    (inputs `(("m4", m4)
+	      ("libtool", libtool)
+	      ("autoconf", autoconf)
+	      ("automake", automake)))
     (synopsis "librsb: A shared memory parallel sparse matrix computations library for the Recursive Sparse Blocks format")
     (description
      "librsb is a library for sparse matrix computations featuring the Recursive Sparse Blocks (RSB) matrix format. This format allows cache efficient and multi-threaded (that is, shared memory parallel) operations on large sparse matrices. The most common operations necessary to iterative solvers are available, e.g.: matrix-vector multiplication, triangular solution, rows/columns scaling, diagonal extraction / setting, blocks extraction, norm computation, formats conversion. The RSB format is especially well suited for symmetric and transposed multiplication variants. Most numerical kernels code is auto generated, and the supported numerical types can be chosen by the user at build time. librsb can also be built serially (without OpenMP parallelism), if required.

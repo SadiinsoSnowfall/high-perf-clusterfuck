@@ -23,10 +23,12 @@
     (name "librsb")
     (version "1.2.0.9")
     (source (origin
+              (uri "http://download.sourceforge.net/librsb/librsb-1.2.0.9.tar.gz")
               (method url-fetch)
-              (uri "file:///home/matthieu/Repositories/librsb")
-              (sha256 (base64 "Bxi6NDhEefD5PCvxJQPchcTlVE57XVqW3HS3hc8LOOU="))
-    ))
+              (sha256
+               (base32
+                "1ynrsgnvv1jfm8dv3jwjrip9x9icxv7w3qrk149025j6fbaza8gl"))
+              ))
     (build-system gnu-build-system)
     (inputs `(("m4", m4)
 	      ("libtool", libtool)

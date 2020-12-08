@@ -36,7 +36,9 @@
                 (file-name (git-file-name name version))))
       (build-system cmake-build-system)
       (arguments
-       `(#:phases (modify-phases %standard-phases
+       `(#:configure-flags '("-DBUILD_SHARED_LIBS=ON")
+
+         #:phases (modify-phases %standard-phases
                     (add-after 'build 'mpi-setup
                       ;; Set the test environment for Open MPI.
                       ,%openmpi-setup))

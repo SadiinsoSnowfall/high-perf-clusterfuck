@@ -136,7 +136,7 @@ kernels are executed as efficiently as possible.")
   (package
     (inherit starpu-1.2)
     (name "starpu")
-    (version "1.3.7")
+    (version "1.3.7"); for the next release, update also fxt in inria/eztrace.scm
     (source (origin
              (method git-fetch)
              (uri (git-reference

@@ -14,6 +14,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages pkg-config)
+  #:use-module (gnu packages man)
   #:use-module (gnu packages mpi))
 
 (define-public eztrace
@@ -124,17 +125,17 @@ threads.")
 (define-public fxt
   (package
     (name "fxt")
-    (version "0.3.3")
+    (version "0.3.12")
     (source (origin
               (uri (string-append "mirror://savannah/fkt/fxt-"
                                   version ".tar.gz"))
               (method url-fetch)
               (sha256
                (base32
-                "09m6sq2qv995pv6qjrwi7582lllrbhv44qkf95a2l96c259flvrz"))))
+                "0svqg310vd2mp2zrzq5mbc9z1k8svz5xkld9zwg0n3gbi2qqp73s"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("perl" ,perl)))
+     `(("perl" ,perl) ("help2man" ,help2man)))
     (home-page "https://savannah.nongnu.org/projects/fkt")
     (synopsis "Efficient recording of program execution traces")
     (description

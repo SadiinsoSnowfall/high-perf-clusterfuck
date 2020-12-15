@@ -183,7 +183,7 @@ kernels are executed as efficiently as possible.")
         `(cons "--with-fxt" ,flags))))
     ;; some tests require python.
     (native-inputs
-     `(("python" ,python-3)
+     `(("python-wrapper" ,python-wrapper)
        ,@(package-native-inputs starpu)))))
 
 (define-public starpu+simgrid+fxt
@@ -203,6 +203,6 @@ kernels are executed as efficiently as possible.")
                  ,flags))))
     ;; some tests require python.
     (native-inputs
-     `(("python" ,python-3)
+     `(("python-wrapper" ,python-wrapper)
        ,@(package-native-inputs starpu)))))
 

@@ -6,8 +6,8 @@
 (define-module (inria tadaam)
   #:use-module (guix)
   #:use-module (guix build-system gnu)
-  #:use-module (guix svn-download)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (guix git-download)
   #:use-module (gnu packages)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages mpi)
@@ -18,33 +18,28 @@
   #:use-module (gnu packages xml)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages admin)
-  #:use-module (gnu packages base)
-  #:use-module (inria eztrace)
-  #:use-module (inria simgrid)
-  #:use-module (ice-9 match))
+  #:use-module (gnu packages base))
 
 (define %pm2-home-page "http://pm2.gforge.inria.fr/")
-(define %pm2-svn "https://scm.gforge.inria.fr/anonscm/svn/pm2/trunk")
-(define %padicotm-svn "https://scm.gforge.inria.fr/anonscm/svn/padico/PadicoTM/trunk")
-(define %patch-path "inria/patches/autogen_building-tools.patch")
+(define %pm2-git "https://gitlab.inria.fr/pm2/pm2.git")
+(define %pm2-commit "8317021ced771ba585ba78e0d88053aa53436f62")
+(define %pm2-hash "0vh830g2j43hzs250pj139550zbh7zg3wkvf6jhrsaia2xfc6air") ; guix hash -rx .
 
-(define %v2020-11-26 "2020-11-26")
-(define %v2020-11-26-pm2-revision 29045)
-(define %v2020-11-26-padicotm-revision 5464)
+(define %v2020-12-16 "2020-12-16")
 
-(define-public puk-2020-11-26
+(define-public puk-2020-12-16
   (package
    (name "puk")
-   (version %v2020-11-26)
+   (version %v2020-12-16)
    (home-page (string-append %pm2-home-page "/PadicoTM"))
    (source (origin
-            (method svn-fetch)
-            (uri (svn-reference
-                  (url (string-append %padicotm-svn "/PadicoTM/Puk"))
-                  (revision %v2020-11-26-padicotm-revision)))
+            (method git-fetch)
+            (uri (git-reference
+                  (url %pm2-git)
+                  (commit %pm2-commit)))
+            (file-name (string-append name "-" version "-checkout"))
             (sha256
-             (base32 "0fgjvsq2mbx7fj00vd968832rr9fny4d195cs834kl39cl2jlfz9"))
-            (patches (search-patches %patch-path))))
+             (base32 %pm2-hash))))
    (build-system gnu-build-system)
    (arguments
     '(#:out-of-source? #t
@@ -52,38 +47,41 @@
                           "--disable-debug"
                           "--disable-trace")
       #:phases (modify-phases %standard-phases
-                 (add-after 'unpack 'fix-hardcoded-paths
+                 (add-after 'unpack 'fix-hardcoded-paths-chdir
                    (lambda _
                      (substitute* "building-tools/common_vars.mk.in"
                        (("/bin/sh")  (which "sh")))
+                     (chdir "Puk")
                      #t))
-                 (delete 'check))))
+                 (delete 'check)))) ; no make check in Puk
    (native-inputs
     `(("pkg-config" ,pkg-config)
       ("autoconf", autoconf)
       ("automake", automake)))
    (propagated-inputs
     `(("expat" ,expat)))
-   (synopsis "dummy")
-   (description "Dummy")
-   (license license:lgpl2.0)))
+   (synopsis "PadicoTM micro-kernel")
+   (description "Puk is the core of PadicoTM. It manages dynamically loadable
+modules, software components, and basic data structures (lists, vectors,
+hashtables, lock-free queues). It may be used with")
+   (license license:gpl2)))
 
 (define-public puk
-  puk-2020-11-26)
+  puk-2020-12-16)
 
-(define-public pioman-2020-11-26
+(define-public pioman-2020-12-16
   (package
    (name "pioman")
-   (version %v2020-11-26)
+   (version %v2020-12-16)
    (home-page (string-append %pm2-home-page "/pioman"))
    (source (origin
-            (method svn-fetch)
-            (uri (svn-reference
-                  (url (string-append %pm2-svn "/pioman"))
-                  (revision %v2020-11-26-pm2-revision)))
+            (method git-fetch)
+            (uri (git-reference
+                  (url %pm2-git)
+                  (commit %pm2-commit)))
+            (file-name (string-append name "-" version "-checkout"))
             (sha256
-             (base32 "065y87ppi72dz7lqddk2ff9bmj2dv4j647af2gd3pqlc2nv0acfz"))
-            (patches (search-patches %patch-path))))
+             (base32 %pm2-hash))))
    (build-system gnu-build-system)
    (arguments
     '(#:out-of-source? #t
@@ -91,12 +89,13 @@
                           "--disable-debug"
                           "--with-pthread")
       #:phases (modify-phases %standard-phases
-                 (add-after 'unpack 'fix-hardcoded-paths
+                 (add-after 'unpack 'fix-hardcoded-paths-chdir
                    (lambda _
                      (substitute* "building-tools/common_vars.mk.in"
                        (("/bin/sh")  (which "sh")))
+                     (chdir "pioman")
                      #t))
-                 (delete 'check))))
+                 (delete 'check)))) ; no make check in pioman
    (native-inputs
     `(("pkg-config" ,pkg-config)
       ("autoconf" ,autoconf)
@@ -104,37 +103,49 @@
    (propagated-inputs
     `(("puk" ,puk)
       ("hwloc" ,hwloc "lib")))
-   (synopsis "dummy")
-   (description "Dummy")
-   (license license:lgpl2.0)))
+   (synopsis "A Generic I/O Manager")
+   (description " PIOMan is an I/O event manager of the PM2 software suite. It
+ensures communication progression using available cores and hooks in thread
+scheduler. It guarantees good reactivity, asynchronous communication progression,
+and communication/computation overlap.
+PIOMan is closely integrated with the NewMadeleine communication library and
+PadicoTM. It works with three flavors of thread scheduling: no thread, pthread,
+and Marcel. The pthread flavor may be composed with various runtime systems such
+as OpenMP.
+PIOMan can be used standalone to bring low level asynchronous progression in a
+communication library, or more simply may be used through the NewMadeleine
+communication library and its companion MPI implementation called Mad-MPI
+supporting MPI_THREAD_MULTIPLE multi-threading level.")
+   (license license:gpl2)))
 
 (define-public pioman
-  pioman-2020-11-26)
+  pioman-2020-12-16)
 
-(define-public pukabi-2020-11-26
+(define-public pukabi-2020-12-16
   (package
    (name "pukabi")
-   (version %v2020-11-26)
+   (version %v2020-12-16)
    (home-page (string-append %pm2-home-page "/PadicoTM"))
    (source (origin
-            (method svn-fetch)
-            (uri (svn-reference
-                  (url (string-append %padicotm-svn "/PadicoTM/PukABI"))
-                  (revision %v2020-11-26-padicotm-revision)))
+            (method git-fetch)
+            (uri (git-reference
+                  (url %pm2-git)
+                  (commit %pm2-commit)))
+            (file-name (string-append name "-" version "-checkout"))
             (sha256
-             (base32 "0d8jscxbz67vr53v0v0r8amw0q6qgv8qrq43nwjkj56z9alz6ah8"))
-            (patches (search-patches %patch-path))))
+             (base32 %pm2-hash))))
    (build-system gnu-build-system)
    (arguments
     '(#:out-of-source? #t
       #:configure-flags '("--enable-optimize"
                           "--disable-debug"
-			  "--enable-mem")
+                          "--enable-mem")
       #:phases (modify-phases %standard-phases
-                 (add-after 'unpack 'fix-hardcoded-paths
+                 (add-after 'unpack 'fix-hardcoded-paths-chdir
                    (lambda _
                      (substitute* "building-tools/common_vars.mk.in"
                        (("/bin/sh")  (which "sh")))
+                     (chdir "PukABI")
                      #t))
                  (delete 'check))))
    (native-inputs
@@ -143,27 +154,29 @@
       ("automake", automake)))
    (propagated-inputs
     `(("puk" ,puk)))
-   (synopsis "dummy")
-   (description "Dummy")
-   (license license:lgpl2.0)))
+   (synopsis "Dynamic ABI manager")
+   (description "PukABI is a dynamic ABI manager. It intercepts symbols using
+LD_PRELOAD to allow for a variety of features: replace a libc function with a
+user-supplied function; add hooks for locking with another thread library
+than libc pthread; add hooks for memory.")
+   (license license:gpl2)))
 
 (define-public pukabi
-  pukabi-2020-11-26)
+  pukabi-2020-12-16)
 
-(define-public padicotm-2020-11-26
+(define-public padicotm-2020-12-16
   (package
    (name "padicotm")
-   (version %v2020-11-26)
+   (version %v2020-12-16)
    (home-page (string-append %pm2-home-page "/PadicoTM"))
    (source (origin
-            (method svn-fetch)
-            (uri (svn-reference
-                  (url (string-append %padicotm-svn "/PadicoTM/PadicoTM"))
-                  (revision %v2020-11-26-padicotm-revision)))
+            (method git-fetch)
+            (uri (git-reference
+                  (url %pm2-git)
+                  (commit %pm2-commit)))
             (file-name (string-append name "-" version "-checkout"))
             (sha256
-             (base32 "1a2daga6r9xcrm6nrmmnv1p0p60z30s1vd30jklv0p9ajy1mgy9l"))
-            (patches (search-patches %patch-path))))
+             (base32 %pm2-hash))))
    (build-system gnu-build-system)
    (arguments
     '(#:out-of-source? #t
@@ -174,10 +187,11 @@
                           ;; 'padico-d' wants to write to $localstatedir/log.
                           "--localstatedir=/var")
       #:phases (modify-phases %standard-phases
-                 (add-after 'unpack 'fix-hardcoded-paths
+                 (add-after 'unpack 'fix-hardcoded-paths-chdir
                    (lambda _
                      (substitute* "building-tools/common_vars.mk.in"
                        (("/bin/sh")  (which "sh")))
+                     (chdir "PadicoTM")
                      #t))
                  (delete 'check)
                  (add-after 'install 'wrap-padico-launch
@@ -219,14 +233,20 @@
     `(("puk" ,puk)
       ("pioman" ,pioman)
       ("pukabi" ,pukabi)))
-   (synopsis "dummy")
-   (description "Dummy")
-   (license license:lgpl2.0)))
+   (synopsis "A High-performance Communication Framework for Grids")
+   (description "PadicoTM is composed of a core which provides a
+high-performance framework for networking and multi-threading, and
+services plugged into the core. High-performance communications
+and threads are obtained thanks to Marcel and Madeleine, provided
+by the PM2 software suite. The PadicoTM core aims at making the
+different services running at the same time run in a cooperative
+way rather than competitive.")
+   (license license:gpl2)))
 
 (define-public padicotm
-  padicotm-2020-11-26)
+  padicotm-2020-12-16)
 
-(define-public padicotm-mini-2020-11-26
+(define-public padicotm-mini-2020-12-16
   (package
    (inherit padicotm)
    (name "padicotm-mini")
@@ -238,10 +258,10 @@
     `(,@(delete `("pioman" ,pioman) (package-propagated-inputs padicotm))))))
 
 (define-public padicotm-mini
-  padicotm-mini-2020-11-26)
+  padicotm-mini-2020-12-16)
 
 ;;see comment above nmad*-pukabi packages definition
-(define-public padicotm-pukabi-2020-11-26
+(define-public padicotm-pukabi-2020-12-16
   (package
    (inherit padicotm)
    (name "padicotm-pukabi")
@@ -253,9 +273,9 @@
     `(,@(delete `("pukabi" ,pukabi) (package-propagated-inputs padicotm))))))
 
 (define-public padicotm-pukabi
-  padicotm-pukabi-2020-11-26)
+  padicotm-pukabi-2020-12-16)
 
-(define-public padicotm-mini-pukabi-2020-11-26
+(define-public padicotm-mini-pukabi-2020-12-16
   (package
    (inherit padicotm-mini)
    (name "padicotm-mini-pukabi")
@@ -267,35 +287,40 @@
     `(,@(delete `("pukabi" ,pukabi) (package-propagated-inputs padicotm-mini))))))
 
 (define-public padicotm-mini-pukabi
-  padicotm-mini-pukabi-2020-11-26)
+  padicotm-mini-pukabi-2020-12-16)
 
-(define-public nmad-2020-11-26
+(define-public nmad-2020-12-16
   (package
    (name "nmad")
-   (version %v2020-11-26)
+   (version %v2020-12-16)
    (home-page (string-append %pm2-home-page "/NewMadeleine"))
    (source (origin
-            (method svn-fetch)
-            (uri (svn-reference
-                  (url (string-append %pm2-svn "/nmad"))
-                  (revision %v2020-11-26-pm2-revision)))
+            (method git-fetch)
+            (uri (git-reference
+                  (url %pm2-git)
+                  (commit %pm2-commit)))
+            (file-name (string-append name "-" version "-checkout"))
             (sha256
-             (base32 "103k9523ikc8y5gahkd20l4pv5sb2qq2vcm6ixjc2dyid8wp7wq2"))
-            (patches (search-patches %patch-path))))
+             (base32 %pm2-hash))))
    (build-system gnu-build-system)
    (arguments
     '(#:out-of-source? #t
       #:configure-flags '("--enable-optimize"
                           "--disable-debug"
                           "--with-pioman"
-			  "--with-pukabi"
+                          "--with-pukabi"
                           "--enable-mpi"
                           "--disable-sampling")
       #:phases (modify-phases %standard-phases
-                 (add-after 'unpack 'fix-hardcoded-paths
+                  ;(add-before 'check 'pre-check
+                    ;(lambda _
+                      ;(setenv "PADICO_VERBOSE" "yes") ; for verbose tests
+                      ;#t))
+                 (add-after 'unpack 'fix-hardcoded-paths-chdir
                    (lambda _
                      (substitute* "building-tools/common_vars.mk.in"
                        (("/bin/sh")  (which "sh")))
+                     (chdir "nmad")
                      #t))
                  (add-after 'install 'set-libexec-dir-mpicc
                    (lambda* (#:key outputs #:allow-other-keys)
@@ -321,14 +346,31 @@
     `(("rdma-core" ,rdma-core)
       ("psm" ,psm)
       ("psm2" ,psm2)))
-   (synopsis "dummy")
-   (description "Dummy")
-   (license license:lgpl2.0)))
+   (synopsis "An Optimizing Communication Library for High-Performance Networks")
+   (description "NewMadeleine is the fourth incarnation of the Madeleine
+communication library. The new architecture aims at enabling the use of a much
+wider range of communication flow optimization techniques. Its design is entirely
+modular: drivers and optimization strategies are dynamically loadable software
+components, allowing experimentations with multiple approaches or on multiple
+issues with regard to processing communication flows.
+The optimizing scheduler SchedOpt targets applications with irregular, multi-flow
+communication schemes such as found in the increasingly common application
+conglomerates made of multiple programming environments and coupled pieces of
+code, for instance. SchedOpt itself is easily extensible through the concepts of
+optimization strategies (what to optimize for, what the optimization goal is)
+expressed in terms of tactics (how to optimize to reach the optimization goal).
+Tactics themselves are made of basic communication flows operations such as packet
+merging or reordering.
+The communication library is fully multi-threaded through its close integration
+with PIOMan. It manages concurrent communication operations from multiple
+libraries and from multiple threads. Its MPI implementation Mad-MPI fully supports
+the MPI_THREAD_MULTIPLE multi-threading level.")
+   (license license:gpl2)))
 
 (define-public nmad
-  nmad-2020-11-26)
+  nmad-2020-12-16)
 
-(define-public nmad-mini-2020-11-26
+(define-public nmad-mini-2020-12-16
   (package
    (inherit nmad)
    (name "nmad-mini")
@@ -341,12 +383,12 @@
       ,@(delete `("padicotm" ,padicotm) (package-propagated-inputs nmad))))))
 
 (define-public nmad-mini
-  nmad-mini-2020-11-26)
+  nmad-mini-2020-12-16)
 
 ;;nmad-pukabi and nmad-mini-pukabi corresponds to old packages that were not using pukabi
 ;;they should only be used in case something goes wrong with the default ones
 ;;they are not meant to be maintained
-(define-public nmad-pukabi-2020-11-26
+(define-public nmad-pukabi-2020-12-16
   (package
    (inherit nmad)
    (name "nmad-pukabi")
@@ -358,7 +400,7 @@
     `(("padicotm" ,padicotm-pukabi)
       ,@(delete `("padicotm" ,padicotm) (package-propagated-inputs nmad))))))
 
-(define-public nmad-mini-pukabi-2020-11-26
+(define-public nmad-mini-pukabi-2020-12-16
   (package
    (inherit nmad-mini)
    (name "nmad-mini-pukabi")
@@ -370,30 +412,34 @@
     `(("padicotm" ,padicotm-mini-pukabi)
       ,@(delete `("padicotm" ,padicotm-mini) (package-propagated-inputs nmad-mini))))))
 
-(define-public mpibenchmark-2020-11-26
+(define-public mpibenchmark-2020-12-16
   (package
    (name "mpibenchmark")
-   (version %v2020-11-26)
+   (version %v2020-12-16)
    (home-page (string-append %pm2-home-page "/mpibenchmark"))
    (source (origin
-            (method svn-fetch)
-            (uri (svn-reference
-                  (url (string-append %pm2-svn "/mpibenchmark"))
-                  (revision %v2020-11-26-pm2-revision)))
+            (method git-fetch)
+            (uri (git-reference
+                  (url %pm2-git)
+                  (commit %pm2-commit)))
+            (file-name (string-append name "-" version "-checkout"))
             (sha256
-             (base32 "1bm1xagi7nnd09g9vrdijbs7gacsja3cl3h2091bkzh376zfvl51"))))
+             (base32 %pm2-hash))))
    (build-system gnu-build-system)
    (arguments
     '(#:out-of-source? #t
       #:configure-flags '("--enable-optimize"
                           "--disable-debug")
       #:phases (modify-phases %standard-phases
-                 (add-after 'unpack 'fix-hardcoded-paths
+                 (add-after 'unpack 'fix-hardcoded-paths-chdir
                    (lambda _
                      (substitute* "building-tools/common_vars.mk.in"
                        (("/bin/sh")  (which "sh")))
+                     (substitute* "mpi_sync_clocks/autogen.sh"
+                       (("/bin/sh")  (which "sh")))
+                     (chdir "mpibenchmark")
                      #t))
-                 (delete 'check))))
+                 (delete 'check)))) ; no make check in mpibenchmark
    (native-inputs
     `(("pkg-config" ,pkg-config)
       ("autoconf" ,autoconf)
@@ -402,9 +448,17 @@
     `(("hwloc" ,hwloc "lib")
       ("gnuplot" ,gnuplot)
       ("mpi" ,nmad)))
-   (synopsis "dummy")
-   (description "Dummy")
-   (license license:lgpl2.0)))
+   (synopsis "MPI overlap benchmark")
+   (description "MadMPI benchmark contains the following benchmark series:
+- base send/recv benchmark, used for reference (mpi_bench_base);
+- communication/computation overlap benchmark (mpi_bench_overlap);
+- tag-matching performance with tags of posted receives in order and out of
+  order (mpi_bench_reqs);
+- multi-threaded communications benchmark (mpi_bench_thread) // preliminary
+  version, still incomplete.
+Benchmarks are point-to-point, running on two nodes. Collective operations
+are not benchmarked yet.")
+   (license license:gpl2)))
 
 (define-public mpibenchmark
-  mpibenchmark-2020-11-26)
+  mpibenchmark-2020-12-16)

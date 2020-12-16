@@ -120,10 +120,29 @@ build_pastix-5:
   script:
     - guix build pastix-5
 
-build_nmad:
+build_pm2:
   stage: build
   script:
+    - guix build puk
+    - guix build pioman
+    - guix build pukabi
+    - guix build padicotm
+    - guix build padicotm-mini
+    - guix build padicotm-pukabi
+    - guix build padicotm-mini-pukabi
     - guix build nmad
+    - guix build nmad-mini
+    - guix build mpibenchmark
+
+build_starpu-nmad:
+  stage: build
+  script:
+    - guix build starpu --with-input=openmpi=nmad
+
+build_starpu-madmpi:
+  stage: build
+  script:
+    - guix build starpu --with-input=openmpi=nmad-mini
 
 build_pampa:
   stage: build

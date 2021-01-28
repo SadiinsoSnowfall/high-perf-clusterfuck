@@ -133,6 +133,8 @@ build_pm2:
     - guix build nmad
     - guix build nmad-mini
     - guix build mpibenchmark
+    - guix build mpi_sync_clocks
+    - guix build --with-input=openmpi=nmad mpi_sync_clocks
 
 build_starpu-nmad:
   stage: build

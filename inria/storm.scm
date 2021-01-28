@@ -166,6 +166,8 @@ kernels are executed as efficiently as possible.")
                                  (package-propagated-inputs starpu-1.2)
                                  '("mpi" "hwloc"))))))
 
+; next release of StarPU will have an optional dependency on tadaam/mpi_sync_clocks: don't forget to add it !
+
 (define-public starpu
   starpu-1.3)
 

@@ -1,7 +1,7 @@
 ;;; This module extends GNU Guix and is licensed under the same terms, those
 ;;; of the GNU GPL version 3 or (at your option) any later version.
 ;;;
-;;; Copyright © 2017, 2018, 2019, 2020 Inria
+;;; Copyright © 2017-2021 Inria
 
 (define-module (inria tadaam)
   #:use-module (guix)
@@ -462,3 +462,43 @@ are not benchmarked yet.")
 
 (define-public mpibenchmark
   mpibenchmark-2020-12-16)
+
+(define-public mpi_sync_clocks-2020-12-16
+  (package
+   (name "mpi_sync_clocks")
+   (version %v2020-12-16)
+   (home-page %pm2-home-page)
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url %pm2-git)
+                  (commit %pm2-commit)))
+            (file-name (string-append name "-" version "-checkout"))
+            (sha256
+             (base32 %pm2-hash))))
+   (build-system gnu-build-system)
+   (arguments
+    '(#:out-of-source? #t
+      #:configure-flags '("--enable-optimize"
+                          "--disable-debug")
+      #:phases (modify-phases %standard-phases
+                 (add-after 'unpack 'fix-hardcoded-paths-chdir
+                   (lambda _
+                     (substitute* "building-tools/common_vars.mk.in"
+                       (("/bin/sh")  (which "sh")))
+                     (chdir "mpi_sync_clocks")
+                     #t))
+                 (delete 'check)))) ; no make check in mpi_sync_clocks
+   (native-inputs
+    `(("pkg-config" ,pkg-config)
+      ("autoconf" ,autoconf)
+      ("automake" ,automake)))
+   (inputs
+    `(("mpi" ,openmpi))) ; Every packet requiring mpi use openmpi, so use it, it will be simpler to then change with `--with-input=openmpi=nmad`
+   (synopsis "Distributed synchronized clocks over MPI")
+   (description "Small library with routines to synchronize clocks over several
+                nodes with MPI.")
+   (license license:lgpl2.1)))
+
+(define-public mpi_sync_clocks
+  mpi_sync_clocks-2020-12-16)

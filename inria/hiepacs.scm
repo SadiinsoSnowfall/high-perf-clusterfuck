@@ -504,7 +504,9 @@ etc.")
     (arguments
      '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON"
                            "-DPASTIX_WITH_MPI=ON"
-                           "-DPASTIX_WITH_STARPU=ON")
+                           "-DPASTIX_WITH_STARPU=ON"
+                           "-DPASTIX_ORDERING_METIS=OFF"
+                           "-DPASTIX_ORDERING_SCOTCH=ON")
 
        #:phases (modify-phases %standard-phases
                   (add-before 'check 'prepare-test-environment
@@ -546,7 +548,6 @@ etc.")
        ;; ("lapack" ,lapack)         ;must be built with '-DLAPACKE_WITH_TMG=ON'
 
        ;; The following are optional dependencies.
-       ("metis" ,metis)
        ("starpu" ,starpu)
 
        ;; Python bindings and Python tests. Python3

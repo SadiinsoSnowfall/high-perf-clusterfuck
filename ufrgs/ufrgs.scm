@@ -1,7 +1,7 @@
 ;;; This module extends GNU Guix and is licensed under the same terms, those
 ;;; of the GNU GPL version 3 or (at your option) any later version.
 ;;;
-;;; Copyright © 2017, 2019, 2020 Inria
+;;; Copyright © 2017, 2019, 2020, 2021 Inria
 
 (define-module (ufrgs ufrgs)
   #:use-module (guix)
@@ -210,7 +210,7 @@ development platform for in-memory data.  It specifies a standardized
 language-independent columnar memory format for flat and hierarchical data,
 organized for efficient analytic operations on modern hardware. This package
 provides an interface to the 'Arrow C++' library.")
-   (license #f)))
+   (license license:asl2.0)))
 
 (define-public r-data-tree
 (package

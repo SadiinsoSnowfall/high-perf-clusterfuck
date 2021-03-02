@@ -333,7 +333,7 @@
       "Bootstrap themed components for use in Plotly Dash")
     (description
       "Bootstrap themed components for use in Plotly Dash")
-    (license license:asl2)))
+    (license license:asl2.0)))
 
 (define-public python-pyyaml-5
   (package

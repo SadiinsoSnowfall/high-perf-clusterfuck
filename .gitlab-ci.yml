@@ -190,3 +190,8 @@ build_pageng:
   stage: build
   script:
     - guix build pageng
+
+build_openmpi-curta:
+  stage: build
+  script:
+    - guix build openmpi-curta

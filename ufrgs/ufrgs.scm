@@ -114,15 +114,15 @@ computing) platforms.")
   (package
    (name "r-arrow")
    ;; The version of 'r-arrow' must match the version of the 'apache-arrow'
-   ;; dependency which is currently '0.17.1'!
-   (version "0.17.1")
+   ;; dependency which is currently '3.0.0'!
+   (version "3.0.0")
    (source
     (origin
      (method url-fetch)
      (uri (cran-uri "arrow" version))
      (sha256
       (base32
-       "18rssakj0z81hh8x9qv7gbxdpbf2f2yix3sg3ffdi0ij3a7nipn6"))))
+       "0wgdj6fr4vbz91s76gfwyv2q66p8z3fwf9zgk4112rjhj60q7qfq"))))
    (properties `((upstream-name . "arrow")))
    (build-system r-build-system)
    (arguments
@@ -150,7 +150,7 @@ computing) platforms.")
                 hash))))
           (substitute*
            "MD5"
-           (("bb1348983f9da016353f648ee223c725")
+           (("5466817020230c005c04ff56d0042c32")
             (begin
               (use-modules (ice-9 rdelim))
               (use-modules (ice-9 popen))
@@ -162,7 +162,7 @@ computing) platforms.")
                 hash))))
           (substitute*
            "MD5"
-           (("90383499dacaad811dbc26c8dcad74ae")
+           (("f8118be9001f04a74b67e014efc2de6e")
             (begin
               (use-modules (ice-9 rdelim))
               (use-modules (ice-9 popen))
@@ -174,7 +174,7 @@ computing) platforms.")
                 hash))))
           (substitute*
            "MD5"
-           (("c571fa1c92925077d0a2131d2aea0d8d")
+           (("7e7fb7a40ebf272be87d5a5a608be25f")
             (begin
               (use-modules (ice-9 rdelim))
               (use-modules (ice-9 popen))
@@ -193,6 +193,7 @@ computing) platforms.")
       ("r-purrr" ,r-purrr)
       ("r-r6" ,r-r6)
       ("r-rcpp" ,r-rcpp)
+      ("r-cpp11" ,r-cpp11)
       ("r-rlang" ,r-rlang)
       ("r-tidyselect" ,r-tidyselect)
       ("r-vctrs" ,r-vctrs)

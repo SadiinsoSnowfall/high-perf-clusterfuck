@@ -6,7 +6,24 @@
  (version 0)
 
  ;; Add your own news entry here!
-
+ (entry
+  (commit "18b3708a5adf8ac2403706c2562f33e031bc4406")
+  (title
+   (en "openmpi-curta is now available")
+   (fr "openmpi-curta est désormais disponible")
+   (sk "openmpi-curta je teraz dostupný"))
+  (body
+   (en "An outdated version of Open MPI matching the one available on the Curta
+cluster. It is recommended to use this version of Open MPI for building 
+Singularity containers to be run on Curta to avoid problems during execution.")
+   (fr "Une version obsolète d'Open MPI correspodante à celle disponible sur
+le calculateur Curta. Il est recommandé d'utiliser cette version d'Open MPI pour
+construire des images Singularity à faire tourner sur Curta afin d'éviter des
+problèmes à l'exécution.")
+   (sk "Zastarané vydanie Open MPI zhodujúce sa s tým, ktoré je dostupné na
+super-počítači Curta. Odporúča sa používať toto vydanie Open MPI pri zostavovaní
+obrazov Singularity určených pre Curtu aby sa predišlo ťažkostiam pri
+spúšťaní.")))
  (entry
   (commit "e875734b0969661a1b3d6032b9c520580f50c111")
   (title

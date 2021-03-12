@@ -7,7 +7,7 @@
 
  ;; Add your own news entry here!
  (entry
-  (commit "18b3708a5adf8ac2403706c2562f33e031bc4406")
+  (commit "e69719487e521c40e31310797f24e657b6a25b4d")
   (title
    (en "openmpi-curta is now available")
    (fr "openmpi-curta est désormais disponible")

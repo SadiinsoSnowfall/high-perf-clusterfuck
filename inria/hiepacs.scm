@@ -329,9 +329,50 @@ moderate number of blocks which ensures a reasonable convergence behavior.")
   implemented for the MaPHyS linear solver.")
     (license license:cecill-c)))
 
+
 (define-public fabulous
   (package
     (name "fabulous")
+    (version "1.1.0")
+    (home-page "https://gitlab.inria.fr/solverstack/fabulous")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit "4239e7658085312a8545d501278544dbc921012a")
+                    ;; We need the submodule in 'cmake_modules/morse'.
+                    (recursive? #t)))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "039gr5ziwgl2cp2df48q3sln65q8j64aq2minyk95q8fqhaf1zf8"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:configure-flags '("-DFABULOUS_BUILD_C_API=ON"
+                           "-DFABULOUS_BUILD_Fortran_API=ON"
+                           "-DCMAKE_EXE_LINKER_FLAGS=-lstdc++"
+                           "-DFABULOUS_LAPACKE_NANCHECK=OFF"
+                           "-DFABULOUS_USE_CHAMELEON=OFF"
+                           "-DBUILD_SHARED_LIBS=ON"
+                           "-DFABULOUS_BUILD_EXAMPLES=ON"
+                           "-DFABULOUS_BUILD_TESTS=OFF")
+                         #:tests? #f))
+     (inputs `(("openblas" ,openblas)
+               ("lapack" ,lapack)))
+     (native-inputs `(("gfortran" ,gfortran)
+                      ("pkg-config" ,pkg-config)))
+     (synopsis "Fast Accurate Block Linear krylOv Solver")
+     (description
+      "Library implementing Block-GMres with Inexact Breakdown and Deflated Restarting,
+Breakdown Free Block Conjudate Gradiant, Block General Conjugate Residual and 
+Block General Conjugate Residual with Inner Orthogonalization and with inexact breakdown 
+and deflated restarting")
+     (license license:cecill-c)))
+
+
+(define-public fabulous-1.0.1
+  (package
+    (name "fabulous-1.0.1")
     (version "1.0.1")
     (home-page "https://gitlab.inria.fr/solverstack/fabulous")
     (source (origin
@@ -362,7 +403,8 @@ moderate number of blocks which ensures a reasonable convergence behavior.")
                       ("pkg-config" ,pkg-config)))
      (synopsis "Fast Accurate Block Linear krylOv Solver")
      (description
-      "Library implementing Block-GMres with Inexact Breakdown and Deflated Restarting")
+      "Library implementing Block-GMres with Inexact Breakdown and Deflated Restarting,
+Breakdown Free Block Conjudate Gradiant, Block General Conjugate Residual.")
      (license license:cecill-c)))
 
 (define-public maphys++

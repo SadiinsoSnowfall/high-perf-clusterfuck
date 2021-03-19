@@ -339,13 +339,13 @@ moderate number of blocks which ensures a reasonable convergence behavior.")
               (method git-fetch)
               (uri (git-reference
                     (url home-page)
-                    (commit "4239e7658085312a8545d501278544dbc921012a")
+                    (commit "6521fc73aa26644b21939c4bd33a2b62bf03e310")
                     ;; We need the submodule in 'cmake_modules/morse'.
                     (recursive? #t)))
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "039gr5ziwgl2cp2df48q3sln65q8j64aq2minyk95q8fqhaf1zf8"))))
+                "1bvgg68dh95zy3z50n066dksdbxdgq8692y33css9nk85fjx6ckr"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags '("-DFABULOUS_BUILD_C_API=ON"
@@ -372,13 +372,13 @@ and deflated restarting")
 
 (define-public fabulous-1.0.1
   (package
+    (inherit fabulous)
     (name "fabulous-1.0.1")
     (version "1.0.1")
-    (home-page "https://gitlab.inria.fr/solverstack/fabulous")
     (source (origin
               (method git-fetch)
               (uri (git-reference
-                    (url home-page)
+                    (url (package-home-page fabulous))
                     (commit "96b3922b981ccc1de4c13bc5341f380f1a72e900")
                     ;; We need the submodule in 'cmake_modules/morse'.
                     (recursive? #t)))
@@ -386,26 +386,9 @@ and deflated restarting")
               (sha256
                (base32
                 "1nmhr50vhgj8jj4xsd1iswydl4yz1xm4kmyhkbdqvam2nfdjp1y2"))))
-    (build-system cmake-build-system)
-    (arguments
-     '(#:configure-flags '("-DFABULOUS_BUILD_C_API=ON"
-                           "-DFABULOUS_BUILD_Fortran_API=ON"
-                           "-DCMAKE_EXE_LINKER_FLAGS=-lstdc++"
-                           "-DFABULOUS_LAPACKE_NANCHECK=OFF"
-                           "-DFABULOUS_USE_CHAMELEON=OFF"
-                           "-DBUILD_SHARED_LIBS=ON"
-                           "-DFABULOUS_BUILD_EXAMPLES=ON"
-                           "-DFABULOUS_BUILD_TESTS=OFF")
-                         #:tests? #f))
-     (inputs `(("openblas" ,openblas)
-               ("lapack" ,lapack)))
-     (native-inputs `(("gfortran" ,gfortran)
-                      ("pkg-config" ,pkg-config)))
-     (synopsis "Fast Accurate Block Linear krylOv Solver")
      (description
       "Library implementing Block-GMres with Inexact Breakdown and Deflated Restarting,
-Breakdown Free Block Conjudate Gradiant, Block General Conjugate Residual.")
-     (license license:cecill-c)))
+Breakdown Free Block Conjudate Gradiant, Block General Conjugate Residual.")))
 
 (define-public maphys++
   (package

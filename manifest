@@ -1,0 +1,27 @@
+;;; This is -*- Scheme -*- but we omit the '.scm' extension so it's not
+;;; mistaken as a package module.
+;;;
+;;; This module extends GNU Guix and is licensed under the same terms, those
+;;; of the GNU GPL version 3 or (at your option) any later version.
+;;;
+;;; Copyright © 2021 Inria
+
+;;; Manifest for continuous integration of Guix-HPC.
+
+(use-modules (gnu packages) (guix) (guix profiles))
+
+(define (guix-hpc-package? package)
+  "Return #true if PACKAGE comes from the 'guix-hpc' channel."
+  (let ((file (and=> (package-location package) location-file)))
+    (and file
+         (or (string-contains file "inria/")
+             (string-contains file "airbus/")
+             (string-contains file "lrz/")
+             (string-contains file "ufrgs/")))))
+
+(packages->manifest
+ (fold-packages (lambda (package result)
+                  (if (guix-hpc-package? package)
+                      (cons package result)
+                      result))
+                '()))

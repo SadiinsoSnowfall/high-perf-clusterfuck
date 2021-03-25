@@ -60,6 +60,11 @@ build_paraview:
   script:
     - guix build paraview
 
+build_metis_r64:
+  stage: build
+  script:
+    - guix build metis-r64
+
 build_starpu-1.1:
   stage: build
   script:

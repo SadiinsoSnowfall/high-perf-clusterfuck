@@ -1,7 +1,7 @@
 ;;; This module extends GNU Guix and is licensed under the same terms, those
 ;;; of the GNU GPL version 3 or (at your option) any later version.
 ;;;
-;;; Copyright © 2019, 2020 Inria
+;;; Copyright © 2019, 2020, 2021 Inria
 
 (define-module (inria staging)
   #:use-module (guix)
@@ -81,3 +81,35 @@ memory computing resources.  It can be run on supercomputers to analyze
 datasets of petascale size as well as on laptops for smaller data.")
     (home-page "https://www.paraview.org/")
     (license license:bsd-3)))
+
+(define-public metis-r64
+  ;; This variant of Metis uses 64-bit reals (32-bit reals are the default).
+  ;; It was initially submitted as <https://issues.guix.gnu.org/47237> but
+  ;; deemed too specific.  Perhaps move it to Guix proper eventually, or add
+  ;; a "package parameter" interface.
+  (package/inherit metis
+    (name "metis-r64")
+    (synopsis
+     "Graph partitioning and fill-reducing matrix ordering (64-bit reals)")
+    (arguments
+     (substitute-keyword-arguments (package-arguments metis)
+       ((#:modules _ '())
+        '((system base target)
+          (guix build cmake-build-system)
+          (guix build utils)))
+       ((#:phases phases '%standard-phases)
+        `(modify-phases ,phases
+           (add-after 'unpack 'set-real-type-width
+             (lambda* (#:key build target #:allow-other-keys)
+               ;; Enable 64-bit floating point numbers on 64-bit
+               ;; architectures.  Leave the default 32-bit width on other
+               ;; architectures.
+               (let ((word-size
+                      (with-target (or target build %host-type)
+                                   (lambda ()
+                                     (target-word-size)))))
+                 (when (= 8 word-size)
+                   (display "setting REALTYPEWIDTH to 64...\n")
+                   (substitute* "include/metis.h"
+                     (("define REALTYPEWIDTH.*$")
+                      "define REALTYPEWIDTH 64\n"))))))))))))

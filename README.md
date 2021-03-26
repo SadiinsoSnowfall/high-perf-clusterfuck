@@ -48,7 +48,9 @@ Guix-HPC.
 Pre-built binaries for Guix-HPC packages are served from
 `https://guix.bordeaux.inria.fr`. To benefit from them, you must (1) add this
 repository to the list of substitute-urls and (2) authorize the key associated
-with this repository.
+with this repository.  [As the manual
+explains](https://guix.gnu.org/manual/en/html_node/Getting-Substitutes-from-Other-Servers.html),
+it goes along these lines:
 
   1. Add `https://guix.bordeaux.inria.fr` to the `--substitute-urls`
      option [of
@@ -146,6 +148,15 @@ with this repository.
 	 ```
 
 Enjoy!
+
+## Continuous integration
+
+This channel is [continuously
+built](https://guix.bordeaux.inria.fr/jobset/guix-hpc) on our instance
+of [Cuirass](https://guix.gnu.org/en/cuirass/), the Guix-based
+continuous integration tool.  Each commit on either the `guix-hpc` or
+the `guix` channel triggers a rebuild, if needed, of the `guix-hpc`
+packages.
 
 ## Hacking on Guix-HPC
 

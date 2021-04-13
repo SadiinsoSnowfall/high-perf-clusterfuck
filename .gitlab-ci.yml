@@ -70,6 +70,21 @@ build_starpu-1.1:
   script:
     - guix build starpu@1.1
 
+build_parsec:
+  stage: build
+  script:
+    - guix build parsec
+
+build_parsec_mpi:
+  stage: build
+  script:
+    - guix build parsec-mpi
+
+build_quark:
+  stage: build
+  script:
+    - guix build quark
+
 build_starpu:
   stage: build
   script:

@@ -115,7 +115,7 @@ of the available resources.")
                       #t)))
        ;; No target for tests
        #:tests? #f))
-    (inputs `(("hwloc" ,hwloc)))
+    (propagated-inputs `(("hwloc" ,hwloc "lib")))
     (native-inputs `(("gfortran" ,gfortran)))))
 
 (define-public chameleon

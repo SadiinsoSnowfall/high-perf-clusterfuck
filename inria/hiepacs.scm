@@ -404,22 +404,22 @@ Breakdown Free Block Conjudate Gradiant, Block General Conjugate Residual.")))
 (define-public maphys++
   (package
    (name "maphys++")
-   (version "0.1")
+   (version "1.0")
    (home-page "https://gitlab.inria.fr/solverstack/maphys/maphyspp.git")
    (synopsis "Sparse matrix hybrid solver")
    (description
-    "MaPHyS (Massively Parallel Hybrid Solver) is a parallel linear solver
-that couples direct and iterative approaches. The underlying idea is to
-apply to general unstructured linear systems domain decomposition ideas
-developed for the solution of linear systems arising from PDEs.
-This new implementation in C++ offers a wide range of hybrid methods to
-solve massive sparse systems efficiently.")
+    "MAPHYS++ is a parallel linear solver for large sparse linear systems. It
+implements a modern C++ interface (C++17/20), giving the user a wide range of
+solving methods : efficient direct solver (wrapping MUMPS, Pastix...), iterative
+solver (CG, GMRES...) and also allowing for a combination of those (hybrid solve
+using the Schur complement, with adapted preconditioners). Parallelism is based
+on domain decomposition methods and is implemented in MPI.")
    (license license:cecill-c)
    (source (origin
             (method git-fetch)
             (uri (git-reference
                   (url home-page)
-                  (commit "14ce2b79d227d5cddb908eac018ed3d7efee734e")
+                  (commit "d5bd6640416b4df117715b38b5686ec9e1ea9887")
                   ;; We need the submodule in 'cmake_modules/morse_cmake'.
                   (recursive? #t)))
             (file-name (string-append name "-" version "-checkout"))
@@ -427,14 +427,9 @@ solve massive sparse systems efficiently.")
              (base32
               "03sjykh24ms4h2vzylkxcc6v7nshl3w0dhyyrv9grzckmxvmvzij"))))
    (arguments
-    '(#:configure-flags '("-DMAPHYS_COMPILE_EXAMPLES=ON"
-                          "-DMAPHYS_COMPILE_TESTS=ON"
-                          "-DMAPHYS_USE_ARMADILLO=OFF"
-                          "-DMAPHYS_USE_EIGEN=OFF"
-                          "-DMAPHYS_USE_FABULOUS=OFF"
-                          "-DMAPHYS_DEV_TANGLE=OFF"
-                          "-DMAPHYS_USE_PASTIX=ON"
-                          "-DMAPHYS_USE_MUMPS=ON")
+    '(#:configure-flags '("-DMAPHYSPP_COMPILE_EXAMPLES=ON"
+                          "-DMAPHYSPP_COMPILE_TESTS=ON"
+                          "-DMAPHYSPP_USE_EIGEN=OFF")
                         #:phases (modify-phases %standard-phases
                                                 (add-before 'check 'prepare-test-environment
                                                             (lambda _
@@ -447,6 +442,7 @@ solve massive sparse systems efficiently.")
              ("lapackpp" ,lapackpp)
              ("pastix" ,pastix)
              ("mumps" ,mumps-openmpi)
+             ("arpack", arpack-ng-3.8)
              ("scalapack" ,scalapack) ;; should be inherited from mumps?
              ))
    (propagated-inputs `(("mpi" ,openmpi)
@@ -584,10 +580,6 @@ etc.")
        ("openblas" ,openblas)
        ;; ("lapack" ,lapack)         ;must be built with '-DLAPACKE_WITH_TMG=ON'
 
-       ;; The following are optional dependencies.
-       ("parsec" ,parsec+mpi)
-       ("starpu" ,starpu)
-
        ;; Python bindings and Python tests. Python3
        ("python" ,python)
 
@@ -595,7 +587,14 @@ etc.")
        ;;("python-scipy" ,python-scipy)
        ))
     (propagated-inputs `(("hwloc" ,hwloc "lib")
-                         ("scotch" ,scotch)))
+                         ("scotch" ,scotch)
+                         ;; The following are optional dependencies.
+
+                         ;;GM: somehow these two are needed in propagated-inputs
+                         ;;in order to compile maphys++ (otherwise cmake fails
+                         ;;to find them)
+                         ("parsec" ,parsec+mpi)
+                         ("starpu" ,starpu)))
     (synopsis "Sparse matrix direct solver")
     (description
      "PaStiX (Parallel Sparse matriX package) is a scientific library that

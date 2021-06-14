@@ -8,6 +8,7 @@
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
   #:use-module ((guix licenses) #:prefix license:)
+  #:use-module (gnu packages)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages image-processing)
   #:use-module (gnu packages maths)
@@ -23,6 +24,8 @@
 ;;; work is needed before that can happen.
 ;;;
 ;;; Code:
+
+(define S specification->package)
 
 (define-public paraview
   ;; TODO: This should be part of Guix proper, but first, we should try
@@ -53,12 +56,12 @@
     ;; 'VTK_CXX_COMPILER' as the absolute file name of 'c++'.  Remove that so
     ;; we don't keep a reference to GCC.
     (native-inputs
-     `(("qttools" ,qttools)))
+     `(("qttools" ,(S "qttools@5"))))
     (inputs
-     `(("qtbase" ,qtbase)
-       ("qtsvg" ,qtsvg)
-       ("qtx11extras" ,qtx11extras)
-       ("qtxmlpatterns" ,qtxmlpatterns)
+     `(("qtbase" ,(S "qtbase@5"))
+       ("qtsvg" ,(S "qtsvg@5"))
+       ("qtx11extras" ,(S "qtx11extras@5"))
+       ("qtxmlpatterns" ,(S "qtxmlpatterns@5"))
        ("libx11" ,libx11)
        ("libxt" ,libxt)
        ("mesa" ,mesa)

@@ -1,7 +1,7 @@
 ;;; This module extends GNU Guix and is licensed under the same terms, those
 ;;; of the GNU GPL version 3 or (at your option) any later version.
 ;;;
-;;; Copyright © 2019 Inria
+;;; Copyright © 2019, 2021 Inria
 
 (define-module (inria vite)
   #:use-module (guix packages)
@@ -9,8 +9,11 @@
   #:use-module (guix licenses)
   #:use-module (guix utils)
   #:use-module (guix build-system cmake)
+  #:use-module (gnu packages)
   #:use-module (gnu packages qt)
   #:use-module (gnu packages gl))
+
+(define S specification->package)
 
 (define-public vite
   (let ((revision 1610))
@@ -39,11 +42,11 @@
                                  )
          #:tests? #f))
       (inputs
-       `(("qtbase" ,qtbase)
+       `(("qtbase" ,(S "qtbase@5"))
          ("mesa" ,mesa)
          ("glu" ,glu)))
       (native-inputs
-       `(("qttools" ,qttools)))
+       `(("qttools" ,(S "qttools@5"))))
       (home-page "http://vite.gforge.inria.fr/")
       (synopsis "Visualize program execution traces")
       (description

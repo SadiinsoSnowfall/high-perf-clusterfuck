@@ -1,7 +1,7 @@
 GNU Guix for High-Performance Computing
 ===========================================
 
-[![pipeline status](https://gitlab.inria.fr/guix-hpc/guix-hpc/badges/master/pipeline.svg)](https://gitlab.inria.fr/guix-hpc/guix-hpc/commits/master) [![SWH](https://archive.softwareheritage.org/badge/origin/https://gitlab.inria.fr/guix-hpc/guix-hpc/)](https://archive.softwareheritage.org/browse/origin/https://gitlab.inria.fr/guix-hpc/guix-hpc/)
+[![pipeline status](https://guix.bordeaux.inria.fr/jobset/guix-hpc/badge.svg)](https://gitlab.inria.fr/guix-hpc/guix-hpc/commits/master) [![SWH](https://archive.softwareheritage.org/badge/origin/https://gitlab.inria.fr/guix-hpc/guix-hpc/)](https://archive.softwareheritage.org/browse/origin/https://gitlab.inria.fr/guix-hpc/guix-hpc/)
 
 Hello!  This repository contains package recipes and extensions of the
 [GNU Guix package manager](https://gnu.org/s/guix) for high-performance

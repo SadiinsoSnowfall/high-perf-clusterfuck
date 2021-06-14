@@ -34,3 +34,22 @@
     (home-page "https://github.com/pyamg/pyamg")
     (license gpl3+)))
 
+(define-public python-ttpy
+  (package
+   (name "python-ttpy")
+   (version "1.2.1")
+   (source
+    (origin
+     (method url-fetch)
+     (uri (pypi-uri "ttpy" version))
+     (sha256
+      (base32
+       "1mgdq0g57f7sivl6g36p7qx99hm6zyc5hl8symdrmah1pgdywapq"))))
+   (build-system python-build-system)
+   (home-page "https://github.com/oseledets/ttpy")
+   (synopsis
+    "TTPY: Python implementation of the Tensor Train (TT) - Toolbox.")
+   (description
+    "Python implementation of the Tensor Train (TT) -Toolbox. It contains several important packages for working with the TT-format in Python. It is able to do TT-interpolation, solve linear systems, eigenproblems, solve dynamical problems. Several computational routines are done in Fortran (which can be used separatedly), and are wrapped with the f2py tool.")
+   (license #f))
+)

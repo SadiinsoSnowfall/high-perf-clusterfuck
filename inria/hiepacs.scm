@@ -1162,3 +1162,31 @@ to/from all other processes.")
 large scale eigenvalue problems.")
    (license (license:non-copyleft "file://COPYING"
                                   "See COPYING in the distribution."))))
+
+;; Technically this is just jube version 2.4.1
+;; supporting yaml (in addition of xml) for bench files from version 2.4.0
+(define-public jube-with-yaml
+  (package
+    ;; This is a command-line tool, so no "python-" prefix.
+   (name "jube-with-yaml")
+    (version "2.4.1")
+    (source (origin
+              (method url-fetch)
+              (uri (string-append
+                    "http://apps.fz-juelich.de/jsc/jube/jube2/download.php?version="
+                    version))
+              (sha256
+               (base32
+                "05lhpq3mxm3z9k35bxvvbi2r5r5r0n39jdi839rcvirrsczs7m6m"))
+              (file-name (string-append "jube-" version ".tar.gz"))))
+    (build-system python-build-system)
+    (home-page "https://apps.fz-juelich.de/jsc/jube/jube2/docu/index.html")
+    (synopsis "Benchmarking environment")
+    (description
+     "JUBE helps perform and analyze benchmarks in a systematic way.  For each
+benchmarked application, benchmark data is stored in a format that allows JUBE
+to deduct the desired information.  This data can be parsed by automatic pre-
+and post-processing scripts that draw information and store it more densely
+for manual interpretation.")
+    (propagated-inputs `(("python-pyyaml" ,python-pyyaml)))
+    (license license:gpl3+)))

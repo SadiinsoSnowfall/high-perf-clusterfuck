@@ -51,7 +51,7 @@
                   (recursive? #t)))
             (sha256
              (base32
-              "1wi86pq78bp5s4sab9kf2rrw9d5c36ndmmn04ak4apdacwslzp0c"))))
+              "10apkcnc6sfa8q0snhzb2ag1qxdcsx0hp76nn1ivyhwwaj6skd8h"))))
    ;; (version "1.2.1")
    ;; (source
    ;;  (origin

@@ -41,17 +41,17 @@
 (define-public python-ttpy
   (package
    (name "python-ttpy")
-   (version "1.0")
+   (version "1.2")
    (home-page "https://github.com/oseledets/ttpy")
    (source (origin
             (method git-fetch)
             (uri (git-reference
                   (url home-page)
-                  (commit "b440f6299a6338de4aea67f3d839d613f4ef1374")
+                  (commit "5fd095177f0474f8b977f15574139ca9e3acb06f")
                   (recursive? #t)))
             (sha256
              (base32
-              "1bbq3acyxdjf33qj75yxrcz4aqzr8kzzzd70vzdcg3x5z943xi1k"))))
+              "1wi86pq78bp5s4sab9kf2rrw9d5c36ndmmn04ak4apdacwslzp0c"))))
    ;; (version "1.2.1")
    ;; (source
    ;;  (origin

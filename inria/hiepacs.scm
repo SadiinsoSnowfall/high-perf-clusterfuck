@@ -1190,3 +1190,48 @@ and post-processing scripts that draw information and store it more densely
 for manual interpretation.")
     (propagated-inputs `(("python-pyyaml" ,python-pyyaml)))
     (license license:gpl3+)))
+
+(define-public scalfmm
+  (package
+   (name "scalfmm")
+   (version "3.0")
+   (home-page "https://gitlab.inria.fr/solverstack/ScalFMM.git")
+   (synopsis "Fast Multipole Methos Framework")
+   (description
+    "ScalFMM is a C++ library that implements a kernel independent Fast Multipole Method.")
+   (license license:cecill-c)
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url home-page)
+                  (commit "33ea9ae3f0c39b31fa9fb631653e34340d8100dd")
+                  ;; We need the submodule in 'cmake_modules/morse_cmake'.
+                  (recursive? #t)))
+            (file-name (string-append name "-" version))
+            (sha256
+             (base32
+              "05n7isr54zynw6gf6mgc973qdg8nm06f434y3l3qvwz2ijjvb43f"))))
+   (arguments
+    '(#:configure-flags '("-Dscalfmm_BUILD_EXAMPLES=ON"
+                          "-Dscalfmm_BUILD_TOOLS=ON"
+                          "-Dscalfmm_BUILD_UNITS=ON")
+                        #:tests? #f
+                        #:phases (modify-phases %standard-phases
+                                    (add-after 'unpack 'goto-src-dir
+                                        (lambda _
+                                            (chdir "experimental") #t))
+                                    (add-before 'check 'prepare-test-environment
+                                        (lambda _
+                                          ;; Allow tests with more MPI processes than available CPU cores,
+                                          ;; which is not allowed by default by OpenMPI
+                                          (setenv "OMPI_MCA_rmaps_base_oversubscribe" "1") #t)))
+                        ))
+   (build-system cmake-build-system)
+   (inputs `(("openblas" ,openblas)
+             ("fftw" ,fftw)
+             ("fftwf" ,fftwf)
+             ))
+   (propagated-inputs `(("mpi" ,openmpi)
+                        ("ssh" ,openssh)))
+   (native-inputs `(("pkg-config" ,pkg-config)))
+   ))

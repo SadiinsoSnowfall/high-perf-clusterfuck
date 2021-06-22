@@ -11,6 +11,7 @@
   #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
   #:use-module (gnu packages)
+  #:use-module (gnu packages algebra)
   #:use-module (gnu packages bison)
   #:use-module (gnu packages commencement)
   #:use-module (gnu packages databases)

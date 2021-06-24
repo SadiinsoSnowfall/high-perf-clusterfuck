@@ -52,7 +52,6 @@
                           "-DQRM_ORDERING_SCOTCH=ON"
                           "-DQRM_ORDERING_METIS=ON"
 			                    "-DQRM_WITH_MPI=ON"
-                          "-DCMAKE_BUILD_TYPE=Release"
                           )
       #:phases (modify-phases %standard-phases
                               (add-before 'check 'prepare-test-environment
@@ -60,7 +59,7 @@
 				                                    (setenv "HOME" (getcwd)) ;; StarPU expects $HOME to be writable.
 	                                          (setenv "OMP_NUM_THREADS" "1")
 				                                    (setenv "OMPI_MCA_rmaps_base_oversubscribe" "1") #t)))
-      #:tests? #f))
+      #:tests? #t))
 
    (native-inputs `(("gfortran" ,gfortran)
                     ("pkg-config" ,pkg-config)))

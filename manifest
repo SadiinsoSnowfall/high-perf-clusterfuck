@@ -11,6 +11,7 @@
              (guix profiles)
              (guix describe)
              (guix channels)
+             (guix transformations)
              (srfi srfi-1)
              (ice-9 match))
 
@@ -29,9 +30,21 @@
              (eq? 'guix-hpc (channel-name channel)))
            channels))))
 
+(define openmpi->nmad
+  ;; Rewrite the dependency graph of the given package, replacing Open MPI
+  ;; with NewMadeleine.
+  (options->transformation
+   '((with-input . "openmpi=nmad"))))
+
+(define our-packages
+  ;; The list of packages in this channel.
+  (fold-packages (lambda (package result)
+                   (if (guix-hpc-package? package)
+                       (cons package result)
+                       result))
+                 '()))
+
 (packages->manifest
- (fold-packages (lambda (package result)
-                  (if (guix-hpc-package? package)
-                      (cons package result)
-                      result))
-                '()))
+ (append our-packages
+         (map (compose openmpi->nmad specification->package)
+              '("chameleon" "maphys"))))

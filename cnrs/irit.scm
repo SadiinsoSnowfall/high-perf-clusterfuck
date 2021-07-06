@@ -59,7 +59,7 @@
 				                                    (setenv "HOME" (getcwd)) ;; StarPU expects $HOME to be writable.
 	                                          (setenv "OMP_NUM_THREADS" "1")
 				                                    (setenv "OMPI_MCA_rmaps_base_oversubscribe" "1") #t)))
-      #:tests? #t))
+      #:tests? #f))
 
    (native-inputs `(("gfortran" ,gfortran)
                     ("pkg-config" ,pkg-config)))

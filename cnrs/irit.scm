@@ -30,7 +30,7 @@
 (define-public qr_mumps
   (package
    (name "qr_mumps")
-   (version "3.0.3")
+   (version "3.0.4")
    (home-page "http://buttari.perso.enseeiht.fr/qr_mumps/")
    (source (origin
             (method url-fetch)
@@ -38,7 +38,7 @@
              (string-append home-page "releases/qr_mumps-" version ".tgz"))
             (sha256
              (base32
-              "16pc843p2zx29zxvnr6hgq674xfkqkvxyy7cx428rc2v2bkg70xx"))))
+              "0cgjpps1q8kirmyhspzgw0n5vgmalwbzlqp1an97qncgqpf291gp"))))
    (build-system cmake-build-system)
    (arguments
     '(#:configure-flags  (list

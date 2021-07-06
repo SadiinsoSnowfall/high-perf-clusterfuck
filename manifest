@@ -1,0 +1,50 @@
+;;; This is -*- Scheme -*-.
+;;;
+;;; This module extends GNU Guix and is licensed under the same terms, those
+;;; of the GNU GPL version 3 or (at your option) any later version.
+;;;
+;;; Copyright © 2021 Inria
+
+;;; Manifest for continuous integration of Guix-HPC.
+
+(use-modules (gnu packages) (guix)
+             (guix profiles)
+             (guix describe)
+             (guix channels)
+             (guix transformations)
+             (srfi srfi-1)
+             (ice-9 match))
+
+(define (guix-hpc-package? package)
+  "Return #true if PACKAGE comes from the 'guix-hpc' channel."
+  (match (package-channels package)
+    (()                              ;no channel info, check source file name
+     (let ((file (and=> (package-location package) location-file)))
+       (and file
+            (or (string-contains file "inria/")
+                (string-contains file "airbus/")
+                (string-contains file "lrz/")
+                (string-contains file "ufrgs/")))))
+    ((channels ...)
+     (find (lambda (channel)
+             (eq? 'guix-hpc (channel-name channel)))
+           channels))))
+
+(define openmpi->nmad
+  ;; Rewrite the dependency graph of the given package, replacing Open MPI
+  ;; with NewMadeleine.
+  (options->transformation
+   '((with-input . "openmpi=nmad"))))
+
+(define our-packages
+  ;; The list of packages in this channel.
+  (fold-packages (lambda (package result)
+                   (if (guix-hpc-package? package)
+                       (cons package result)
+                       result))
+                 '()))
+
+(packages->manifest
+ (append our-packages
+         (map (compose openmpi->nmad specification->package)
+              '("chameleon" "maphys"))))

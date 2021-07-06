@@ -7,8 +7,10 @@
   #:use-module (guix)
   #:use-module (guix git-download)
   #:use-module (guix build-system cmake)
+  #:use-module (guix build-system python)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages)
+  #:use-module (gnu packages check)
   #:use-module (gnu packages gl)
   #:use-module (gnu packages image-processing)
   #:use-module (gnu packages maths)
@@ -116,3 +118,43 @@ datasets of petascale size as well as on laptops for smaller data.")
                    (substitute* "include/metis.h"
                      (("define REALTYPEWIDTH.*$")
                       "define REALTYPEWIDTH 64\n"))))))))))))
+
+(define-public python-brian2
+  (package
+    (name "python-brian2")
+    (version "2.4.2")
+    (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "Brian2" version))
+       (sha256
+        (base32
+         "1wjrx581xmzrgvc790bk78f38ky65lsiv1n01cmwdn2507s1lwbs"))))
+    (build-system python-build-system)
+    (arguments
+     '(#:phases (modify-phases %standard-phases
+                  (replace 'check
+                    (lambda* (#:key tests? #:allow-other-keys)
+                      (when tests?
+                        (invoke "pytest")))))
+
+       ;; FIXME:
+       ;; AttributeError: 'Config' object has no attribute 'fail_for_not_implemented'
+       #:tests? #f))
+    (propagated-inputs
+     `(("python-cython" ,python-cython)
+       ("python-jinja2" ,python-jinja2)
+       ("python-numpy" ,python-numpy)
+       ("python-pyparsing" ,python-pyparsing)
+       ("python-setuptools" ,python-setuptools)
+       ("python-sympy" ,python-sympy)))
+    (native-inputs
+     `(("python-pytest" ,python-pytest)
+       ("python-pytest-xdist" ,python-pytest-xdist)))
+    (home-page "http://www.briansimulator.org/")
+    (synopsis "Clock-driven simulator for spiking neural networks")
+    (description
+     "Brian is a simulator for spiking neural networks, written in Python.  It
+is designed to be easy to learn and use, highly flexible and easily
+extensible.")
+    (license license:cecill)))

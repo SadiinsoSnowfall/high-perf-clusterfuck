@@ -456,7 +456,7 @@ on domain decomposition methods and is implemented in MPI.")
 (define-public blaspp
   (package
     (name "blaspp")
-    (version "2020.08.00")
+    (version "2021.04.01")
     (home-page "https://bitbucket.org/icl/blaspp")
     (synopsis "C++ API for the Basic Linear Algebra Subroutines")
     (description
@@ -471,14 +471,13 @@ such as: namespaces, templates, exceptions, etc.")
              (method git-fetch)
              (uri (git-reference
                    (url home-page)
-                   (commit "049c515c1fafee62b4c1d2870621d6819698f71a")))
+                   (commit "314bafceead689a35aab826e03aa76bf329cfb0e")))
              (file-name (string-append name "-" version "-checkout"))
-             ;;(patches (search-patches "inria/patches/blaspp-installation-directories.patch"))
              (sha256
               (base32
-               "1p3a7sgmy5m2j28m1qnj70fzzmqn2qdrk1bsv4yzpk2a55hfrlqb"))))
+               "0n57c02jcd2kmw9zldyhvxp80xgy1gmmaccy1sr6g5nnp3jl175m"))))
     (arguments
-     '(#:configure-flags '("-DBLASPP_BUILD_TESTS=OFF")
+     '(#:configure-flags '("-Dbuild_tests=OFF")
                          #:tests? #f))
     ;; tests would need testsweeper https://bitbucket.org/icl/testsweeper
     ;;'(#:configure-flags '("-DBLASPP_BUILD_TESTS=ON")))
@@ -489,7 +488,7 @@ such as: namespaces, templates, exceptions, etc.")
 (define-public lapackpp
   (package
    (name "lapackpp")
-   (version "0.1")
+   (version "2021.04.00")
    (home-page "https://bitbucket.org/icl/lapackpp")
    (synopsis "C++ API for the Linear Algebra PACKage")
    (description
@@ -503,14 +502,14 @@ etc.")
             (method git-fetch)
             (uri (git-reference
                   (url home-page)
-                  (commit "e3052eb11b9bab7a7adfe246a53abe8a31c52b3b")))
+                  (commit "31d969200a9f65390f56ac2ea48888bd10a13397")))
             (file-name (string-append name "-" version "-checkout"))
             (sha256
              (base32
-              "039lyh829xvjc7jgmv39bgy87ap94pqffh52457d0x16mp64qbhn"))))
+              "06xipc9j9xgh5rk1fxxgpk1gla5mjq2l0511q6487zd81720ka7w"))))
    (arguments
     '(#:configure-flags '("-DBUILD_LAPACKPP_TESTS=OFF"
-                          "-DBUILD_SHARED_LIBS=ON")
+                          "-Dbuild_tests=OFF")
                         #:tests? #f))
     ;; tests would need testsweeper https://bitbucket.org/icl/testsweeper
     (build-system cmake-build-system)

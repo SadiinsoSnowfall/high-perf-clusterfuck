@@ -406,7 +406,7 @@ Breakdown Free Block Conjudate Gradiant, Block General Conjugate Residual.")))
 (define-public maphys++
   (package
    (name "maphys++")
-   (version "1.0")
+   (version "1.0.0")
    (home-page "https://gitlab.inria.fr/solverstack/maphys/maphyspp.git")
    (synopsis "Sparse matrix hybrid solver")
    (description
@@ -421,13 +421,13 @@ on domain decomposition methods and is implemented in MPI.")
             (method git-fetch)
             (uri (git-reference
                   (url home-page)
-                  (commit "d5bd6640416b4df117715b38b5686ec9e1ea9887")
+                  (commit "8b5b7e589bcf1c41cf5ad135c4898572f2357e36")
                   ;; We need the submodule in 'cmake_modules/morse_cmake'.
                   (recursive? #t)))
             (file-name (string-append name "-" version "-checkout"))
             (sha256
              (base32
-              "03sjykh24ms4h2vzylkxcc6v7nshl3w0dhyyrv9grzckmxvmvzij"))))
+              "1vvrh675320cfq6h7f2ikfiqjjgsjbf1i4pn5mpyh3zxd3xnyr7j"))))
    (arguments
     '(#:configure-flags '("-DMAPHYSPP_COMPILE_EXAMPLES=ON"
                           "-DMAPHYSPP_COMPILE_TESTS=ON"
@@ -445,7 +445,6 @@ on domain decomposition methods and is implemented in MPI.")
              ("pastix" ,pastix)
              ("mumps" ,mumps-openmpi)
              ("arpack", arpack-ng-3.8)
-             ("scalapack" ,scalapack) ;; should be inherited from mumps?
              ))
    (propagated-inputs `(("mpi" ,openmpi)
                         ("ssh" ,openssh)))

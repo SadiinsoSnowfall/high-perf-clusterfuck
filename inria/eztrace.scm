@@ -125,14 +125,14 @@ threads.")
 (define-public fxt
   (package
     (name "fxt")
-    (version "0.3.11"); blocked at this version until StarPU isn't updated with a version containing commit 5c73a6dfe4cdf9ae12c29773f85106755f59c10b
+    (version "0.3.14")
     (source (origin
               (uri (string-append "mirror://savannah/fkt/fxt-"
                                   version ".tar.gz"))
               (method url-fetch)
               (sha256
                (base32
-                "0837pdm2ffdixr6wjdcb5ccbwyzakq60bq535b7hb8wygq69ifwc"))))
+                "1wpbmax4jzc454ilz9vay0a63ilxsav910rvqizg5naw2y9qsz9i"))))
     (build-system gnu-build-system)
     (native-inputs
      `(("perl" ,perl) ("help2man" ,help2man)))

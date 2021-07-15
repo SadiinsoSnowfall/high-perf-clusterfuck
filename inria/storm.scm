@@ -136,7 +136,7 @@ kernels are executed as efficiently as possible.")
   (package
     (inherit starpu-1.2)
     (name "starpu")
-    (version "1.3.8"); for the next release, update also fxt in inria/eztrace.scm
+    (version "1.3.8")
     (source (origin
              (method git-fetch)
              (uri (git-reference
@@ -145,7 +145,7 @@ kernels are executed as efficiently as possible.")
              (file-name (git-file-name name version))
              (sha256
               (base32 "0sgr93czg4799vcdbxli56f65pwyg98xijwsiic8j34njrvy2mdz"))
-    	     (patches (search-patches %patch-path))))
+             (patches (search-patches %patch-path))))
    (arguments
     (substitute-keyword-arguments (package-arguments starpu-1.2)
       ((#:configure-flags flags '())
@@ -193,7 +193,7 @@ kernels are executed as efficiently as possible.")
     (inherit starpu)
     (name "starpu-simgrid-fxt")
     (inputs `(("simgrid" ,simgrid)
-	      ("fxt" ,fxt)
+              ("fxt" ,fxt)
               ,@(package-inputs starpu)))
     (arguments
      (substitute-keyword-arguments (package-arguments starpu)

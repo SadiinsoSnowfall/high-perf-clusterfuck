@@ -19,6 +19,7 @@
   #:use-module (gnu packages maths)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages python)
+  #:use-module (gnu packages llvm)
   #:use-module (inria tadaam)
   #:use-module (inria eztrace)
   #:use-module (inria mpi)
@@ -208,3 +209,58 @@ kernels are executed as efficiently as possible.")
      `(("python-wrapper" ,python-wrapper)
        ,@(package-native-inputs starpu)))))
 
+
+(define-public parcoach-1.2
+  (package
+    (name "parcoach")
+    (version "v1.2")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/parcoach/parcoach")
+             (commit version)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32
+         "14l90xddz8qx6jp7dkvys1k8mdg2dp5jwg62y94y8i7yx0qi4pxi"))))
+    (build-system cmake-build-system)
+    (native-inputs
+     `(("clang" ,clang-9)
+       ("clang-toolchain" ,clang-toolchain-9)
+       ("python" ,python-3)))
+    (inputs
+     `(("llvm" ,llvm-9)
+       ("openmpi" ,openmpi)))
+    (arguments
+     `(#:tests? #f
+       #:phases
+       (modify-phases %standard-phases
+         (add-before 'install 'substitute-script
+           (lambda* (#:key source inputs outputs #:allow-other-keys)
+             (let ((out  (assoc-ref outputs "out"))
+                   (llvm (assoc-ref inputs "llvm")))
+               (copy-file (string-append source "/src/aSSA/parcoach.in")
+                          "parcoach.in")
+               (substitute* "parcoach.in"
+                 (("@LLVM_TOOLS_BINARY_DIR@")
+                  (string-append llvm "/bin")))
+               (substitute* "parcoach.in"
+                 (("@PARCOACH_LIB@")
+                  (string-append out "/lib/aSSA.so"))))))
+         (add-after 'install 'install-script
+           (lambda* (#:key outputs #:allow-other-keys)
+             (let* ((out      (assoc-ref outputs "out"))
+                    (out-bin  (string-append out "/bin"))
+                    (parcoach (string-append out-bin "/parcoach")))
+               (mkdir out-bin)
+               (copy-file "parcoach.in" parcoach)))))))
+    (synopsis "Analysis tool for errors detection in parallel
+applications")
+    (description "PARCOACH is an Open-source software dedicated to the
+collective errors detection in parallel applications.")
+    (home-page "https://parcoach.github.io/")
+    (license lgpl2.1)))
+
+(define-public parcoach
+  parcoach-1.2)

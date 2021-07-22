@@ -11,7 +11,6 @@
   #:use-module (gnu packages)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages mpi)
-  #:use-module (gnu packages gawk)
   #:use-module (gnu packages glib)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages maths)
@@ -209,8 +208,12 @@ than libc pthread; add hooks for memory.")
                                          "procps"     ;'ps'
                                          "hwloc"      ;for 'padico-d'
                                          "which"
-                                         "tar" "gzip"
-                                         "coreutils" "grep" "sed")))
+                                         "tar"
+                                         "gzip"
+                                         "coreutils"
+                                         "grep"
+                                         "sed"
+                                         "gawk")))
                             (out  (assoc-ref outputs "out"))
                             (bin  (string-append out "/bin")))
                        (wrap-program (string-append bin "/padico-launch")
@@ -231,8 +234,7 @@ than libc pthread; add hooks for memory.")
       ("psm" ,psm)
       ("psm2" ,psm2)))
    (propagated-inputs
-    `(("awk" ,gawk)
-      ("puk" ,puk)
+    `(("puk" ,puk)
       ("pioman" ,pioman)
       ("pukabi" ,pukabi)))
    (synopsis "A High-performance Communication Framework for Grids")

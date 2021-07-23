@@ -1,7 +1,7 @@
 ;;; This module extends GNU Guix and is licensed under the same terms, those
 ;;; of the GNU GPL version 3 or (at your option) any later version.
 ;;;
-;;; Copyright © 2017, 2018, 2019, 2020 Inria
+;;; Copyright © 2017, 2018, 2019, 2020, 2021 Inria
 
 (define-module (inria storm)
   #:use-module (guix)
@@ -213,13 +213,13 @@ kernels are executed as efficiently as possible.")
 (define-public parcoach-1.2
   (package
     (name "parcoach")
-    (version "v1.2")
+    (version "1.2")
     (source
      (origin
        (method git-fetch)
        (uri (git-reference
              (url "https://github.com/parcoach/parcoach")
-             (commit version)))
+             (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
         (base32

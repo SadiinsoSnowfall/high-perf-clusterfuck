@@ -47,19 +47,19 @@
 (define-public r-starvz
   (package
    (name "r-starvz")
-   (version "0.4.0")
+   (version "0.5.1")
    (home-page "https://github.com/schnorr/starvz")
    (source
     (origin
      (method git-fetch)
      (uri (git-reference
            (url home-page)
-           (commit "ce80b8ec74b982a4d02f38fa1ceab6beee3335b6")
+           (commit "b789296a90e22ae8cd73a6a58df3ff2bd1ff02e3")
            (recursive? #f)))
      (file-name (string-append name "-" version "-checkout"))
      (sha256
       (base32
-       "1w1wxk8043r2q46dqwz0kqi4av21dfdix4gzgsdhrka2dsyxd17i"))))
+       "0idms0b61nx8djhpapa0f3015ff3yjz6xmbikjpxdsz0xvrjx4q3"))))
    (properties
     `((upstream-name . "starvz")))
    (build-system r-build-system)
@@ -77,6 +77,7 @@
       ("r-car" ,r-car)
       ("r-data-tree" ,r-data-tree)
       ("r-dplyr" ,r-dplyr)
+      ("r-flexmix" ,r-flexmix)
       ("r-ggplot2" ,r-ggplot2)
       ("r-gtools" ,r-gtools)
       ("r-lpsolve" ,r-lpsolve)

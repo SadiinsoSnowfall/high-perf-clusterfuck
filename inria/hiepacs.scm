@@ -314,7 +314,7 @@ moderate number of blocks which ensures a reasonable convergence behavior.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "191z79wlx8rczzxf59ydrvdlq0yhx0w5hks2ckmpd1i3hwa81q4v"))))
+                "1xwxhfd9fymdj0xz3bka40mh9qp7348ish9bdn1m12n2y9fpn3kr"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON"

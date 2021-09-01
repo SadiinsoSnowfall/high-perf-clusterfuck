@@ -302,7 +302,7 @@ moderate number of blocks which ensures a reasonable convergence behavior.")
 (define-public paddle
   (package
     (name "paddle")
-    (version "0.3.4")
+    (version "0.3.5")
     (home-page "https://gitlab.inria.fr/solverstack/paddle")
     (source (origin
               (method git-fetch)
@@ -314,7 +314,7 @@ moderate number of blocks which ensures a reasonable convergence behavior.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "0znb88zi739z4lr2w116810gblw1hzd6pimsrmwivjvr94a0655i"))))
+                "191z79wlx8rczzxf59ydrvdlq0yhx0w5hks2ckmpd1i3hwa81q4v"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON"

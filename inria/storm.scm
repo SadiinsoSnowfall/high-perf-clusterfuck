@@ -133,6 +133,15 @@ kernels are executed as efficiently as possible.")
        ("gnuplot" ,gnuplot)
        ,@(package-native-inputs starpu-1.1)))))
 
+(define (starpu-configure-flags package)
+  ;; Return the standard configure flags for PACKAGE, a StarPU 1.3+ package.
+  (match (assoc "mpi" (package-propagated-inputs package))
+    (("mpi" mpi)
+     `(list "--enable-quick-check"
+            ,@(if (string=? (package-name mpi) "nmad")
+                  '("--enable-nmad")
+                  '())))))
+
 (define-public starpu-1.3
   (package
     (inherit starpu-1.2)
@@ -149,12 +158,8 @@ kernels are executed as efficiently as possible.")
              (patches (search-patches %patch-path))))
    (arguments
     (substitute-keyword-arguments (package-arguments starpu-1.2)
-      ((#:configure-flags flags '())
-       (match (assoc "mpi" (package-propagated-inputs this-package))
-         (("mpi" mpi)
-          (if (string=? (package-name mpi) "nmad")
-              `(cons "--enable-nmad" ,flags)
-              flags))))
+      ((#:configure-flags _ '())
+       (starpu-configure-flags this-package))
       ((#:phases phases '())
        (append phases '((add-after 'patch-source-shebangs 'fix-hardcoded-paths
                           (lambda _
@@ -182,8 +187,8 @@ kernels are executed as efficiently as possible.")
               ,@(package-inputs starpu)))
     (arguments
      (substitute-keyword-arguments (package-arguments starpu)
-       ((#:configure-flags flags '())
-        `(cons "--with-fxt" ,flags))))
+       ((#:configure-flags _ '())
+        `(cons "--with-fxt" ,(starpu-configure-flags this-package)))))
     ;; some tests require python.
     (native-inputs
      `(("python-wrapper" ,python-wrapper)

@@ -138,6 +138,15 @@ kernels are executed as efficiently as possible.")
   (match (assoc "mpi" (package-propagated-inputs package))
     (("mpi" mpi)
      `(list "--enable-quick-check"
+            ,@(if (assoc "fxt" (package-inputs package)) ;optional fxt dependency
+                  '("--with-fxt")
+                  '())
+            ,@(if (assoc "simgrid" (package-inputs package)) ;optional simgrid
+                  '("--enable-simgrid"
+                    "--enable-maxcpus=1000"
+                    "--enable-maxcudadev=1000"
+                    "--enable-maxnodes=32")
+                  '())
             ,@(if (string=? (package-name mpi) "nmad")
                   '("--enable-nmad")
                   '())))))
@@ -185,10 +194,6 @@ kernels are executed as efficiently as possible.")
     (name "starpu-fxt")
     (inputs `(("fxt" ,fxt)
               ,@(package-inputs starpu)))
-    (arguments
-     (substitute-keyword-arguments (package-arguments starpu)
-       ((#:configure-flags _ '())
-        `(cons "--with-fxt" ,(starpu-configure-flags this-package)))))
     ;; some tests require python.
     (native-inputs
      `(("python-wrapper" ,python-wrapper)
@@ -201,14 +206,6 @@ kernels are executed as efficiently as possible.")
     (inputs `(("simgrid" ,simgrid)
               ("fxt" ,fxt)
               ,@(package-inputs starpu)))
-    (arguments
-     (substitute-keyword-arguments (package-arguments starpu)
-       ((#:configure-flags flags '())
-        `(append (list "--enable-simgrid" "--with-fxt"
-                       "--enable-maxcpus=1000"
-                       "--enable-maxcudadev=1000"
-                       "--enable-maxnodes=32")
-                 ,flags))))
     ;; some tests require python.
     (native-inputs
      `(("python-wrapper" ,python-wrapper)

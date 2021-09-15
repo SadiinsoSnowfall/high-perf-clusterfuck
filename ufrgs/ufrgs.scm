@@ -31,6 +31,9 @@
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages rpc)
+  #:use-module (gnu packages textutils)
+  #:use-module (gnu packages cpp)
   #:use-module (inria hiepacs)
   #:use-module (inria mpi)
   #:use-module (inria storm)
@@ -72,7 +75,7 @@
       ("gzip" ,gzip)
       ("pageng" ,pageng)
       ("pmtool" ,pmtool)
-      ("r-arrow" ,r-arrow)
+      ("r-arrow" ,r-arrow-cpp)
       ("r-bh" ,r-bh)
       ("r-car" ,r-car)
       ("r-data-tree" ,r-data-tree)
@@ -111,19 +114,19 @@ heterogeneous (multi-GPU, multi-core) multi-node HPC (High-performance
 computing) platforms.")
    (license license:gpl3)))
 
-(define-public r-arrow
+(define-public r-arrow-cpp
   (package
-   (name "r-arrow")
-   ;; The version of 'r-arrow' must match the version of the 'apache-arrow'
-   ;; dependency which is currently '3.0.0'!
-   (version "3.0.0")
+   (name "r-arrow-cpp")
+   ;; The version of 'r-arrow-cpp' must match the version of the 'apache-arrow'
+   ;; dependency which is currently '5.0.0'!
+   (version "5.0.0")
    (source
     (origin
      (method url-fetch)
      (uri (cran-uri "arrow" version))
      (sha256
       (base32
-       "0wgdj6fr4vbz91s76gfwyv2q66p8z3fwf9zgk4112rjhj60q7qfq"))))
+       "1x9z7jr7rnsqi04vfs54qidhn8hi0j533lm7ka074jp4xdv1gxjx"))))
    (properties `((upstream-name . "arrow")))
    (build-system r-build-system)
    (arguments
@@ -151,7 +154,7 @@ computing) platforms.")
                 hash))))
           (substitute*
            "MD5"
-           (("5466817020230c005c04ff56d0042c32")
+           (("d3752babfe1367ab4d7fc0117e0641bb")
             (begin
               (use-modules (ice-9 rdelim))
               (use-modules (ice-9 popen))
@@ -163,7 +166,7 @@ computing) platforms.")
                 hash))))
           (substitute*
            "MD5"
-           (("f8118be9001f04a74b67e014efc2de6e")
+           (("54b71b6fe9219f12f0d90ce3eea437a7")
             (begin
               (use-modules (ice-9 rdelim))
               (use-modules (ice-9 popen))
@@ -175,7 +178,7 @@ computing) platforms.")
                 hash))))
           (substitute*
            "MD5"
-           (("7e7fb7a40ebf272be87d5a5a608be25f")
+           (("4a199545c1ec239b6a90bd9ce9fb85ef")
             (begin
               (use-modules (ice-9 rdelim))
               (use-modules (ice-9 popen))
@@ -198,9 +201,14 @@ computing) platforms.")
       ("r-rlang" ,r-rlang)
       ("r-tidyselect" ,r-tidyselect)
       ("r-vctrs" ,r-vctrs)
-      ;; Necessary for a compilation using the Arrow C++ libraries from Apache
+      ;; Extra dependencies required for a compilation including the Apache
+      ;; Arrow C++ libraries
       ("arrow:lib", apache-arrow "lib")
-      ("arrow:include", apache-arrow "include")))
+      ("arrow:include", apache-arrow "include")
+      ("thrift:lib" ,apache-thrift "lib")
+      ("lz4" ,lz4)
+      ("zstd:lib" ,zstd "lib")
+      ("utf8proc" ,utf8proc)))
    (native-inputs
     `(("pkg-config" ,pkg-config)
       ("r-knitr" ,r-knitr)))
@@ -211,7 +219,8 @@ computing) platforms.")
 development platform for in-memory data.  It specifies a standardized
 language-independent columnar memory format for flat and hierarchical data,
 organized for efficient analytic operations on modern hardware. This package
-provides an interface to the 'Arrow C++' library.")
+provides an interface to the 'Arrow C++' library. Unlike 'r-arrow', this package
+is compiled with the Apache Arrow C++ libraries.")
    (license license:asl2.0)))
 
 (define-public r-data-tree

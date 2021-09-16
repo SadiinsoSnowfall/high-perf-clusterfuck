@@ -223,35 +223,6 @@ provides an interface to the 'Arrow C++' library. Unlike 'r-arrow', this package
 is compiled with the Apache Arrow C++ libraries.")
    (license license:asl2.0)))
 
-(define-public r-data-tree
-(package
-  (name "r-data-tree")
-  (version "1.0.0")
-  (source
-    (origin
-      (method url-fetch)
-      (uri (cran-uri "data.tree" version))
-      (sha256
-        (base32
-          "0pizmx2312zsym4m42b97q2184bg3hibvbdrblcga05xln84qrs0"))))
-  (properties
-   `((upstream-name . "data.tree")))
-  (build-system r-build-system)
-  (propagated-inputs
-   `(("r-r6" ,r-r6)
-     ("r-stringi" ,r-stringi)))
-  (native-inputs
-   `(("r-knitr" ,r-knitr)))
-  (home-page "http://github.com/gluc/data.tree")
-  (synopsis
-    "General Purpose Hierarchical Data Structure")
-  (description
-    "Create tree structures from hierarchical data, and traverse the tree in
-various orders.  Aggregate, cumulate, print, plot, convert to and from
-data.frame and more.  Useful for decision trees, machine learning, finance,
-conversion from and to JSON, and many other applications.")
-  (license license:gpl2+)))
-
 (define-public pageng
   (package
    (name "pageng")

@@ -2,7 +2,7 @@
 ;;; of the GNU GPL version 3 or (at your option) any later version.
 ;;;
 ;;; Copyright © 2017, 2019 Inria
-;;; Copyright © 2020 Michele MARTONE (LRZ)
+;;; Copyright © 2020, 2021 Michele MARTONE (LRZ)
 
 ;;; This module has been developed under the PRACE-6IP-WP8 EU project LyNcs (GRANT AGREEMENT NUMBER 823767 -- PRACE-6IP).
 
@@ -21,13 +21,13 @@
 (define-public librsb
   (package
     (name "librsb")
-    (version "1.2.0.9")
+    (version "1.2.0.10")
     (source (origin
-              (uri "http://download.sourceforge.net/librsb/librsb-1.2.0.9.tar.gz")
+              (uri "http://download.sourceforge.net/librsb/librsb-1.2.0.10.tar.gz")
               (method url-fetch)
               (sha256
                (base32
-                "1ynrsgnvv1jfm8dv3jwjrip9x9icxv7w3qrk149025j6fbaza8gl"))
+                "1f7ps99asymvrjiqzv896f3b2jda038r6rcp22ggqhvwibvz6jgc"))
               ))
     (build-system gnu-build-system)
     (inputs `(("m4", m4)

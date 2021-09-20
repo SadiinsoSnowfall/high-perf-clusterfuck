@@ -345,20 +345,20 @@ moderate number of blocks which ensures a reasonable convergence behavior.")
 (define-public fabulous
   (package
     (name "fabulous")
-    (version "1.1.1")
+    (version "1.1.2")
     (home-page "https://gitlab.inria.fr/solverstack/fabulous")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url home-page)
-		    ;; release-1.1.1 branch
-                    (commit "17259f383801cf414f579f1c9d48d4a6a8377c79")
+		    ;; release-1.1.2 branch
+                    (commit "5c737d31291ae8dc72983e00d4c05929756e2121")
                     ;; We need the submodule in 'cmake_modules/morse'.
                     (recursive? #t)))
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "0p7flf8c236cw34if1zg3fzrxf2k4bpjbyn03f06s53r14zz3q5h"))))
+                "1w7gnj9skz8ls9nwy8fn08iw73z95gk8ialblsskfyax801n1j1x"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags '("-DFABULOUS_BUILD_C_API=ON"

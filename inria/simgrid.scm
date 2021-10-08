@@ -16,14 +16,14 @@
 (define-public simgrid
   (package
     (name "simgrid")
-    (version "3.24")
+    (version "3.29")
     (source (origin
               (method url-fetch)
               (uri
-               "https://gforge.inria.fr/frs/download.php/file/38173/SimGrid-3.24.tar.gz")
+               "https://framagit.org/simgrid/simgrid/uploads/6ca357e80bd4d401bff16367ff1d3dcc/simgrid-3.29.tar.gz")
               (sha256
                (base32
-                "0899b6gawiqhcdp9w8ym2q70w2fgkiyxm3hsdmpi7zy7phffsxn9"))))
+                "1krcv8smbgy60rccklzcg1kr1irnh2w3f1swviqfnpjmagbazs43"))))
     (build-system cmake-build-system)
     (arguments
      '(;; Have the RUNPATH of executables point to $libdir, where
@@ -43,7 +43,7 @@
     (propagated-inputs
      `(("boost" ,boost)))
     ;; XXX: 'smpicc' and 'smpicxx' retain references to GCC.
-    (home-page "http://simgrid.gforge.inria.fr/")
+    (home-page "https://simgrid.org/")
     (synopsis "Distributed system simulator")
     (description
      "SimGrid is a scientific instrument to study the behavior of large-scale

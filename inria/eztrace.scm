@@ -92,9 +92,9 @@
      "EZTrace is a tool that aims at generating automatically execution trace
 from high performance computing (HPC) programs.  It generates execution trace
 files that can be interpreted by visualization tools such as
-@uref{http://vite.gforge.inria.fr/, ViTE}.")
+@uref{https://solverstack.gitlabpages.inria.fr/vite/, ViTE}.")
     (license license:cecill-c)                    ;FIXME: really CECILL-B
-    (home-page "http://eztrace.gforge.inria.fr/")))
+    (home-page "https://eztrace.gitlab.io/eztrace/")))
 
 (define-public litl
   (package

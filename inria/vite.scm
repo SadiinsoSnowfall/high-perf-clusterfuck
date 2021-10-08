@@ -5,30 +5,33 @@
 
 (define-module (inria vite)
   #:use-module (guix packages)
-  #:use-module (guix svn-download)
+  #:use-module (guix git-download)
   #:use-module (guix licenses)
   #:use-module (guix utils)
   #:use-module (guix build-system cmake)
   #:use-module (gnu packages)
   #:use-module (gnu packages qt)
-  #:use-module (gnu packages gl))
+  #:use-module (gnu packages gl)
+  #:use-module (gnu packages maths))
 
 (define S specification->package)
 
 (define-public vite
-  (let ((revision 1610))
+  (let ((commit "442cf13b6f8025eba09f0b4165e9a789d40409ae")
+        (revision "1"))
     (package
       (name "vite")
-      (version (string-append "1.2." (number->string revision)))
+      (version (git-version "1.2" revision commit))
+      (home-page "https://gitlab.inria.fr/solverstack/vite/")
       (source (origin
-                (uri (svn-reference
-                      (url "https://scm.gforge.inria.fr/anonscm/svn/vite/trunk")
-                      (revision revision)))
-                (method svn-fetch)
-                (file-name (string-append "vite-" version "-checkout"))
+                (uri (git-reference
+                      (url home-page)
+                      (commit commit)))
+                (method git-fetch)
+                (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1icvscxyx6cbc7agj85dydlcx97d3zsi8m02ha46v3kmxlsm4qy9"))))
+                  "09ymsab03qvbxn6zbzh660aa4746b4sn0v8644y7k54pjhk76372"))))
       (build-system cmake-build-system)
       (arguments
        '(#:configure-flags (list "-DUSE_QT5=TRUE"
@@ -44,10 +47,13 @@
       (inputs
        `(("qtbase" ,(S "qtbase@5"))
          ("mesa" ,mesa)
-         ("glu" ,glu)))
+         ("glew" ,glew)
+         ("glu" ,glu)
+         ("glm" ,glm)
+         ("qtcharts" ,(S "qtcharts@5"))
+         ("qtsvg" ,(S "qtsvg@5"))))
       (native-inputs
        `(("qttools" ,(S "qttools@5"))))
-      (home-page "http://vite.gforge.inria.fr/")
       (synopsis "Visualize program execution traces")
       (description
        "ViTE is a trace explorer.  It is a tool to visualize execution traces

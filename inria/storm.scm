@@ -28,7 +28,7 @@
   #:use-module (ice-9 match))
 
 (define %starpu-home-page
-  "http://starpu.gforge.inria.fr")
+  "https://starpu.gitlabpages.inria.fr/")
 
 (define %patch-path "inria/patches/starpu_skip_apps.patch")
 

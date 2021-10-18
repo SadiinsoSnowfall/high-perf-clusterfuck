@@ -524,7 +524,11 @@ etc.")
               (method git-fetch)
               (uri (git-reference
                     (url home-page)
-                    (commit (string-append "v" version))
+
+                    ;; Note: The 'v6.2.1' tag used to point to this commit
+                    ;; back in July 2021, but has since been rewritten to
+                    ;; point to a later commit.
+                    (commit "5632fb1cb2fc161953b2ba869038ab28d8df2d45")
 
                     ;; We need the submodule in 'cmake_modules/morse'.
                     (recursive? #t)))

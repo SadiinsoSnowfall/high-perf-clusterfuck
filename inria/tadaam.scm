@@ -31,7 +31,7 @@
   (package
    (name "puk")
    (version %v2021-05-21)
-   (home-page (string-append %pm2-home-page "/PadicoTM"))
+   (home-page (string-append %pm2-home-page "PadicoTM"))
    (source (origin
             (method git-fetch)
             (uri (git-reference
@@ -73,7 +73,7 @@ hashtables, lock-free queues). It may be used with")
   (package
    (name "pioman")
    (version %v2021-05-21)
-   (home-page (string-append %pm2-home-page "/pioman"))
+   (home-page (string-append %pm2-home-page "pioman"))
    (source (origin
             (method git-fetch)
             (uri (git-reference
@@ -125,7 +125,7 @@ supporting MPI_THREAD_MULTIPLE multi-threading level.")
   (package
    (name "pukabi")
    (version %v2021-05-21)
-   (home-page (string-append %pm2-home-page "/PadicoTM"))
+   (home-page (string-append %pm2-home-page "PadicoTM"))
    (source (origin
             (method git-fetch)
             (uri (git-reference
@@ -168,7 +168,7 @@ than libc pthread; add hooks for memory.")
   (package
    (name "padicotm")
    (version %v2021-05-21)
-   (home-page (string-append %pm2-home-page "/PadicoTM"))
+   (home-page (string-append %pm2-home-page "PadicoTM"))
    (source (origin
             (method git-fetch)
             (uri (git-reference
@@ -297,7 +297,7 @@ way rather than competitive.")
   (package
    (name "nmad")
    (version %v2021-05-21)
-   (home-page (string-append %pm2-home-page "/NewMadeleine"))
+   (home-page (string-append %pm2-home-page "NewMadeleine"))
    (source (origin
             (method git-fetch)
             (uri (git-reference
@@ -420,7 +420,7 @@ the MPI_THREAD_MULTIPLE multi-threading level.")
   (package
    (name "mpibenchmark")
    (version %v2021-05-21)
-   (home-page (string-append %pm2-home-page "/mpibenchmark"))
+   (home-page (string-append %pm2-home-page "mpibenchmark"))
    (source (origin
             (method git-fetch)
             (uri (git-reference

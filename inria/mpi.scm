@@ -6,7 +6,9 @@
 (define-module (inria mpi)
   #:use-module (guix)
   #:use-module (guix utils)
+  #:use-module (guix build-system cmake)
   #:use-module (guix build-system gnu)
+  #:use-module (guix git-download)
   #:use-module (guix licenses)
   #:use-module (gnu packages)
   #:use-module (gnu packages gcc)
@@ -15,7 +17,38 @@
   #:use-module (gnu packages mpi)
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages ssh)
+  #:use-module (inria storm)
   #:use-module (srfi srfi-1))
+
+(define-public hello-mpi
+  (package
+   (name "hello-mpi")
+   (version "1.0.0")
+   (home-page "https://gitlab.inria.fr/solverstack/hello-mpi.git")
+   (synopsis "Hello world MPI")
+   (description
+    "This is a minimalist MPI hello world.")
+   (license cecill-c)
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url home-page)
+                  (commit "f5d4e490f362fabf7d0e96983fb4882af4dcd1d5")))
+            (file-name (string-append name "-" version "-checkout"))
+            (sha256
+             (base32
+              "1nln1krjlkqsy2ywfwmdikm4l15bx94dgvi8nlgl24289r55ccz2"))))
+   (arguments
+    '(#:phases (modify-phases %standard-phases
+                             (add-before 'check 'prepare-test-environment
+                                         (lambda _
+                                           ;; Allow tests with more MPI processes than available CPU cores,
+                                           ;; which is not allowed by default by OpenMPI
+                                           (setenv "OMPI_MCA_rmaps_base_oversubscribe" "1") #t)))))
+   (build-system cmake-build-system)
+   (propagated-inputs `(("mpi" ,openmpi)
+                        ("ssh" ,openssh)))))
 
 (define-public openmpi-curta
   ;; Open MPI package matching the version of Open MPI on the Curta
@@ -24,7 +57,7 @@
   ;; When creating Singularity images to run on Curta, one should use the same
   ;; version of Open MPI as the one available on Curta to avoid problems during
   ;; execution.
-  ;; 
+  ;;
   ;; See more: https://redmine.mcia.fr/projects/cluster-curta/wiki/Singularity
   (package
     (name "openmpi-curta")

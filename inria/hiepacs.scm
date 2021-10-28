@@ -432,13 +432,13 @@ on domain decomposition methods and is implemented in MPI.")
     '(#:configure-flags '("-DMAPHYSPP_COMPILE_EXAMPLES=ON"
                           "-DMAPHYSPP_COMPILE_TESTS=ON"
                           "-DMAPHYSPP_USE_EIGEN=OFF")
-                        #:phases (modify-phases %standard-phases
-                                                (add-before 'check 'prepare-test-environment
-                                                            (lambda _
-                                                              ;; Allow tests with more MPI processes than available CPU cores,
-                                                              ;; which is not allowed by default by OpenMPI
-                                                              (setenv "OMPI_MCA_rmaps_base_oversubscribe" "1") #t)))
-                        ))
+      #:phases (modify-phases %standard-phases
+                              (add-before 'check 'prepare-test-environment
+                                          (lambda _
+                                            ;; Allow tests with more MPI processes than available CPU cores,
+                                            ;; which is not allowed by default by OpenMPI
+                                            (setenv "OMPI_MCA_rmaps_base_oversubscribe" "1") #t)))
+      ))
    (build-system cmake-build-system)
    (inputs `(("blaspp" ,blaspp)
              ("lapackpp" ,lapackpp)

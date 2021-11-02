@@ -28,7 +28,8 @@
     (arguments
      '(;; Have the RUNPATH of executables point to $libdir, where
        ;; libsimgrid.so lives.
-       #:configure-flags (list (string-append "-DCMAKE_EXE_LINKER_FLAGS="
+       #:configure-flags (list "-Denable_msg=ON"
+                               (string-append "-DCMAKE_EXE_LINKER_FLAGS="
                                               "-Wl,-rpath="
                                               (assoc-ref %outputs "out")
                                               "/lib"))

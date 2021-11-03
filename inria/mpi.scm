@@ -34,13 +34,16 @@
             (method git-fetch)
             (uri (git-reference
                   (url home-page)
-                  (commit "f5d4e490f362fabf7d0e96983fb4882af4dcd1d5")))
+                  (commit "6d89892f0f279828010755883a56a65a822b8a2f")))
             (file-name (string-append name "-" version "-checkout"))
             (sha256
              (base32
-              "1nln1krjlkqsy2ywfwmdikm4l15bx94dgvi8nlgl24289r55ccz2"))))
+              "0aq33fqi94xmniwy2w25dkg1rv2jbawcjjqc8vjcznc5rd1ycybw"))))
    (arguments
-    '(#:phases (modify-phases %standard-phases
+    '(
+      ;; #:configure-flags '("-DBUILD_SHARED_LIBS=ON"
+      ;;                     "-DCMAKE_INSTALL_RPATH_USE_LINK_PATH=TRUE")
+      #:phases (modify-phases %standard-phases
                              (add-before 'check 'prepare-test-environment
                                          (lambda _
                                            ;; Allow tests with more MPI processes than available CPU cores,

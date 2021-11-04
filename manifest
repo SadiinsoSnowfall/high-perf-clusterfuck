@@ -47,4 +47,4 @@
 (packages->manifest
  (append our-packages
          (map (compose openmpi->nmad specification->package)
-              '("chameleon" "maphys"))))
+              '("chameleon"))))

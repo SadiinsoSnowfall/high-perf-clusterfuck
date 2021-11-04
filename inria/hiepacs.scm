@@ -228,6 +228,39 @@ area (CPUs-GPUs, distributed nodes).")
              ,@(delete `("starpu" ,starpu) (package-inputs chameleon))
              ,@(delete `("mpi" ,openmpi) (package-inputs chameleon))))))
 
+(define-public mini-chameleon
+  (package
+    (inherit chameleon)
+    (name "mini-chameleon")
+    (version "1.0.0")
+    (home-page "https://gitlab.inria.fr/cours-mf/is328-students/")
+    (synopsis "Educational-purpose dense linear algebra solver")
+    (description
+     "Mini-chameleon is an educational purpose dense linear algebra solver.
+As provided, it essentially provides drivers while the actual computational
+routines remain to be completed. The goal is to implement a dense matrix-matrix
+product and an LU factorization, first targeting a sequential implementation,
+followed by an simd version, a shared-memory openmp one, a distributed memory
+MPI one, an MPI+openmp one and a runtime-based starpu one.")
+    (license license:cecill-c)
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit "52cbe3575da60b5498e2cebd422338da137fedda")
+                    ;; We need the submodule in 'CMakeModules/morse_cmake'.
+                    (recursive? #t)))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "0kqq0jzfj48yjfk8gkixki97afa64gxs9c7fymc5r80q6w1xygqr"))))
+    (arguments
+     (substitute-keyword-arguments (package-arguments chameleon)
+                                   ((#:configure-flags flags '())
+                                    `(cons "-DENABLE_MPI=ON" (cons "-DENABLE_STARPU=ON" (delete "-DCHAMELEON_USE_MPI=ON"
+,flags))))))))
+
+
 (define-public maphys
   (package
     (name "maphys")

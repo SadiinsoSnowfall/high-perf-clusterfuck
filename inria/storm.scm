@@ -147,12 +147,12 @@ kernels are executed as efficiently as possible.")
                     "--enable-maxcudadev=1000"
                     "--enable-maxnodes=32")
                   ;; For actual runs (simgrid OFF), we fix the maximum number of
-                  ;; CPU workers to 64 instead of letting starpu decide that wrt
-                  ;; to the actual topology it is built on, in order to ensure a
-                  ;; portable and reproducible cross-compilation. In the future,
-                  ;; it would be nice to give the opportunity to change it at
-                  ;; will when parametrized packages will be there.
-                  '("--enable-maxcpus=64"))
+                  ;; CPU workers to 128 instead of letting starpu decide that
+                  ;; wrt to the actual topology it is built on, in order to
+                  ;; ensure a portable and reproducible cross-compilation. In
+                  ;; the future, it would be nice to give the opportunity to
+                  ;; change it at will when parametrized packages will be there.
+                  '("--enable-maxcpus=128"))
             ,@(if (string=? (package-name mpi) "nmad")
                   '("--enable-nmad")
                   '())))))

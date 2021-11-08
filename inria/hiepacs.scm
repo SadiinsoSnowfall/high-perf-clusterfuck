@@ -232,7 +232,7 @@ area (CPUs-GPUs, distributed nodes).")
   (package
     (inherit chameleon)
     (name "mini-chameleon")
-    (version "1.0.0")
+    (version "0.2.0")
     (home-page "https://gitlab.inria.fr/cours-mf/is328-students/")
     (synopsis "Educational-purpose dense linear algebra solver")
     (description
@@ -247,13 +247,13 @@ MPI one, an MPI+openmp one and a runtime-based starpu one.")
               (method git-fetch)
               (uri (git-reference
                     (url home-page)
-                    (commit "52cbe3575da60b5498e2cebd422338da137fedda")
+                    (commit "ef8079fe01d9c8f75fe1c6f2cab0bb43b4cc0c45")
                     ;; We need the submodule in 'CMakeModules/morse_cmake'.
                     (recursive? #t)))
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "0kqq0jzfj48yjfk8gkixki97afa64gxs9c7fymc5r80q6w1xygqr"))))
+                "11whs6214xpkm9qdjxc3n2lj540xw6gndi3r8i9fz1aj863xpsfk"))))
     (arguments
      (substitute-keyword-arguments (package-arguments chameleon)
                                    ((#:configure-flags flags '())

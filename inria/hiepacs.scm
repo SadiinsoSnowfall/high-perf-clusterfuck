@@ -260,6 +260,28 @@ MPI one, an MPI+openmp one and a runtime-based starpu one.")
                                     `(cons "-DENABLE_MPI=ON" (cons "-DENABLE_STARPU=ON" (delete "-DCHAMELEON_USE_MPI=ON"
 ,flags))))))))
 
+(define-public starpu-example-dgemm
+  (package
+    (inherit mini-chameleon)
+    (name "starpu-example-dgemm")
+    (version "0.1.0")
+    (home-page "https://gitlab.inria.fr/solverstack/mini-examples/starpu_example_dgemm/")
+    (synopsis "StarPU example of a distributed gemm")
+    (description
+     "This is just an example showing how to use starpu for implementing a
+distributed gemm.")
+    (license license:cecill-c)
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit "90efe3d1ce2a56253755a5cfb0acbba64975e451")
+                    ;; We need the submodule in 'CMakeModules/morse_cmake'.
+                    (recursive? #t)))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "1f8mcg4hcj45cyknb8v5jxba9qzkhimdl6rihf053la30jk72cvd"))))))
 
 (define-public maphys
   (package

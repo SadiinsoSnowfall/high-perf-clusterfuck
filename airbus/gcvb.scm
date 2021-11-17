@@ -333,6 +333,34 @@
    (description #f)
    (license license:asl2.0)))
 
+(define-public python-dash-defer-js-import
+  (package
+   (name "python-dash-defer-js-import")
+   (version "0.0.2")
+   (source
+    (origin
+     (method url-fetch)
+     (uri
+      (string-append
+       "https://files.pythonhosted.org/packages/01/55/"
+       "00cb28fbfa48c14815cef2c3754fab9c9dad93cbe4b8a8492e0e5aa516ea/"
+       "dash_defer_js_import-0.0.2.tar.gz"))
+     (sha256
+      (base32
+       "0jhyvwhp1i0dnivzhvwmsqwi9zbc2d4hgpymshxfsdb5sj9yygs0"))))
+   (build-system python-build-system)
+   (arguments
+    ;; Broken tests or cyclic dependecies with other packages.
+    '(#:tests? #f))
+   (propagated-inputs
+    `(("python-dash" ,python-dash)))
+   (home-page #f)
+   (synopsis "Dash component library")
+   (description "Dash Defer JS Import is a Dash component library. Its purpose
+is to defer loading JS scripts until after the Dash React elements have
+loaded.")
+   (license license:expat)))
+
 (define-public python-pyyaml-5
   (package
    (inherit python-pyyaml)
@@ -348,30 +376,33 @@
 
 (define-public gcvb
   (package
-    (name "gcvb")
-    (version "0.0.1-git.b4f79d2")
-    (source (origin
-        (method git-fetch)
-        (uri (git-reference
-          (url "https://github.com/jm-cc/gcvb")
-          (commit "b4f79d2564f7072d7455b5f2fb1ee77e1062ff74")))
-        (sha256
-          (base32
-           "0aqwqq3wjmhqd84wg3qw85f37dwaxhiq8c8c9ydd8yscj9hkn001"))))
-    (build-system python-build-system)
-    (propagated-inputs
-     `(("PyYAML" ,python-pyyaml-5)
-       ("python-dash-bootstrap-components" ,python-dash-bootstrap-components)))
-    (home-page "https://github.com/jm-cc/gcvb")
-    (synopsis
-      "Python 3 module aiming at facilitating non-regression, validation and
-      benchmarking of simulation codes")
-    (description
-      "gcvb (generate compute validate benchmark) is a Python 3 module aiming at
+   (name "gcvb")
+   (version "1.0.0")
+   (source
+    (origin
+     (method git-fetch)
+     (uri
+      (git-reference
+       (url "https://github.com/jm-cc/gcvb")
+       (commit version)))
+     (sha256
+      (base32
+       "1ny3lgfi1qpqyckxsixpr39df0gqlsqaq9w0sjj4q9fvmqvz5bql"))))
+   (build-system python-build-system)
+   (propagated-inputs
+    `(("PyYAML" ,python-pyyaml-5)
+      ("python-dash-bootstrap-components" ,python-dash-bootstrap-components)
+      ("python-dash-defer-js-import" ,python-dash-defer-js-import)))
+   (home-page "https://github.com/jm-cc/gcvb")
+   (synopsis
+    "Python 3 module aiming at facilitating non-regression, validation and
+benchmarking of simulation codes")
+   (description
+    "gcvb (generate compute validate benchmark) is a Python 3 module aiming at
 facilitating non-regression, validation and benchmarking of simulation codes.
 gcvb is not a complete tool of continuous integration (CI). It is rather a
 component of the testing part of a CI workflow. It can compare the different
 metrics of your computation with references that can be a file, depends of the
 'configuration' or are absolute.")
-    (license license:expat)))
+   (license license:expat)))
 

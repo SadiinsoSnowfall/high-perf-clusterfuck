@@ -406,3 +406,39 @@ metrics of your computation with references that can be a file, depends of the
 'configuration' or are absolute.")
    (license license:expat)))
 
+(define-public gcvb-felsocim
+  (package
+   (name "gcvb-felsocim")
+   (version "0.0.1-git.48c5b69")
+   (source
+    (origin
+     (method git-fetch)
+     (uri
+      (git-reference
+       (url "https://github.com/felsocim/gcvb")
+       (commit "48c5b694f005cdcb1ccec81d44232d6488a31b3b")))
+     (sha256
+      (base32
+       "09vy4bqdlwqfcz00gsb9994r8vl9ywk9pf0cdb3qcqwjbh4a8pfg"))))
+   (build-system python-build-system)
+   (arguments
+    ;; There are no tests defined for this package. The test phase is useless
+    ;; here.
+    '(#:tests? #f))
+   (propagated-inputs
+    `(("PyYAML" ,python-pyyaml-5)
+      ("python-dash-bootstrap-components" ,python-dash-bootstrap-components)))
+   (home-page "https://github.com/felsocim/gcvb")
+   (synopsis
+    "Python 3 module aiming at facilitating non-regression, validation and
+benchmarking of simulation codes (felsocim's fork)")
+   (description
+    "gcvb (generate compute validate benchmark) is a Python 3 module aiming at
+facilitating non-regression, validation and benchmarking of simulation codes.
+gcvb is not a complete tool of continuous integration (CI). It is rather a
+component of the testing part of a CI workflow. It can compare the different
+metrics of your computation with references that can be a file, depends of the
+'configuration' or are absolute. This is the forked version by felsocim of the
+original gcvb by jm-cc.")
+   (license license:expat)))
+

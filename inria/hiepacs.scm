@@ -260,6 +260,28 @@ MPI one, an MPI+openmp one and a runtime-based starpu one.")
                                     `(cons "-DENABLE_MPI=ON" (cons "-DENABLE_STARPU=ON" (delete "-DCHAMELEON_USE_MPI=ON"
 ,flags))))))))
 
+(define-public starpu-example-dgemm
+  (package
+    (inherit mini-chameleon)
+    (name "starpu-example-dgemm")
+    (version "0.1.0")
+    (home-page "https://gitlab.inria.fr/solverstack/mini-examples/starpu_example_dgemm/")
+    (synopsis "StarPU example of a distributed gemm")
+    (description
+     "This is just an example showing how to use starpu for implementing a
+distributed gemm.")
+    (license license:cecill-c)
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit "90efe3d1ce2a56253755a5cfb0acbba64975e451")
+                    ;; We need the submodule in 'CMakeModules/morse_cmake'.
+                    (recursive? #t)))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "1f8mcg4hcj45cyknb8v5jxba9qzkhimdl6rihf053la30jk72cvd"))))))
 
 (define-public maphys
   (package
@@ -362,8 +384,8 @@ moderate number of blocks which ensures a reasonable convergence behavior.")
                                               ;; which is not allowed by default by OpenMPI
                                               (setenv "OMPI_MCA_rmaps_base_oversubscribe" "1") #t)))))
     (inputs `(("openmpi" ,openmpi)
-              ("ssh" ,openssh)
-              ("scotch" ,pt-scotch)))
+              ("ssh" ,openssh)))
+    (propagated-inputs `(("scotch" ,pt-scotch)))
     (native-inputs `(("gfortran" ,gfortran)
                      ("pkg-config" ,pkg-config)))
     (synopsis "Parallel Algebraic Domain Decomposition for Linear systEms")
@@ -439,7 +461,7 @@ Breakdown Free Block Conjudate Gradiant, Block General Conjugate Residual.")))
 (define-public maphys++
   (package
    (name "maphys++")
-   (version "1.0.0")
+   (version "1.1.0")
    (home-page "https://gitlab.inria.fr/solverstack/maphys/maphyspp.git")
    (synopsis "Sparse matrix hybrid solver")
    (description
@@ -454,17 +476,17 @@ on domain decomposition methods and is implemented in MPI.")
             (method git-fetch)
             (uri (git-reference
                   (url home-page)
-                  (commit "8b5b7e589bcf1c41cf5ad135c4898572f2357e36")
+                  (commit "f20883631bf87e70a14dbd245fac5ad0b2762b6c")
                   ;; We need the submodule in 'cmake_modules/morse_cmake'.
                   (recursive? #t)))
             (file-name (string-append name "-" version "-checkout"))
             (sha256
              (base32
-              "1vvrh675320cfq6h7f2ikfiqjjgsjbf1i4pn5mpyh3zxd3xnyr7j"))))
+              "1mc8cz2af7843ig0b75p9xawnllyshii0agm52dawfy73bl42561"))))
    (arguments
-    '(#:configure-flags '("-DMAPHYSPP_COMPILE_EXAMPLES=ON"
-                          "-DMAPHYSPP_COMPILE_TESTS=ON"
-                          "-DMAPHYSPP_USE_EIGEN=OFF")
+    '(#:configure-flags '("-DMAPHYSPP_USE_EIGEN=OFF"
+                          "-DMAPHYSPP_USE_FABULOUS=ON"
+                          "-DMAPHYSPP_USE_PADDLE=ON")
       #:phases (modify-phases %standard-phases
                               (add-before 'check 'prepare-test-environment
                                           (lambda _
@@ -478,6 +500,8 @@ on domain decomposition methods and is implemented in MPI.")
              ("pastix" ,pastix)
              ("mumps" ,mumps-openmpi)
              ("arpack", arpack-ng-3.8)
+             ("paddle", paddle)
+             ("fabulous", fabulous)
              ))
    (propagated-inputs `(("mpi" ,openmpi)
                         ("ssh" ,openssh)))

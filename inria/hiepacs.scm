@@ -460,54 +460,52 @@ Breakdown Free Block Conjudate Gradiant, Block General Conjugate Residual.")))
 
 (define-public maphys++
   (package
-   (name "maphys++")
-   (version "1.1.0")
-   (home-page "https://gitlab.inria.fr/solverstack/maphys/maphyspp.git")
-   (synopsis "Sparse matrix hybrid solver")
-   (description
-    "MAPHYS++ is a parallel linear solver for large sparse linear systems. It
-implements a modern C++ interface (C++17/20), giving the user a wide range of
-solving methods : efficient direct solver (wrapping MUMPS, Pastix...), iterative
-solver (CG, GMRES...) and also allowing for a combination of those (hybrid solve
-using the Schur complement, with adapted preconditioners). Parallelism is based
-on domain decomposition methods and is implemented in MPI.")
-   (license license:cecill-c)
-   (source (origin
-            (method git-fetch)
-            (uri (git-reference
-                  (url home-page)
-                  (commit "f20883631bf87e70a14dbd245fac5ad0b2762b6c")
-                  ;; We need the submodule in 'cmake_modules/morse_cmake'.
-                  (recursive? #t)))
-            (file-name (string-append name "-" version "-checkout"))
-            (sha256
-             (base32
-              "1mc8cz2af7843ig0b75p9xawnllyshii0agm52dawfy73bl42561"))))
-   (arguments
-    '(#:configure-flags '("-DMAPHYSPP_USE_EIGEN=OFF"
-                          "-DMAPHYSPP_USE_FABULOUS=ON"
-                          "-DMAPHYSPP_USE_PADDLE=ON")
-      #:phases (modify-phases %standard-phases
-                              (add-before 'check 'prepare-test-environment
-                                          (lambda _
-                                            ;; Allow tests with more MPI processes than available CPU cores,
-                                            ;; which is not allowed by default by OpenMPI
-                                            (setenv "OMPI_MCA_rmaps_base_oversubscribe" "1") #t)))
-      ))
-   (build-system cmake-build-system)
-   (inputs `(("blaspp" ,blaspp)
-             ("lapackpp" ,lapackpp)
-             ("pastix" ,pastix)
-             ("mumps" ,mumps-openmpi)
-             ("arpack", arpack-ng-3.8)
-             ("paddle", paddle)
-             ("fabulous", fabulous)
-             ))
-   (propagated-inputs `(("mpi" ,openmpi)
-                        ("ssh" ,openssh)))
-   (native-inputs `(("gfortran" ,gfortran)
-                    ("pkg-config" ,pkg-config)))
-   ))
+    (name "maphys++")
+    (version "1.1.0")
+    (home-page "https://gitlab.inria.fr/solverstack/maphys/maphyspp.git")
+    (synopsis "Sparse matrix hybrid solver")
+    (description
+     "MAPHYS++ is a parallel linear solver for large sparse linear systems.
+It implements a modern C++ interface (C++17/20), giving the user a wide range
+of solving methods : efficient direct solver (wrapping MUMPS, Pastix...),
+iterative solver (CG, GMRES...) and also allowing for a combination of
+those (hybrid solve using the Schur complement, with adapted
+preconditioners).  Parallelism is based on domain decomposition methods and
+is implemented in MPI.")
+    (license license:cecill-c)
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit "f20883631bf87e70a14dbd245fac5ad0b2762b6c")
+                    ;; We need the submodule in 'cmake_modules/morse_cmake'.
+                    (recursive? #t)))
+              (file-name (string-append name "-" version "-checkout"))
+              (sha256
+               (base32
+                "1mc8cz2af7843ig0b75p9xawnllyshii0agm52dawfy73bl42561"))))
+    (arguments
+     '(#:configure-flags '("-DMAPHYSPP_USE_EIGEN=OFF"
+                           "-DMAPHYSPP_USE_FABULOUS=ON"
+                           "-DMAPHYSPP_USE_PADDLE=ON")
+       #:phases (modify-phases %standard-phases
+                  (add-before 'check 'prepare-test-environment
+                    (lambda _
+                      ;; Allow tests with more MPI processes than available CPU cores,
+                      ;; which is not allowed by default by OpenMPI
+                      (setenv "OMPI_MCA_rmaps_base_oversubscribe" "1") #t)))))
+    (build-system cmake-build-system)
+    (inputs `(("blaspp" ,blaspp)
+              ("lapackpp" ,lapackpp)
+              ("pastix" ,pastix)
+              ("mumps" ,mumps-openmpi)
+              ("arpack", arpack-ng-3.8)
+              ("paddle", paddle)
+              ("fabulous", fabulous)))
+    (propagated-inputs `(("mpi" ,openmpi)
+                         ("ssh" ,openssh)))
+    (native-inputs `(("gfortran" ,gfortran)
+                     ("pkg-config" ,pkg-config)))))
 
 (define-public blaspp
   (package

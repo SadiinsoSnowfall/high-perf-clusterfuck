@@ -461,7 +461,7 @@ Breakdown Free Block Conjudate Gradiant, Block General Conjugate Residual.")))
 (define-public maphys++
   (package
     (name "maphys++")
-    (version "1.1.0")
+    (version "1.1.1")
     (home-page "https://gitlab.inria.fr/solverstack/maphys/maphyspp.git")
     (synopsis "Sparse matrix hybrid solver")
     (description
@@ -477,13 +477,13 @@ is implemented in MPI.")
               (method git-fetch)
               (uri (git-reference
                     (url home-page)
-                    (commit "f20883631bf87e70a14dbd245fac5ad0b2762b6c")
+                    (commit "662d1bbc9f8f5e88b70297fa61605f7b9f1503ce")
                     ;; We need the submodule in 'cmake_modules/morse_cmake'.
                     (recursive? #t)))
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "1mc8cz2af7843ig0b75p9xawnllyshii0agm52dawfy73bl42561"))))
+                "1m6wc7vsl8x6nkg5fqi5nzc5vfb9aga6agwlv8ncx7nf0fmsfda9"))))
     (arguments
      '(#:configure-flags '("-DMAPHYSPP_USE_EIGEN=OFF"
                            "-DMAPHYSPP_USE_FABULOUS=ON"

@@ -442,3 +442,16 @@ metrics of your computation with references that can be a file, depends of the
 original gcvb by jm-cc.")
    (license license:expat)))
 
+(define-public gcvb-minimal-felsocim
+  (package
+   (inherit gcvb-felsocim)
+   (name "gcvb-minimal-felsocim")
+   (propagated-inputs
+    `(,@(delete
+         `("python-dash-bootstrap-components" ,python-dash-bootstrap-components)
+         (package-inputs gcvb-felsocim))))
+   (synopsis
+    "Python 3 module aiming at facilitating non-regression, validation and
+benchmarking of simulation codes (felsocim's fork). This is a minimal version
+without the dashboard functionality.")))
+

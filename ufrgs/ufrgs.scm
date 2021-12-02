@@ -118,79 +118,20 @@ computing) platforms.")
   (package
    (name "r-arrow-cpp")
    ;; The version of 'r-arrow-cpp' must match the version of the 'apache-arrow'
-   ;; dependency which is currently '5.0.0'!
-   (version "5.0.0")
+   ;; dependency which is currently '6.0.1'!
+   (version "6.0.1")
    (source
     (origin
      (method url-fetch)
      (uri (cran-uri "arrow" version))
      (sha256
       (base32
-       "1x9z7jr7rnsqi04vfs54qidhn8hi0j533lm7ka074jp4xdv1gxjx"))))
+       "14fghz9xijcrck0c65crvfidgyhgzy9b2apwmg7qrgn2sy09xm0p"))))
    (properties `((upstream-name . "arrow")))
    (build-system r-build-system)
-   (arguments
-    '(#:phases
-      (modify-phases
-       %standard-phases
-       (add-before
-        'install
-        ;; Some files are changed during the shebang patching phase which makes
-        ;; MD5 checksum validation fail for these files. Therefore, we need to
-        ;; recompute the checksums and update the checksum file called 'MD5'.
-        'update-checksums
-        (lambda _
-          (substitute*
-           "MD5"
-           (("b42138af7af04ffb1c62af0bbca3e73c")
-            (begin
-              (use-modules (ice-9 rdelim))
-              (use-modules (ice-9 popen))
-              (let*
-                  ((port (open-input-pipe
-                          "rhash --md5 -p %m cleanup"))
-                   (hash (read-line port))
-                   (close-pipe port))
-                hash))))
-          (substitute*
-           "MD5"
-           (("d3752babfe1367ab4d7fc0117e0641bb")
-            (begin
-              (use-modules (ice-9 rdelim))
-              (use-modules (ice-9 popen))
-              (let*
-                  ((port (open-input-pipe
-                          "rhash --md5 -p %m configure"))
-                   (hash (read-line port))
-                   (close-pipe port))
-                hash))))
-          (substitute*
-           "MD5"
-           (("54b71b6fe9219f12f0d90ce3eea437a7")
-            (begin
-              (use-modules (ice-9 rdelim))
-              (use-modules (ice-9 popen))
-              (let*
-                  ((port (open-input-pipe
-                          "rhash --md5 -p %m configure.win"))
-                   (hash (read-line port))
-                   (close-pipe port))
-                hash))))
-          (substitute*
-           "MD5"
-           (("4a199545c1ec239b6a90bd9ce9fb85ef")
-            (begin
-              (use-modules (ice-9 rdelim))
-              (use-modules (ice-9 popen))
-              (let*
-                  ((port (open-input-pipe
-                          "rhash --md5 -p %m inst/build_arrow_static.sh"))
-                   (hash (read-line port))
-                   (close-pipe port))
-                hash)))) #t)))))
    (inputs
     `(("zlib" ,zlib)
-      ("rhash", rhash)))
+      ("rhash" ,rhash)))
    (propagated-inputs
     `(("r-assertthat" ,r-assertthat)
       ("r-bit64" ,r-bit64)
@@ -203,12 +144,16 @@ computing) platforms.")
       ("r-vctrs" ,r-vctrs)
       ;; Extra dependencies required for a compilation including the Apache
       ;; Arrow C++ libraries
-      ("arrow:lib", apache-arrow "lib")
-      ("arrow:include", apache-arrow "include")
+      ("arrow:lib" ,apache-arrow "lib")
+      ("arrow:include" ,apache-arrow "include")
       ("thrift:lib" ,apache-thrift "lib")
       ("lz4" ,lz4)
       ("zstd:lib" ,zstd "lib")
-      ("utf8proc" ,utf8proc)))
+      ("utf8proc" ,utf8proc)
+      ("perl" ,perl)
+      ("python3" ,python)
+      ("python" ,python-2.7)
+      ("thrift" ,apache-thrift)))
    (native-inputs
     `(("pkg-config" ,pkg-config)
       ("r-knitr" ,r-knitr)))

@@ -655,8 +655,8 @@ etc.")
                         (setenv "PYTHONPATH"
                                 (string-append (getcwd) "/../source"
                                                "/spm/wrappers/python/spm:"
-                                               (getenv "PYTHONPATH")))
-                        #t))))
+                                               (or (getenv "GUIX_PYTHONPATH")
+                                                   (getenv "PYTHONPATH"))))))))
 
        ;; XXX: The 'python_simple' test fails with:
        ;;   ValueError: Attempted relative import in non-package
@@ -746,7 +746,8 @@ memory footprint and/or the time-to-solution.")
                         (setenv "PYTHONPATH"
                                 (string-append (getcwd) "/../source"
                                                "/spm/wrappers/python/spm:"
-                                               (getenv "PYTHONPATH")))
+                                               (or (getenv "GUIX_PYTHONPATH")
+                                                   (getenv "PYTHONPATH"))))
                         #t))))
 
        ;; XXX: The 'python_simple' test fails with:

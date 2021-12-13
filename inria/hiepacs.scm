@@ -376,13 +376,27 @@ moderate number of blocks which ensures a reasonable convergence behavior.")
                            "-DPADDLE_BUILD_TESTS=ON"
                            "-DPADDLE_ORDERING_PARMETIS=OFF")
        #:phases (modify-phases %standard-phases
-                                (add-before 'configure 'change-directory
-                                            (lambda _ (chdir "src") #t))
-                                (add-before 'check 'prepare-test-environment
-                                            (lambda _
-                                              ;; Allow tests with more MPI processes than available CPU cores,
-                                              ;; which is not allowed by default by OpenMPI
-                                              (setenv "OMPI_MCA_rmaps_base_oversubscribe" "1") #t)))))
+                  (add-before 'configure 'change-directory
+                    (lambda _ (chdir "src")))
+                  (add-before 'configure 'set-fortran-flags
+                    (lambda _
+                      (define supported-flag?
+                        ;; Is '-fallow-argument-mismatch' supported?  It is
+                        ;; supported by GCC 10 but not by GCC 7.5.
+                        (zero? (system* "gfortran" "-c" "-o" "/tmp/t.o"
+                                        "/dev/null" "-fallow-argument-mismatch")))
+
+                      (when supported-flag?
+                        (substitute* "CMakeLists.txt"
+                          ;; Pass '-fallow-argument-mismatch', which is
+                          ;; required when building with GCC 10+.
+                          (("-ffree-line-length-none")
+                           "-ffree-line-length-none -fallow-argument-mismatch")))))
+                  (add-before 'check 'prepare-test-environment
+                    (lambda _
+                      ;; Allow tests with more MPI processes than available CPU cores,
+                      ;; which is not allowed by default by OpenMPI
+                      (setenv "OMPI_MCA_rmaps_base_oversubscribe" "1"))))))
     (inputs `(("openmpi" ,openmpi)
               ("ssh" ,openssh)))
     (propagated-inputs `(("scotch" ,pt-scotch)))

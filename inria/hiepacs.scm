@@ -628,7 +628,8 @@ etc.")
                            "-DPASTIX_WITH_PARSEC=ON"
                            "-DPASTIX_WITH_STARPU=ON"
                            "-DPASTIX_ORDERING_METIS=OFF"
-                           "-DPASTIX_ORDERING_SCOTCH=ON")
+                           "-DPASTIX_ORDERING_SCOTCH=ON"
+                           "-DCMAKE_C_FLAGS=-fcommon")
 
        #:phases (modify-phases %standard-phases
                   (add-before 'check 'prepare-test-environment
@@ -719,7 +720,8 @@ memory footprint and/or the time-to-solution.")
                            "-DPASTIX_WITH_PARSEC=ON"
                            "-DPASTIX_WITH_STARPU=ON"
                            "-DPASTIX_ORDERING_METIS=OFF"
-                           "-DPASTIX_ORDERING_SCOTCH=ON")
+                           "-DPASTIX_ORDERING_SCOTCH=ON"
+                           "-DCMAKE_C_FLAGS=-fcommon")
 
        #:phases (modify-phases %standard-phases
                   (add-before 'check 'prepare-test-environment

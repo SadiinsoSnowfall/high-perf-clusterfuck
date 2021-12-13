@@ -145,7 +145,7 @@ datasets of petascale size as well as on laptops for smaller data.")
      `(("python-cython" ,python-cython)
        ("python-jinja2" ,python-jinja2)
        ("python-numpy" ,python-numpy)
-       ("python-pyparsing" ,python-pyparsing)
+       ("python-pyparsing" ,(S "python-pyparsing"))
        ("python-setuptools" ,python-setuptools)
        ("python-sympy" ,python-sympy)))
     (native-inputs

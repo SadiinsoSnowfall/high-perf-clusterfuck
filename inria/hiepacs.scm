@@ -313,16 +313,30 @@ distributed gemm.")
                            )
 
        #:phases (modify-phases %standard-phases
-                               ;; Without this variable, pkg-config removes paths in already in CFLAGS
-                               ;; However, gfortran does not check CPATH to find fortran modules
-                               ;; and and the module fabulous_mod cannot be found
-                               (add-before 'configure 'fix-pkg-config-env
-                                           (lambda _ (setenv "PKG_CONFIG_ALLOW_SYSTEM_CFLAGS" "1") #t))
-                               ;; Allow tests with more MPI processes than available CPU cores,
-                               ;; which is not allowed by default by OpenMPI
-                               (add-before 'check 'prepare-test-environment
-                                           (lambda _
-                                             (setenv "OMPI_MCA_rmaps_base_oversubscribe" "1") #t)))))
+                  ;; Without this variable, pkg-config removes paths in already in CFLAGS
+                  ;; However, gfortran does not check CPATH to find fortran modules
+                  ;; and and the module fabulous_mod cannot be found
+                  (add-before 'configure 'fix-pkg-config-env
+                    (lambda _ (setenv "PKG_CONFIG_ALLOW_SYSTEM_CFLAGS" "1")))
+                  (add-before 'configure 'set-fortran-flags
+                    (lambda _
+                      (define supported-flag?
+                        ;; Is '-fallow-argument-mismatch' supported?  It is
+                        ;; supported by GCC 10 but not by GCC 7.5.
+                        (zero? (system* "gfortran" "-c" "-o" "/tmp/t.o"
+                                        "/dev/null" "-fallow-argument-mismatch")))
+
+                      (when supported-flag?
+                        (substitute* "CMakeLists.txt"
+                          ;; Pass '-fallow-argument-mismatch', which is
+                          ;; required when building with GCC 10+.
+                          (("-ffree-line-length-0")
+                           "-ffree-line-length-0 -fallow-argument-mismatch")))))
+                  ;; Allow tests with more MPI processes than available CPU cores,
+                  ;; which is not allowed by default by OpenMPI
+                  (add-before 'check 'prepare-test-environment
+                    (lambda _
+                      (setenv "OMPI_MCA_rmaps_base_oversubscribe" "1"))))))
 
     (inputs `(("hwloc" ,hwloc "lib")
               ("openmpi" ,openmpi)

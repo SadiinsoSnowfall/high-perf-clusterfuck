@@ -88,7 +88,6 @@
       `(("pkg-config" ,pkg-config)))
      (inputs
       `(("mpi" ,openmpi)
-        ("openmp" ,libomp)
         ("lapack" ,openblas)
         ("openssh" ,openssh)
         ("starpu" ,starpu)

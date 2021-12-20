@@ -108,7 +108,10 @@
    (build-system python-build-system)
    (arguments
     ;; Broken tests or cyclic dependecies with other packages.
-    '(#:tests? #f))
+    '(#:phases
+      (modify-phases %standard-phases
+                     (delete 'sanity-check))
+      #:tests? #f))
    (home-page #f)
    (synopsis
     "A dash component for specifying raw HTML")
@@ -134,7 +137,10 @@
    (build-system python-build-system)
    (arguments
     ;; Broken tests or cyclic dependecies with other packages.
-    '(#:tests? #f))
+    '(#:phases
+      (modify-phases %standard-phases
+                     (delete 'sanity-check))
+      #:tests? #f))
    (home-page #f)
    (synopsis
     "Example of a Dash library that uses Flow Types")
@@ -160,7 +166,10 @@
    (build-system python-build-system)
    (arguments
     ;; Broken tests or cyclic dependecies with other packages.
-    '(#:tests? #f))
+    '(#:phases
+      (modify-phases %standard-phases
+                     (delete 'sanity-check))
+      #:tests? #f))
    (home-page #f)
    (synopsis "Dash table")
    (description #f)
@@ -185,7 +194,10 @@
    (build-system python-build-system)
    (arguments
     ;; Broken tests or cyclic dependecies with other packages.
-    '(#:tests? #f))
+    '(#:phases
+      (modify-phases %standard-phases
+                     (delete 'sanity-check))
+      #:tests? #f))
    (home-page
     "https://github.com/plotly/dash-html-components")
    (synopsis "Vanilla HTML components for Dash")
@@ -211,7 +223,10 @@
    (build-system python-build-system)
    (arguments
     ;; Broken tests or cyclic dependecies with other packages.
-    '(#:tests? #f))
+    '(#:phases
+      (modify-phases %standard-phases
+                     (delete 'sanity-check))
+      #:tests? #f))
    (home-page #f)
    (synopsis "Core component suite for Dash")
    (description #f)
@@ -449,9 +464,8 @@ original gcvb by jm-cc.")
    (propagated-inputs
     `(,@(delete
          `("python-dash-bootstrap-components" ,python-dash-bootstrap-components)
-         (package-inputs gcvb-felsocim))))
+         (package-propagated-inputs gcvb-felsocim))))
    (synopsis
     "Python 3 module aiming at facilitating non-regression, validation and
 benchmarking of simulation codes (felsocim's fork). This is a minimal version
 without the dashboard functionality.")))
-

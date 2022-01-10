@@ -551,8 +551,9 @@ is implemented in MPI.")
            "-DMAPHYSPP_Fortran_DRIVER=OFF"
            "-DMAPHYSPP_COMPILE_EXAMPLES=OFF"
            "-DMAPHYSPP_COMPILE_TESTS=ON"))))
-    (inputs (modify-inputs (package-inputs maphys++)
-              (delete "pastix" "mumps" "arpack" "paddle" "fabulous")))))
+    (inputs (fold alist-delete
+                  (package-inputs maphys++)
+                  '("pastix" "mumps" "arpack" "paddle" "fabulous")))))
 
 ;; Minimal + pastix and arpack-ng dependencies
 (define-public maphys++-lite
@@ -570,8 +571,9 @@ is implemented in MPI.")
            "-DMAPHYSPP_Fortran_DRIVER=OFF"
            "-DMAPHYSPP_COMPILE_EXAMPLES=OFF"
            "-DMAPHYSPP_COMPILE_TESTS=ON"))))
-    (inputs (modify-inputs (package-inputs maphys++)
-              (delete "mumps" "paddle" "fabulous")))))
+    (inputs (fold alist-delete
+                  (package-inputs maphys++)
+                  '("mumps" "paddle" "fabulous")))))
 
 (define-public maphys++-eigen
   ;; Variant of Maphys++ that uses Eigen instead of blaspp/lapackpp.

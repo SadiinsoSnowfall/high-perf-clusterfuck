@@ -1,7 +1,7 @@
 ;;; This module extends GNU Guix and is licensed under the same terms, those
 ;;; of the GNU GPL version 3 or (at your option) any later version.
 ;;;
-;;; Copyright © 2017, 2019, 2021 Inria
+;;; Copyright © 2017, 2019, 2021, 2022 Inria
 
 (define-module (inria hiepacs)
   #:use-module (guix)
@@ -538,40 +538,40 @@ is implemented in MPI.")
 ;; Only mpi, blaspp & lapackpp dependencies
 (define-public maphys++-minimal
   (package/inherit maphys++
-                   (name "maphys++-minimal")
-                   (arguments
-                    (substitute-keyword-arguments (package-arguments maphys++)
-                                                  ((#:configure-flags flags)
-                                                   ''("-DMAPHYSPP_USE_PASTIX=OFF"
-                                                      "-DMAPHYSPP_USE_MUMPS=OFF"
-                                                      "-DMAPHYSPP_USE_EIGEN=OFF"
-                                                      "-DMAPHYSPP_USE_ARPACK=OFF"
-                                                      "-DMAPHYSPP_DRIVERS=OFF"
-                                                      "-DMAPHYSPP_C_DRIVER=OFF"
-                                                      "-DMAPHYSPP_Fortran_DRIVER=OFF"
-                                                      "-DMAPHYSPP_COMPILE_EXAMPLES=OFF"
-                                                      "-DMAPHYSPP_COMPILE_TESTS=ON"))))
-                   (inputs (modify-inputs (package-inputs maphys++)
-                                          (delete "pastix" "mumps" "arpack" "paddle" "fabulous")))))
+    (name "maphys++-minimal")
+    (arguments
+     (substitute-keyword-arguments (package-arguments maphys++)
+       ((#:configure-flags flags)
+        ''("-DMAPHYSPP_USE_PASTIX=OFF"
+           "-DMAPHYSPP_USE_MUMPS=OFF"
+           "-DMAPHYSPP_USE_EIGEN=OFF"
+           "-DMAPHYSPP_USE_ARPACK=OFF"
+           "-DMAPHYSPP_DRIVERS=OFF"
+           "-DMAPHYSPP_C_DRIVER=OFF"
+           "-DMAPHYSPP_Fortran_DRIVER=OFF"
+           "-DMAPHYSPP_COMPILE_EXAMPLES=OFF"
+           "-DMAPHYSPP_COMPILE_TESTS=ON"))))
+    (inputs (modify-inputs (package-inputs maphys++)
+              (delete "pastix" "mumps" "arpack" "paddle" "fabulous")))))
 
 ;; Minimal + pastix and arpack-ng dependencies
 (define-public maphys++-lite
   (package/inherit maphys++
-                   (name "maphys++-lite")
-                   (arguments
-                    (substitute-keyword-arguments (package-arguments maphys++)
-                                                  ((#:configure-flags flags)
-                                                   ''("-DMAPHYSPP_USE_PASTIX=ON"
-                                                      "-DMAPHYSPP_USE_MUMPS=OFF"
-                                                      "-DMAPHYSPP_USE_EIGEN=OFF"
-                                                      "-DMAPHYSPP_USE_ARPACK=ON"
-                                                      "-DMAPHYSPP_DRIVERS=OFF"
-                                                      "-DMAPHYSPP_C_DRIVER=OFF"
-                                                      "-DMAPHYSPP_Fortran_DRIVER=OFF"
-                                                      "-DMAPHYSPP_COMPILE_EXAMPLES=OFF"
-                                                      "-DMAPHYSPP_COMPILE_TESTS=ON"))))
-                   (inputs (modify-inputs (package-inputs maphys++)
-                                          (delete "mumps" "paddle" "fabulous")))))
+    (name "maphys++-lite")
+    (arguments
+     (substitute-keyword-arguments (package-arguments maphys++)
+       ((#:configure-flags flags)
+        ''("-DMAPHYSPP_USE_PASTIX=ON"
+           "-DMAPHYSPP_USE_MUMPS=OFF"
+           "-DMAPHYSPP_USE_EIGEN=OFF"
+           "-DMAPHYSPP_USE_ARPACK=ON"
+           "-DMAPHYSPP_DRIVERS=OFF"
+           "-DMAPHYSPP_C_DRIVER=OFF"
+           "-DMAPHYSPP_Fortran_DRIVER=OFF"
+           "-DMAPHYSPP_COMPILE_EXAMPLES=OFF"
+           "-DMAPHYSPP_COMPILE_TESTS=ON"))))
+    (inputs (modify-inputs (package-inputs maphys++)
+              (delete "mumps" "paddle" "fabulous")))))
 
 (define-public maphys++-eigen
   ;; Variant of Maphys++ that uses Eigen instead of blaspp/lapackpp.

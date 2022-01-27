@@ -2,7 +2,7 @@
 ;;; of the GNU GPL version 3 or (at your option) any later version.
 ;;;
 ;;; Copyright © 2017, 2019 Inria
-;;; Copyright © 2020, 2021 Michele MARTONE (LRZ)
+;;; Copyright © 2020, 2022 Michele MARTONE (LRZ)
 
 ;;; This module has been developed under the PRACE-6IP-WP8 EU project LyNcs (GRANT AGREEMENT NUMBER 823767 -- PRACE-6IP).
 
@@ -24,11 +24,11 @@
     (name "librsb")
     (version "1.3")
     (source (origin
-              (uri "http://martone.userweb.mwn.de/librsb-473176b.tar.gz")
+              (uri "http://download.sourceforge.net/librsb/librsb-1.3.0.0.tar.gz")
               (method url-fetch)
               (sha256
                (base32
-                "1fvziq8mn8vrs12ncv71zbfdin2nrv83kwk05rg9bdw8921nni48"))
+                "1457d3l5xa9fnvmk2z8q6p4iw8pdn85npbl3jggmg3wq3xfp5j1a"))
               ))
     (build-system gnu-build-system)
     (inputs `(("m4", m4)

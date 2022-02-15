@@ -371,19 +371,19 @@ moderate number of blocks which ensures a reasonable convergence behavior.")
 (define-public paddle
   (package
     (name "paddle")
-    (version "0.3.5")
+    (version "0.3.6")
     (home-page "https://gitlab.inria.fr/solverstack/paddle")
     (source (origin
               (method git-fetch)
               (uri (git-reference
                     (url home-page)
-                    (commit version)
+                    (commit "fef4224069c5617366a9fcdfe895514a48acef45")
                     ;; We need the submodule in 'cmake_modules/morse'.
                     (recursive? #t)))
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "1r95w5xgkdjxrdj0yfa7wlwfpl3ns2ngn28g17f04gl9jpbir8fn"))))
+                "0y4csl9r3nr18w1f48k5l83bj0fivjy08fc6njks99qhn3pdwvm1"))))
     (build-system cmake-build-system)
     (arguments
      '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON"

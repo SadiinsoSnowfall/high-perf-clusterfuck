@@ -533,7 +533,8 @@ is implemented in MPI.")
     (propagated-inputs `(("mpi" ,openmpi)
                          ("ssh" ,openssh)))
     (native-inputs `(("gfortran" ,gfortran)
-                     ("pkg-config" ,pkg-config)))))
+                     ("pkg-config" ,pkg-config)))
+    (properties '((tunable? . #true)))))
 
 ;; Only mpi, blaspp & lapackpp dependencies
 (define-public maphys++-minimal

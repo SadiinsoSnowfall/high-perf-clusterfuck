@@ -31,6 +31,7 @@
   #:use-module (inria simgrid)
   #:use-module (guix utils)
   #:use-module (srfi srfi-1)
+  #:use-module (lrz librsb)
   ;; To remove when/if python2 packages sympy and mpi4py
   ;; are fixed in official repo
   #:use-module (guix build-system python)
@@ -412,8 +413,8 @@ moderate number of blocks which ensures a reasonable convergence behavior.")
                       ;; which is not allowed by default by OpenMPI
                       (setenv "OMPI_MCA_rmaps_base_oversubscribe" "1"))))))
     (inputs `(("openmpi" ,openmpi)
-              ("ssh" ,openssh)))
-    (propagated-inputs `(("scotch" ,pt-scotch)))
+              ("ssh" ,openssh)
+              ("pt-scotch" ,pt-scotch)))
     (native-inputs `(("gfortran" ,gfortran)
                      ("pkg-config" ,pkg-config)))
     (synopsis "Parallel Algebraic Domain Decomposition for Linear systEms")
@@ -515,7 +516,8 @@ is implemented in MPI.")
     (arguments
      '(#:configure-flags '("-DMAPHYSPP_USE_EIGEN=OFF"
                            "-DMAPHYSPP_USE_FABULOUS=ON"
-                           "-DMAPHYSPP_USE_PADDLE=ON")
+                           "-DMAPHYSPP_USE_PADDLE=OFF" ;; FIXME
+                           )
        #:phases (modify-phases %standard-phases
                   (add-before 'check 'prepare-test-environment
                     (lambda _
@@ -528,7 +530,7 @@ is implemented in MPI.")
               ("pastix" ,pastix)
               ("mumps" ,mumps-openmpi)
               ("arpack", arpack-ng-3.8)
-              ("paddle", paddle)
+              ;;("paddle", paddle) ;; FIXME
               ("fabulous", fabulous)))
     (propagated-inputs `(("mpi" ,openmpi)
                          ("ssh" ,openssh)))
@@ -575,6 +577,18 @@ is implemented in MPI.")
     (inputs (fold alist-delete
                   (package-inputs maphys++)
                   '("mumps" "paddle" "fabulous")))))
+
+;; maphys++ with librsb for sparse matrix operations
+(define-public maphys++-librsb
+  (package/inherit maphys++
+                   (name "maphys++-librsb")
+                   (arguments
+                    (substitute-keyword-arguments (package-arguments maphys++)
+                                                  ((#:configure-flags flags '())
+                                                   `(cons "-DMAPHYSPP_USE_RSB=ON"
+                                                          (cons "-DMAPHYSPP_USE_RSB_SPBLAS=ON" ,flags)))))
+                   (inputs `(("librsb" ,librsb)
+                             ,@(package-inputs maphys++)))))
 
 (define-public maphys++-eigen
   ;; Variant of Maphys++ that uses Eigen instead of blaspp/lapackpp.

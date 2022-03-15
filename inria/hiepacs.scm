@@ -35,6 +35,7 @@
   ;; To remove when/if python2 packages sympy and mpi4py
   ;; are fixed in official repo
   #:use-module (guix build-system python)
+  #:use-module (gnu packages python-science)
   )
 
 (define-public parsec
@@ -1396,3 +1397,29 @@ for manual interpretation.")
                         ("ssh" ,openssh)))
    (native-inputs `(("pkg-config" ,pkg-config)))
    (properties '((tunable? . #true)))))
+
+(define-public ddmpy
+  (package
+   (name "ddmpy")
+   (version "0.1")
+   (synopsis "DDMPY: a Domain Decomposition Methods PYthon package")
+   (home-page "https://gitlab.inria.fr/gmarait/ddmpy.git")
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url home-page)
+                  (commit "e089c83858fa266efcfcc0faf8c1ac4f1bd0f46d")))
+            (sha256
+             (base32
+              "1gjglzqs6lk9pnzlj9br4j53vyyfar8chfz3a7ds9ac5b1i8m3xa"))))
+   (build-system python-build-system)
+   (propagated-inputs `(("mpi" ,openmpi)
+                        ("ssh" ,openssh)
+                        ("python" ,python)
+                        ("python-numpy" ,python-numpy)
+                        ("python-scipy" ,python-scipy)
+                        ("python-mpi4py" ,python-mpi4py)))
+    (description
+     "Linear algebra package implementing advanced parallel domain decomposition
+methods.")
+  (license license:cecill-c)))

@@ -1403,15 +1403,15 @@ for manual interpretation.")
    (name "ddmpy")
    (version "0.1")
    (synopsis "DDMPY: a Domain Decomposition Methods PYthon package")
-   (home-page "https://gitlab.inria.fr/gmarait/ddmpy.git")
+   (home-page "https://gitlab.inria.fr/compose/ddmpy.git")
    (source (origin
             (method git-fetch)
             (uri (git-reference
                   (url home-page)
-                  (commit "e089c83858fa266efcfcc0faf8c1ac4f1bd0f46d")))
+                  (commit "66dc3cc79dfdc5864fc62aa371173c8a576cc0ae")))
             (sha256
              (base32
-              "1gjglzqs6lk9pnzlj9br4j53vyyfar8chfz3a7ds9ac5b1i8m3xa"))))
+              "0xbw4zkd5bk0m4mj0snxw19ig0yy5fvj5lphs0hwhq44cdxm77s6"))))
    (build-system python-build-system)
    (propagated-inputs `(("mpi" ,openmpi)
                         ("ssh" ,openssh)

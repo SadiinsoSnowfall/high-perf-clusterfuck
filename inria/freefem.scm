@@ -39,7 +39,6 @@
     (native-inputs
      `(("autoconf" ,autoconf)
        ("automake" ,automake)
-       ("libtool" ,libtool)
        ("unzip" ,unzip)
        ("bison" ,bison)
        ("flex" ,flex)
@@ -47,8 +46,11 @@
     (inputs
      ;; FIXME: Tests under 'examples/eigen', built when ARPACK is available,
      ;; fail.
-     `(;; ("arpack-ng" ,arpack-ng)
+     `( ;; ("arpack-ng" ,arpack-ng)
        ;; petsc-openmpi
+       ("gsl" ,gsl)
+       ("ipopt" ,ipopt)
+       ("nlopt" ,nlopt)
        ("openmpi" ,openmpi)
        ("lapack" ,lapack)))
     (properties `((tunable? . #true)))

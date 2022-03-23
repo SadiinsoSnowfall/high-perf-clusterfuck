@@ -22,15 +22,15 @@
 
 (define %pm2-home-page "https://pm2.gitlabpages.inria.fr/")
 (define %pm2-git "https://gitlab.inria.fr/pm2/pm2.git")
-(define %pm2-commit "5eaab4cc1e8d70061db813a598af227efba52dc9")
-(define %pm2-hash "0gw4nxpdj2j474sglpgrmsq6zw4icmmfmhvzyjsim3qf1x8hb1vn") ; guix hash -rx .
+(define %pm2-commit "58b73d4af865c74ee459a6399c6d80f1258df432")
+(define %pm2-hash "0h88cjnk0g1a8b5wlg67pkkwcsxcmpip9h07rgp09jm9l4gwaz70") ; guix hash -rx .
 
-(define %v2021-11-05 "2021-11-05")
+(define %v2022-03-23 "2022-03-23")
 
-(define-public puk-2021-11-05
+(define-public puk-2022-03-23
   (package
    (name "puk")
-   (version %v2021-11-05)
+   (version %v2022-03-23)
    (home-page (string-append %pm2-home-page "PadicoTM"))
    (source (origin
             (method git-fetch)
@@ -54,12 +54,8 @@
                      (chdir "Puk")
                      #t))
                  (delete 'check)))) ; no make check in Puk
-   (native-inputs
-    `(("pkg-config" ,pkg-config)
-      ("autoconf", autoconf)
-      ("automake", automake)))
-   (propagated-inputs
-    `(("expat" ,expat)))
+   (native-inputs (list pkg-config autoconf automake))
+   (propagated-inputs (list expat))
    (synopsis "PadicoTM micro-kernel")
    (description "Puk is the core of PadicoTM. It manages dynamically loadable
 modules, software components, and basic data structures (lists, vectors,
@@ -67,12 +63,12 @@ hashtables, lock-free queues). It may be used with")
    (license license:gpl2)))
 
 (define-public puk
-  puk-2021-11-05)
+  puk-2022-03-23)
 
-(define-public pioman-2021-11-05
+(define-public pioman-2022-03-23
   (package
    (name "pioman")
-   (version %v2021-11-05)
+   (version %v2022-03-23)
    (home-page (string-append %pm2-home-page "pioman"))
    (source (origin
             (method git-fetch)
@@ -96,13 +92,8 @@ hashtables, lock-free queues). It may be used with")
                      (chdir "pioman")
                      #t))
                  (delete 'check)))) ; no make check in pioman
-   (native-inputs
-    `(("pkg-config" ,pkg-config)
-      ("autoconf" ,autoconf)
-      ("automake" ,automake)))
-   (propagated-inputs
-    `(("puk" ,puk)
-      ("hwloc" ,hwloc "lib")))
+   (native-inputs (list pkg-config autoconf automake))
+   (propagated-inputs (list puk `(,hwloc "lib")))
    (synopsis "A Generic I/O Manager")
    (description " PIOMan is an I/O event manager of the PM2 software suite. It
 ensures communication progression using available cores and hooks in thread
@@ -119,12 +110,12 @@ supporting MPI_THREAD_MULTIPLE multi-threading level.")
    (license license:gpl2)))
 
 (define-public pioman
-  pioman-2021-11-05)
+  pioman-2022-03-23)
 
-(define-public pukabi-2021-11-05
+(define-public pukabi-2022-03-23
   (package
    (name "pukabi")
-   (version %v2021-11-05)
+   (version %v2022-03-23)
    (home-page (string-append %pm2-home-page "PadicoTM"))
    (source (origin
             (method git-fetch)
@@ -148,12 +139,8 @@ supporting MPI_THREAD_MULTIPLE multi-threading level.")
                      (chdir "PukABI")
                      #t))
                  (delete 'check))))
-   (native-inputs
-    `(("pkg-config" ,pkg-config)
-      ("autoconf", autoconf)
-      ("automake", automake)))
-   (propagated-inputs
-    `(("puk" ,puk)))
+   (native-inputs (list pkg-config autoconf automake))
+   (propagated-inputs (list puk))
    (synopsis "Dynamic ABI manager")
    (description "PukABI is a dynamic ABI manager. It intercepts symbols using
 LD_PRELOAD to allow for a variety of features: replace a libc function with a
@@ -162,12 +149,12 @@ than libc pthread; add hooks for memory.")
    (license license:gpl2)))
 
 (define-public pukabi
-  pukabi-2021-11-05)
+  pukabi-2022-03-23)
 
-(define-public padicotm-2021-11-05
+(define-public padicotm-2022-03-23
   (package
    (name "padicotm")
-   (version %v2021-11-05)
+   (version %v2022-03-23)
    (home-page (string-append %pm2-home-page "PadicoTM"))
    (source (origin
             (method git-fetch)
@@ -219,24 +206,10 @@ than libc pthread; add hooks for memory.")
                        (wrap-program (string-append bin "/padico-launch")
                          `("PATH" ":" prefix ,path))
                        #t))))))
-   (inputs
-    `(("util-linux" ,util-linux)
-      ("procps" ,procps)
-      ("inetutils" ,inetutils)
-      ("hwloc" ,hwloc)
-      ("which" ,which)))
+   (inputs (list util-linux procps inetutils hwloc which))
    (native-inputs
-    `(("pkg-config" ,pkg-config)
-      ("autoconf" ,autoconf)
-      ("automake" ,automake)
-      ("hwloc:lib" ,hwloc "lib")
-      ("rdma-core" ,rdma-core)
-      ("psm" ,psm)
-      ("psm2" ,psm2)))
-   (propagated-inputs
-    `(("puk" ,puk)
-      ("pioman" ,pioman)
-      ("pukabi" ,pukabi)))
+    (list pkg-config autoconf automake `(,hwloc "lib") rdma-core psm psm2))
+   (propagated-inputs (list puk pioman pukabi))
    (synopsis "A High-performance Communication Framework for Grids")
    (description "PadicoTM is composed of a core which provides a
 high-performance framework for networking and multi-threading, and
@@ -248,9 +221,9 @@ way rather than competitive.")
    (license license:gpl2)))
 
 (define-public padicotm
-  padicotm-2021-11-05)
+  padicotm-2022-03-23)
 
-(define-public padicotm-mini-2021-11-05
+(define-public padicotm-mini-2022-03-23
   (package
    (inherit padicotm)
    (name "padicotm-mini")
@@ -262,10 +235,10 @@ way rather than competitive.")
     `(,@(delete `("pioman" ,pioman) (package-propagated-inputs padicotm))))))
 
 (define-public padicotm-mini
-  padicotm-mini-2021-11-05)
+  padicotm-mini-2022-03-23)
 
 ;;see comment above nmad*-pukabi packages definition
-(define-public padicotm-pukabi-2021-11-05
+(define-public padicotm-pukabi-2022-03-23
   (package
    (inherit padicotm)
    (name "padicotm-pukabi")
@@ -277,9 +250,9 @@ way rather than competitive.")
     `(,@(delete `("pukabi" ,pukabi) (package-propagated-inputs padicotm))))))
 
 (define-public padicotm-pukabi
-  padicotm-pukabi-2021-11-05)
+  padicotm-pukabi-2022-03-23)
 
-(define-public padicotm-mini-pukabi-2021-11-05
+(define-public padicotm-mini-pukabi-2022-03-23
   (package
    (inherit padicotm-mini)
    (name "padicotm-mini-pukabi")
@@ -291,12 +264,12 @@ way rather than competitive.")
     `(,@(delete `("pukabi" ,pukabi) (package-propagated-inputs padicotm-mini))))))
 
 (define-public padicotm-mini-pukabi
-  padicotm-mini-pukabi-2021-11-05)
+  padicotm-mini-pukabi-2022-03-23)
 
-(define-public nmad-2021-11-05
+(define-public nmad-2022-03-23
   (package
    (name "nmad")
-   (version %v2021-11-05)
+   (version %v2022-03-23)
    (home-page (string-append %pm2-home-page "NewMadeleine"))
    (source (origin
             (method git-fetch)
@@ -342,17 +315,12 @@ way rather than competitive.")
                             (invoke "make" "-j" (number->string (parallel-job-count)) "-C" "examples" "install")))
                  (delete 'check))))
    (native-inputs
-    `(("pkg-config" ,pkg-config)
-      ("autoconf" ,autoconf)
-      ("automake" ,automake)
-      ("gfortran" ,gfortran)
-      ("hwloc" ,hwloc "lib")))
+    (list pkg-config autoconf automake gfortran
+          `(,hwloc "lib")))
    (propagated-inputs
-    `(("padicotm" ,padicotm)))
+    (list padicotm))
    (inputs
-    `(("rdma-core" ,rdma-core)
-      ("psm" ,psm)
-      ("psm2" ,psm2)))
+    (list rdma-core psm psm2))
    (synopsis "An Optimizing Communication Library for High-Performance Networks")
    (description "NewMadeleine is the fourth incarnation of the Madeleine
 communication library. The new architecture aims at enabling the use of a much
@@ -375,9 +343,9 @@ the MPI_THREAD_MULTIPLE multi-threading level.")
    (license license:gpl2)))
 
 (define-public nmad
-  nmad-2021-11-05)
+  nmad-2022-03-23)
 
-(define-public nmad-mini-2021-11-05
+(define-public nmad-mini-2022-03-23
   (package
    (inherit nmad)
    (name "nmad-mini")
@@ -390,12 +358,12 @@ the MPI_THREAD_MULTIPLE multi-threading level.")
       ,@(delete `("padicotm" ,padicotm) (package-propagated-inputs nmad))))))
 
 (define-public nmad-mini
-  nmad-mini-2021-11-05)
+  nmad-mini-2022-03-23)
 
 ;;nmad-pukabi and nmad-mini-pukabi corresponds to old packages that were not using pukabi
 ;;they should only be used in case something goes wrong with the default ones
 ;;they are not meant to be maintained
-(define-public nmad-pukabi-2021-11-05
+(define-public nmad-pukabi-2022-03-23
   (package
    (inherit nmad)
    (name "nmad-pukabi")
@@ -407,7 +375,7 @@ the MPI_THREAD_MULTIPLE multi-threading level.")
     `(("padicotm" ,padicotm-pukabi)
       ,@(delete `("padicotm" ,padicotm) (package-propagated-inputs nmad))))))
 
-(define-public nmad-mini-pukabi-2021-11-05
+(define-public nmad-mini-pukabi-2022-03-23
   (package
    (inherit nmad-mini)
    (name "nmad-mini-pukabi")
@@ -419,10 +387,10 @@ the MPI_THREAD_MULTIPLE multi-threading level.")
     `(("padicotm" ,padicotm-mini-pukabi)
       ,@(delete `("padicotm" ,padicotm-mini) (package-propagated-inputs nmad-mini))))))
 
-(define-public mpibenchmark-2021-11-05
+(define-public mpibenchmark-2022-03-23
   (package
    (name "mpibenchmark")
-   (version %v2021-11-05)
+   (version %v2022-03-23)
    (home-page (string-append %pm2-home-page "mpibenchmark"))
    (source (origin
             (method git-fetch)
@@ -447,14 +415,11 @@ the MPI_THREAD_MULTIPLE multi-threading level.")
                      (chdir "mpibenchmark")
                      #t))
                  (delete 'check)))) ; no make check in mpibenchmark
-   (native-inputs
-    `(("pkg-config" ,pkg-config)
-      ("autoconf" ,autoconf)
-      ("automake" ,automake)))
+   (native-inputs (list pkg-config autoconf automake))
    (inputs
     `(("hwloc" ,hwloc "lib")
       ("gnuplot" ,gnuplot)
-      ("mpi" ,nmad)))
+      ("openmpi" ,nmad)))
    (synopsis "MPI overlap benchmark")
    (description "MadMPI benchmark contains the following benchmark series:
 - base send/recv benchmark, used for reference (mpi_bench_base);
@@ -468,12 +433,12 @@ are not benchmarked yet.")
    (license license:gpl2)))
 
 (define-public mpibenchmark
-  mpibenchmark-2021-11-05)
+  mpibenchmark-2022-03-23)
 
-(define-public mpi_sync_clocks-2021-11-05
+(define-public mpi_sync_clocks-2022-03-23
   (package
    (name "mpi_sync_clocks")
-   (version %v2021-11-05)
+   (version %v2022-03-23)
    (home-page %pm2-home-page)
    (source (origin
             (method git-fetch)
@@ -497,9 +462,7 @@ are not benchmarked yet.")
                      #t))
                  (delete 'check)))) ; no make check in mpi_sync_clocks
    (native-inputs
-    `(("pkg-config" ,pkg-config)
-      ("autoconf" ,autoconf)
-      ("automake" ,automake)))
+    (list pkg-config autoconf automake))
    (inputs
     `(("mpi" ,openmpi))) ; Every packet requiring mpi use openmpi, so use it, it will be simpler to then change with `--with-input=openmpi=nmad`
    (synopsis "Distributed synchronized clocks over MPI")
@@ -508,4 +471,4 @@ are not benchmarked yet.")
    (license license:lgpl2.1)))
 
 (define-public mpi_sync_clocks
-  mpi_sync_clocks-2021-11-05)
+  mpi_sync_clocks-2022-03-23)

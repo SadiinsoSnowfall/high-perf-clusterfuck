@@ -337,6 +337,9 @@ way rather than competitive.")
                                  (find-files (string-append out "/bin")
                                              "^mpi"))
                        #t)))
+                 (add-after 'install 'install-examples-too
+                            (lambda _
+                            (invoke "make" "-j" (number->string (parallel-job-count)) "-C" "examples" "install")))
                  (delete 'check))))
    (native-inputs
     `(("pkg-config" ,pkg-config)

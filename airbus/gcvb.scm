@@ -430,7 +430,7 @@ metrics of your computation with references that can be a file, depends of the
      (method git-fetch)
      (uri
       (git-reference
-       (url "https://github.com/felsocim/gcvb")
+       (url "https://gitlab.inria.fr/mfelsoci/gcvb")
        (commit "48c5b694f005cdcb1ccec81d44232d6488a31b3b")))
      (sha256
       (base32

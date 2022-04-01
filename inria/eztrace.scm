@@ -7,6 +7,7 @@
   #:use-module (guix)
   #:use-module (guix git-download)
   #:use-module (guix build-system gnu)
+  #:use-module (guix packages) ; for guix style
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages base)
@@ -99,14 +100,19 @@ files that can be interpreted by visualization tools such as
 (define-public litl
   (package
     (name "litl")
-    (version "0.1.8")
+    (home-page "https://github.com/trahay/LiTL")
+    (version "0.1.9")
     (source (origin
-              (uri
-               "https://fusionforge.int-evry.fr/frs/download.php/file/16/litl-0.1.8.tar.gz")
-              (method url-fetch)
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    ;; this commit is a little bit after litl-0.1.9, but it
+                    ;; fixes some issues
+                    (commit "05ed9f59f00a9af0a08894d7e972465239d26e6d")))
+              (file-name (git-file-name name version))
               (sha256
                (base32
-                "0rbrqm164p3cf8q49bdwvry1i70awx5iyyksvr6acmzb9rkzw34v"))))
+                "0qwymk8f8qhaq7z1vxwafwph828lfxdvsmsp7c3inpxxy6ig6qn9"))))
     (build-system gnu-build-system)
     (arguments
      ;; Tests expect to be run sequentially: 'test_litl_write' creates a file
@@ -119,7 +125,7 @@ existing FxT library, which is used to record events during the execution of
 scientific applications, that would deliver nearly the same performance and
 would solve the scalability issues such as scalability and the number of
 threads.")
-    (home-page "https://fusionforge.int-evry.fr/projects/litl/")
+    (native-inputs (list autoconf automake libtool))
     (license license:bsd-2)))
 
 (define-public fxt

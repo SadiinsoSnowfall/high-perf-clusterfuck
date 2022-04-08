@@ -38,7 +38,7 @@
     (build-system gnu-build-system)
     (arguments
      '(#:phases (modify-phases %standard-phases
-                  (delete 'check)))) ;TODO: make check is buggy in Guix
+                  (delete 'check)))) ; make check is buggy in the used commit
     (native-inputs (list autoconf automake perl))
     (inputs (list openmpi))
     (synopsis "Parallel IO benchmark tool")

@@ -84,43 +84,43 @@ architectures.")
                          ,@(package-inputs parsec)))))
 
 (define-public quark
-  (package
-    (name "quark")
-    (version "db4aef9a66a00487d849cf8591927dcebe18ef2f")
-    (home-page "https://github.com/ecrc/quark")
-    (synopsis "QUeuing And Runtime for Kernels")
-    (description
-     "QUARK (QUeuing And Runtime for Kernels) provides a library that
+  (let ((commit "db4aef9a66a00487d849cf8591927dcebe18ef2f")
+        (revision "0"))
+    (package
+      (name "quark")             ;XXX: there's a same-named package in 'guix'
+      (version (git-version "0.0" revision commit))
+      (home-page "https://github.com/ecrc/quark")
+      (synopsis "QUeuing And Runtime for Kernels")
+      (description
+       "QUARK (QUeuing And Runtime for Kernels) provides a library that
 enables the dynamic execution of tasks with data dependencies in a
 multi-core, multi-socket, shared-memory environment.  QUARK infers
 data dependencies and precedence constraints between tasks from the
 way that the data is used, and then executes the tasks in an
 asynchronous, dynamic fashion in order to achieve a high utilization
 of the available resources.")
-    (license license:bsd-2)
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url home-page)
-                    (commit "db4aef9a66a00487d849cf8591927dcebe18ef2f")))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "1bwh8247d70lmbr13h5cb8fpr6m0k9vcaim4bq7j8mynfclb6r77"))))
-    (build-system cmake-build-system)
-    (arguments
-     '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON")
-       #:phases
-       (modify-phases %standard-phases
-        (add-after 'unpack 'patch-makefile
-                    (lambda _
-                      (substitute* "CMakeLists.txt"
-                        (("DESTINATION quark")  "DESTINATION include"))
-                      #t)))
-       ;; No target for tests
-       #:tests? #f))
-    (propagated-inputs `(("hwloc" ,hwloc "lib")))
-    (native-inputs `(("gfortran" ,gfortran)))))
+      (license license:bsd-2)
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference (url home-page) (commit commit)))
+                (file-name (string-append name "-" version "-checkout"))
+                (sha256
+                 (base32
+                  "1bwh8247d70lmbr13h5cb8fpr6m0k9vcaim4bq7j8mynfclb6r77"))))
+      (build-system cmake-build-system)
+      (arguments
+       '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON")
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'patch-makefile
+             (lambda _
+               (substitute* "CMakeLists.txt"
+                 (("DESTINATION quark")  "DESTINATION include"))
+               #t)))
+         ;; No target for tests
+         #:tests? #f))
+      (propagated-inputs `(("hwloc" ,hwloc "lib")))
+      (native-inputs `(("gfortran" ,gfortran))))))
 
 (define-public chameleon
   (package

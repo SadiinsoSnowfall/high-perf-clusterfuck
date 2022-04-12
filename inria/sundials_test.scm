@@ -9,16 +9,15 @@
       
 (define-public sundials_test
   (package
-    (name "sundials_test")
-    (version "6.1.0")
+    (name "sundials_new")
+    (version "6.1.1")
     (source
      (origin
        (method url-fetch)
-       (uri (string-append "https://computation.llnl.gov/projects/sundials/download/"
-                           "sundials-" version ".tar.gz"))
+       (uri (string-append "https://github.com/LLNL/sundials/releases/download/v" version "/sundials-" version ".tar.gz"))
        (sha256
         (base32
-         "074hs0kiwsnvcci6p8lnm7pk8pz6xhxffyf7654yah062i99z97f"
+         "0327a1fy8rilwc4brsqqb71jd1ymb7mqgxsylab06crcg5xn7byg"
          ))))
     (build-system cmake-build-system)
     (native-inputs

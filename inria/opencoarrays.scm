@@ -11,6 +11,7 @@
   #:use-module (inria mpi)
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages maths)
+  #:use-module (gnu packages perl)
   #:use-module (gnu packages mpi))
 
 (define-public opencoarrays
@@ -18,7 +19,7 @@
         (revision "0"))
     (package
       (name "opencoarrays")
-      (version "2.0.0")
+      (version "2.9.2")
       (home-page "https://github.com/sourceryinstitute/OpenCoarrays.git")
       (source (origin
                 (method git-fetch)
@@ -27,7 +28,7 @@
                      (commit version)))
                 (sha256
                  (base32
-                  "0kqnksgc5clnhcszi53fzpl8z0rjij9qqy2a4ji1li3d8sd0323d"))
+                  "1zp8jdw1dks289gjfbm7f7l77fsb0acshq9l3c37s10ppka4p5w9"))
                 (file-name (git-file-name name version))))
       (build-system cmake-build-system)
       (arguments
@@ -36,13 +37,14 @@
                       ;; Set the test environment for Open MPI.
                       ,%openmpi-setup))
             ;; deactive tests for now ; there is 4 which do not work
-         #:tests? #f
+         #:tests? #t
          )
        )
       (propagated-inputs
        `(
          ("gfortran" , gfortran)
-         ("openmpi", openmpi-with-mpi1-compat)))
+         ("perl" , perl)
+         ("openmpi", openmpi)))
 (synopsis
        "OpenCoArrays Fortran")
       (description

@@ -39,37 +39,38 @@
   )
 
 (define-public parsec
-  (package
-    (name "parsec")
-    (version "6022a61dc96c25f11dd2aeabff2a5b3d7bce867d")
-    (home-page "https://bitbucket.org/mfaverge/parsec.git")
-    (synopsis "Runtime system based on dynamic task generation mechanism")
-    (description
-     "PaRSEC is a generic framework for architecture aware scheduling
+  (let ((commit "6022a61dc96c25f11dd2aeabff2a5b3d7bce867d")
+        (revision "0"))
+    (package
+      (name "parsec")
+      (version (git-version "0.0" revision commit))
+      (home-page "https://bitbucket.org/mfaverge/parsec.git")
+      (synopsis "Runtime system based on dynamic task generation mechanism")
+      (description
+       "PaRSEC is a generic framework for architecture aware scheduling
 and management of micro-tasks on distributed many-core heterogeneous
 architectures.")
-    (license license:bsd-2)
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url home-page)
-                    (commit "6022a61dc96c25f11dd2aeabff2a5b3d7bce867d")
-                    (recursive? #t)))
-              (file-name (string-append name "-" version "-checkout"))
-              (sha256
-               (base32
-                "10w6ma0r6fdfav5za8yv6m5qhqvcvka5raiz2x38r42snwj0i4c8"))))
-    (build-system cmake-build-system)
-    (arguments
-     '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON"
-                           "-DPARSEC_GPU_WITH_CUDA=OFF"
-                           "-DPARSEC_DIST_WITH_MPI=OFF")
-       #:tests? #f))
-    (inputs `(("hwloc" ,hwloc)
-              ("bison" ,bison)
-              ("flex" ,flex)))
-    (native-inputs `(("gfortran" ,gfortran)
-                     ("python" ,python-2)))))
+      (license license:bsd-2)
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference (url home-page)
+                                    (commit commit)
+                                    (recursive? #t)))
+                (file-name (string-append name "-" version "-checkout"))
+                (sha256
+                 (base32
+                  "10w6ma0r6fdfav5za8yv6m5qhqvcvka5raiz2x38r42snwj0i4c8"))))
+      (build-system cmake-build-system)
+      (arguments
+       '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON"
+                             "-DPARSEC_GPU_WITH_CUDA=OFF"
+                             "-DPARSEC_DIST_WITH_MPI=OFF")
+         #:tests? #f))
+      (inputs `(("hwloc" ,hwloc)
+                ("bison" ,bison)
+                ("flex" ,flex)))
+      (native-inputs `(("gfortran" ,gfortran)
+                       ("python" ,python-2))))))
 
 (define-public parsec+mpi
   (package

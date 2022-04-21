@@ -8,6 +8,7 @@
   #:use-module (gnu packages multiprecision)
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages python-science)
+  #:use-module (gnu packages machine-learning)
   #:use-module (guix build-system python)
   #:use-module (guix licenses))
 
@@ -87,3 +88,112 @@
     "Python implementation of the Tensor Train (TT) -Toolbox. It contains several important packages for working with the TT-format in Python. It is able to do TT-interpolation, solve linear systems, eigenproblems, solve dynamical problems. Several computational routines are done in Fortran (which can be used separately), and are wrapped with the f2py tool.")
    (license #f))
   )
+
+(define-public python-easydict
+  (package
+    (name "python-easydict")
+    (version "1.9")
+    (source
+      (origin
+        (method url-fetch)
+        (uri (pypi-uri "easydict" version))
+        (sha256
+          (base32
+            "0fw82sjzki95rl5f6nscz9bvp1fri3rv2b83vzsg16f20ymhsgrz"))))
+    (build-system python-build-system)
+    (home-page
+      "https://github.com/makinacorpus/easydict")
+    (synopsis
+      "Access dict values as attributes (works recursively).")
+    (description
+      "Access dict values as attributes (works recursively).")
+    (license #f)))
+
+(define-public python-pillow6
+  (package
+   (inherit python-pillow)
+   (name "python-pillow")
+   (version "6.1.0")
+   (source
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "Pillow" version))
+       (sha256
+        (base32
+         "1pnrsz0f0n0c819v1pdr8j6rm8xvhc9f3kh1fv9xpdp9n5ygf108"))))
+   (arguments
+     `(#:phases
+       (modify-phases %standard-phases
+         (add-after 'unpack 'patch-ldconfig
+           (lambda _
+             (substitute* "setup.py"
+               (("\\['/sbin/ldconfig', '-p'\\]") "['true']"))))
+         (replace 'check
+           (lambda* (#:key outputs inputs tests? #:allow-other-keys)
+             (when tests?
+               (setenv "HOME" (getcwd))
+               ;; Make installed package available for running the tests.
+               (add-installed-pythonpath inputs outputs)
+               (invoke "python" "selftest.py" "--installed")))))))))
+
+(define-public python-torch-vision
+  (package
+    (name "python-torch-vision")
+    (version "0.2.2")
+    (source
+      (origin
+        (method git-fetch)
+        (uri
+         (git-reference
+          (url "https://github.com/pytorch/vision")
+          (commit (string-append "v" version))))
+        (sha256
+          (base32 "0wmpvb67a3778syxk7wav1rajf0ad71f85vmwbvrxw2nc2agxsd9"))))
+    (build-system python-build-system)
+    (arguments
+     ;; The 'check' phase is producing a 'not a test' error! 
+     '(#:tests? #f))
+    (inputs
+     `(("python-pytorch" ,python-pytorch)
+       ("python-pillow" ,python-pillow6)
+       ("python-scipy" ,python-scipy)))
+    (home-page "https://github.com/pytorch/vision")
+    (synopsis "image and video datasets and models for torch deep learning")
+    (description "image and video datasets and models for torch deep learning")
+    (license bsd-3)))
+
+(define-public python-torch-diffeq
+  (package
+    (name "python-torch-diffeq")
+    (version "0.2.2")
+    (source
+      (origin
+        (method git-fetch)
+        (uri
+         (git-reference
+          (url "https://github.com/rtqichen/torchdiffeq")
+          (commit "97e93deddcb18f67330f0b9caa75808f38b94c89")))
+        (sha256
+          (base32 "04gmc13jf0wnbdvslgvzzbnnmzl1f7q44b73xbpaa7s7s4ijprxd"))))
+    (build-system python-build-system)
+    (arguments
+     ;; Looks like the tests require network connection.
+     '(#:tests? #f))
+    (inputs
+     `(("python-pytorch" ,python-pytorch)
+       ("python-pillow" ,python-pillow6)
+       ("python-scipy" ,python-scipy)))
+    (home-page
+      "https://github.com/rtqichen/torchdiffeq")
+    (synopsis
+      "Differentiable ODE solvers with full GPU support and O(1)-memory
+backpropagation.")
+    (description
+      "This library provides ordinary differential equation (ODE) solvers
+implemented in PyTorch. Backpropagation through ODE solutions is supported using
+the adjoint method for constant memory cost. For usage of ODE solvers in deep
+learning applications.
+
+As the solvers are implemented in PyTorch, algorithms in this repository are
+fully supported to run on the GPU.")
+    (license expat)))

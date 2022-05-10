@@ -24,11 +24,11 @@
     (name "librsb")
     (version "1.3")
     (source (origin
-              (uri "http://download.sourceforge.net/librsb/librsb-1.3.0.0.tar.gz")
+              (uri "http://download.sourceforge.net/librsb/librsb-1.3.0.1.tar.gz")
               (method url-fetch)
               (sha256
                (base32
-                "1457d3l5xa9fnvmk2z8q6p4iw8pdn85npbl3jggmg3wq3xfp5j1a"))
+                "1d3xq5s6hy33qcq3ca846fl1zc8kszs7kbirf4mcljpr22j29h1z"))
               ))
     (build-system gnu-build-system)
     (inputs `(("m4", m4)

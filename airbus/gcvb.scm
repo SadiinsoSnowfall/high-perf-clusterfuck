@@ -424,17 +424,17 @@ metrics of your computation with references that can be a file, depends of the
 (define-public gcvb-felsocim
   (package
    (name "gcvb-felsocim")
-   (version "0.0.1-git.48c5b69")
+   (version "0.0.1-git.88ba5f2")
    (source
     (origin
      (method git-fetch)
      (uri
       (git-reference
        (url "https://gitlab.inria.fr/mfelsoci/gcvb")
-       (commit "48c5b694f005cdcb1ccec81d44232d6488a31b3b")))
+       (commit "88ba5f2fcfe78032603cc90bf87d77cb61071f23")))
      (sha256
       (base32
-       "09vy4bqdlwqfcz00gsb9994r8vl9ywk9pf0cdb3qcqwjbh4a8pfg"))))
+       "1lyhmq8m6dd3s4jjskz5dbjm2jm97n4ikahr8rrsr776gdxdk3vv"))))
    (build-system python-build-system)
    (arguments
     ;; There are no tests defined for this package. The test phase is useless

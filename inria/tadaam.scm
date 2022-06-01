@@ -1,7 +1,7 @@
 ;;; This module extends GNU Guix and is licensed under the same terms, those
 ;;; of the GNU GPL version 3 or (at your option) any later version.
 ;;;
-;;; Copyright © 2017-2021 Inria
+;;; Copyright © 2017-2022 Inria
 
 (define-module (inria tadaam)
   #:use-module (guix)
@@ -22,15 +22,15 @@
 
 (define %pm2-home-page "https://pm2.gitlabpages.inria.fr/")
 (define %pm2-git "https://gitlab.inria.fr/pm2/pm2.git")
-(define %pm2-commit "58b73d4af865c74ee459a6399c6d80f1258df432")
-(define %pm2-hash "0h88cjnk0g1a8b5wlg67pkkwcsxcmpip9h07rgp09jm9l4gwaz70") ; guix hash -rx .
+(define %pm2-commit "9f08955628deca25e45bb23be21f91e7d0377121")
+(define %pm2-hash "0pk872qdjvw9jx6rnilxlzyp0ygbgcamh38c5izvbkh9pms00l4h") ; guix hash -rx .
 
-(define %v2022-03-23 "2022-03-23")
+(define %v2022-06-01 "2022-06-01")
 
-(define-public puk-2022-03-23
+(define-public puk-2022-06-01
   (package
    (name "puk")
-   (version %v2022-03-23)
+   (version %v2022-06-01)
    (home-page (string-append %pm2-home-page "PadicoTM"))
    (source (origin
             (method git-fetch)
@@ -63,12 +63,12 @@ hashtables, lock-free queues). It may be used with")
    (license license:gpl2)))
 
 (define-public puk
-  puk-2022-03-23)
+  puk-2022-06-01)
 
-(define-public pioman-2022-03-23
+(define-public pioman-2022-06-01
   (package
    (name "pioman")
-   (version %v2022-03-23)
+   (version %v2022-06-01)
    (home-page (string-append %pm2-home-page "pioman"))
    (source (origin
             (method git-fetch)
@@ -110,12 +110,12 @@ supporting MPI_THREAD_MULTIPLE multi-threading level.")
    (license license:gpl2)))
 
 (define-public pioman
-  pioman-2022-03-23)
+  pioman-2022-06-01)
 
-(define-public pukabi-2022-03-23
+(define-public pukabi-2022-06-01
   (package
    (name "pukabi")
-   (version %v2022-03-23)
+   (version %v2022-06-01)
    (home-page (string-append %pm2-home-page "PadicoTM"))
    (source (origin
             (method git-fetch)
@@ -149,12 +149,12 @@ than libc pthread; add hooks for memory.")
    (license license:gpl2)))
 
 (define-public pukabi
-  pukabi-2022-03-23)
+  pukabi-2022-06-01)
 
-(define-public padicotm-2022-03-23
+(define-public padicotm-2022-06-01
   (package
    (name "padicotm")
-   (version %v2022-03-23)
+   (version %v2022-06-01)
    (home-page (string-append %pm2-home-page "PadicoTM"))
    (source (origin
             (method git-fetch)
@@ -221,9 +221,9 @@ way rather than competitive.")
    (license license:gpl2)))
 
 (define-public padicotm
-  padicotm-2022-03-23)
+  padicotm-2022-06-01)
 
-(define-public padicotm-mini-2022-03-23
+(define-public padicotm-mini-2022-06-01
   (package
    (inherit padicotm)
    (name "padicotm-mini")
@@ -235,10 +235,10 @@ way rather than competitive.")
     `(,@(delete `("pioman" ,pioman) (package-propagated-inputs padicotm))))))
 
 (define-public padicotm-mini
-  padicotm-mini-2022-03-23)
+  padicotm-mini-2022-06-01)
 
 ;;see comment above nmad*-pukabi packages definition
-(define-public padicotm-pukabi-2022-03-23
+(define-public padicotm-pukabi-2022-06-01
   (package
    (inherit padicotm)
    (name "padicotm-pukabi")
@@ -250,9 +250,9 @@ way rather than competitive.")
     `(,@(delete `("pukabi" ,pukabi) (package-propagated-inputs padicotm))))))
 
 (define-public padicotm-pukabi
-  padicotm-pukabi-2022-03-23)
+  padicotm-pukabi-2022-06-01)
 
-(define-public padicotm-mini-pukabi-2022-03-23
+(define-public padicotm-mini-pukabi-2022-06-01
   (package
    (inherit padicotm-mini)
    (name "padicotm-mini-pukabi")
@@ -264,12 +264,12 @@ way rather than competitive.")
     `(,@(delete `("pukabi" ,pukabi) (package-propagated-inputs padicotm-mini))))))
 
 (define-public padicotm-mini-pukabi
-  padicotm-mini-pukabi-2022-03-23)
+  padicotm-mini-pukabi-2022-06-01)
 
-(define-public nmad-2022-03-23
+(define-public nmad-2022-06-01
   (package
    (name "nmad")
-   (version %v2022-03-23)
+   (version %v2022-06-01)
    (home-page (string-append %pm2-home-page "NewMadeleine"))
    (source (origin
             (method git-fetch)
@@ -343,9 +343,9 @@ the MPI_THREAD_MULTIPLE multi-threading level.")
    (license license:gpl2)))
 
 (define-public nmad
-  nmad-2022-03-23)
+  nmad-2022-06-01)
 
-(define-public nmad-mini-2022-03-23
+(define-public nmad-mini-2022-06-01
   (package
    (inherit nmad)
    (name "nmad-mini")
@@ -358,12 +358,12 @@ the MPI_THREAD_MULTIPLE multi-threading level.")
       ,@(delete `("padicotm" ,padicotm) (package-propagated-inputs nmad))))))
 
 (define-public nmad-mini
-  nmad-mini-2022-03-23)
+  nmad-mini-2022-06-01)
 
 ;;nmad-pukabi and nmad-mini-pukabi corresponds to old packages that were not using pukabi
 ;;they should only be used in case something goes wrong with the default ones
 ;;they are not meant to be maintained
-(define-public nmad-pukabi-2022-03-23
+(define-public nmad-pukabi-2022-06-01
   (package
    (inherit nmad)
    (name "nmad-pukabi")
@@ -375,7 +375,7 @@ the MPI_THREAD_MULTIPLE multi-threading level.")
     `(("padicotm" ,padicotm-pukabi)
       ,@(delete `("padicotm" ,padicotm) (package-propagated-inputs nmad))))))
 
-(define-public nmad-mini-pukabi-2022-03-23
+(define-public nmad-mini-pukabi-2022-06-01
   (package
    (inherit nmad-mini)
    (name "nmad-mini-pukabi")
@@ -387,19 +387,19 @@ the MPI_THREAD_MULTIPLE multi-threading level.")
     `(("padicotm" ,padicotm-mini-pukabi)
       ,@(delete `("padicotm" ,padicotm-mini) (package-propagated-inputs nmad-mini))))))
 
-(define-public mpibenchmark-2022-03-23
+(define-public mpibenchmark
   (package
    (name "mpibenchmark")
-   (version %v2022-03-23)
+   (version "0.4")
    (home-page (string-append %pm2-home-page "mpibenchmark"))
    (source (origin
             (method git-fetch)
             (uri (git-reference
                   (url %pm2-git)
-                  (commit %pm2-commit)))
+                  (commit "9f08955628deca25e45bb23be21f91e7d0377121")))
             (file-name (string-append name "-" version "-checkout"))
             (sha256
-             (base32 %pm2-hash))))
+             (base32 "0pk872qdjvw9jx6rnilxlzyp0ygbgcamh38c5izvbkh9pms00l4h"))))
    (build-system gnu-build-system)
    (arguments
     '(#:out-of-source? #t
@@ -432,13 +432,10 @@ Benchmarks are point-to-point, running on two nodes. Collective operations
 are not benchmarked yet.")
    (license license:gpl2)))
 
-(define-public mpibenchmark
-  mpibenchmark-2022-03-23)
-
-(define-public mpi_sync_clocks-2022-03-23
+(define-public mpi_sync_clocks-2022-06-01
   (package
    (name "mpi_sync_clocks")
-   (version %v2022-03-23)
+   (version %v2022-06-01)
    (home-page %pm2-home-page)
    (source (origin
             (method git-fetch)
@@ -471,4 +468,4 @@ are not benchmarked yet.")
    (license license:lgpl2.1)))
 
 (define-public mpi_sync_clocks
-  mpi_sync_clocks-2022-03-23)
+  mpi_sync_clocks-2022-06-01)

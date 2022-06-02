@@ -1189,12 +1189,7 @@ and/or the time-to-solution.")
    (arguments
     (substitute-keyword-arguments (package-arguments chameleon)
                                   ((#:configure-flags flags '())
-                                   `(cons "-DPASTIX_BUILD_TESTING=OFF" ,flags))))
-   (inputs `(
-             ,@(delete `("python2" ,python-2) (package-inputs pastix))
-             ,@(delete `("python-numpy" ,python2-numpy) (package-inputs pastix))
-             ;; ,@(delete `("python-scipy" ,python2-scipy) (package-inputs pastix))
-             ))))
+                                   `(cons "-DPASTIX_BUILD_TESTING=OFF" ,flags))))))
 
 (define-public pmtool
   (package

@@ -489,9 +489,9 @@ and deflated restarting")
       "Library implementing Block-GMres with Inexact Breakdown and Deflated Restarting,
 Breakdown Free Block Conjudate Gradiant, Block General Conjugate Residual.")))
 
-(define-public maphys++
+(define maphys++-with-scotch7
   (package
-    (name "maphys++")
+    (name "maphys++-with-scotch7")
     (version "1.1.7")
     (home-page "https://gitlab.inria.fr/solverstack/maphys/maphyspp.git")
     (synopsis "Sparse matrix hybrid solver")
@@ -518,7 +518,7 @@ is implemented in MPI.")
     (arguments
      '(#:configure-flags '("-DMAPHYSPP_USE_EIGEN=OFF"
                            "-DMAPHYSPP_USE_FABULOUS=ON"
-                           "-DMAPHYSPP_USE_PADDLE=OFF" ;; FIXME
+                           "-DMAPHYSPP_USE_PADDLE=ON"
                            )
        #:phases (modify-phases %standard-phases
                   (add-before 'check 'prepare-test-environment
@@ -532,13 +532,27 @@ is implemented in MPI.")
               ("pastix" ,pastix)
               ("mumps" ,mumps-openmpi)
               ("arpack", arpack-ng-3.8)
-              ;;("paddle", paddle) ;; FIXME
+              ("paddle", paddle)
+              ("pt-scotch" ,pt-scotch-6) ;; not clear why it must be here
               ("fabulous", fabulous)))
     (propagated-inputs `(("mpi" ,openmpi)
                          ("ssh" ,openssh)))
     (native-inputs `(("gfortran" ,gfortran)
                      ("pkg-config" ,pkg-config)))
     (properties '((tunable? . #true)))))
+
+(define scotch-6-instead-of-scotch-7
+  ;; This is a procedure to replace scotch (7) by scotch-6, recursively.
+  (package-input-rewriting `((,scotch . ,scotch-6))))
+
+(define pt-scotch-6-instead-of-pt-scotch-7
+  ;; This is a procedure to replace pt-scotch (7) by pt-scotch-6, recursively.
+  (package-input-rewriting `((,pt-scotch . ,pt-scotch-6))))
+
+(define-public maphys++
+  (package
+   (inherit (pt-scotch-6-instead-of-pt-scotch-7 (scotch-6-instead-of-scotch-7 maphys++-with-scotch7)))
+   (name "maphys++")))
 
 ;; Only mpi, blaspp & lapackpp dependencies
 (define-public maphys++-minimal

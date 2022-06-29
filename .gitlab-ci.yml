@@ -220,3 +220,8 @@ build_parcoach:
   stage: build
   script:
     - guix build parcoach
+
+build_bitpit:
+  stage: build
+  script:
+    - guix build bitpit

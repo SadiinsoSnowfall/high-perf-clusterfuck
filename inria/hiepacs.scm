@@ -437,7 +437,7 @@ moderate number of blocks which ensures a reasonable convergence behavior.")
               (method git-fetch)
               (uri (git-reference
                     (url home-page)
-		    ;; release-1.1.2 branch
+                    ;; release-1.1.2 branch
                     (commit "5c737d31291ae8dc72983e00d4c05929756e2121")
                     ;; We need the submodule in 'cmake_modules/morse'.
                     (recursive? #t)))
@@ -527,15 +527,15 @@ is implemented in MPI.")
                       ;; which is not allowed by default by OpenMPI
                       (setenv "OMPI_MCA_rmaps_base_oversubscribe" "1") #t)))))
     (build-system cmake-build-system)
-    (inputs `(("blaspp" ,blaspp)
-              ("lapackpp" ,lapackpp)
-              ("pastix" ,pastix)
-              ("mumps" ,mumps-openmpi)
-              ("arpack", arpack-ng-3.8)
-              ("paddle", paddle)
-              ("pt-scotch" ,pt-scotch-6) ;; not clear why it must be here
-              ("fabulous", fabulous)))
-    (propagated-inputs `(("mpi" ,openmpi)
+    (propagated-inputs `(("blaspp" ,blaspp)
+                         ("lapackpp" ,lapackpp)
+                         ("pastix" ,pastix)
+                         ("mumps" ,mumps-openmpi)
+                         ("arpack", arpack-ng-3.8)
+                         ("paddle", paddle)
+                         ("pt-scotch" ,pt-scotch-6) ;; not clear why it must be here
+                         ("fabulous", fabulous)
+                         ("mpi" ,openmpi)
                          ("ssh" ,openssh)))
     (native-inputs `(("gfortran" ,gfortran)
                      ("pkg-config" ,pkg-config)))

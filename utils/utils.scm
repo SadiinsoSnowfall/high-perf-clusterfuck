@@ -70,3 +70,23 @@
    (synopsis "GUIX package for the SZ compressor.")
    (description "GUIX package for the SZ compressor.")
    (license license:gpl3+)))
+
+(define-public python-expecttest
+  (package
+   (name "python-expecttest")
+   (version "0.1.3")
+   (source
+    (origin
+     (method url-fetch)
+     (uri (pypi-uri "expecttest" version))
+     (sha256
+      (base32
+       "16hlaymwnwz0iqghfh7aj850xf8d0x50kv8kxn51550xh6apc1c3"))))
+   (build-system python-build-system)
+   (home-page "https://github.com/ezyang/ghstack")
+   (synopsis "This library implements expect tests (also known as 'golden'
+tests).")
+   (description "Expect tests are a method of writing tests where instead of
+hard-coding the expected output of a test, you run the test to get the output,
+and the test framework automatically populates the expected output.")
+   (license license:expat)))

@@ -109,6 +109,9 @@
       "Access dict values as attributes (works recursively).")
     (license #f)))
 
+;; Not working yet
+;; ERROR: No matching distribution found for dill>=0.3.2 (python-dill is currently)
+;; while the current guix version is at 0.3.1.1
 (define-public python-latexify-py
   (package
    (name "python-latexify-py")

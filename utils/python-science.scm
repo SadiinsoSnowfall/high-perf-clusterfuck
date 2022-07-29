@@ -109,6 +109,23 @@
       "Access dict values as attributes (works recursively).")
     (license #f)))
 
+(define public python-latexify-py
+  (package
+   (name "python-latexify-py")
+   (version "0.0.7")
+   (source (origin
+            (method url-fetch)
+            (uri (pypi-uri "latexify-py" version))
+            (sha256
+             (base32
+              "08c1iwsibrvham5r7q1lrgw142msfa90ds1f2in4ffb089jn479k"))))
+   (build-system python-build-system)
+   (propagated-inputs (list python-dill))
+   (home-page "https://github.com/google/latexify_py")
+   (synopsis "Generates LaTeX source from Python functions.")
+   (description "Generates LaTeX source from Python functions.")
+   (license #f)))
+
 (define-public python-pillow6
   (package
    (inherit python-pillow)

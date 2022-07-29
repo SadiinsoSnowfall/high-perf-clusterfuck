@@ -109,7 +109,7 @@
       "Access dict values as attributes (works recursively).")
     (license #f)))
 
-(define public python-latexify-py
+(define-public python-latexify-py
   (package
    (name "python-latexify-py")
    (version "0.0.7")

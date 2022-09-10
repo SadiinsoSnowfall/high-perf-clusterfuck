@@ -1,7 +1,7 @@
 ;;; This module extends GNU Guix and is licensed under the same terms, those
 ;;; of the GNU GPL version 3 or (at your option) any later version.
 ;;;
-;;; Copyright © 2017, 2019, 2020 Inria
+;;; Copyright © 2017, 2019, 2020, 2022 Inria
 
 (define-module (utils utils)
   #:use-module (guix)
@@ -17,6 +17,7 @@
   #:use-module (gnu packages cran)
   #:use-module (gnu packages databases)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages libevent)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages statistics)
   #:use-module (gnu packages xml)
@@ -90,3 +91,90 @@ tests).")
 hard-coding the expected output of a test, you run the test to get the output,
 and the test framework automatically populates the expected output.")
    (license license:expat)))
+
+(define-public hiredis
+  (package
+    (name "hiredis")
+    (version "1.0.2")
+    (home-page "https://github.com/redis/hiredis")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0a55zk3qrw9yl27i87h3brg2hskmmzbfda77dhq9a4if7y70xnfb"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:build-type "Release"))
+    (native-inputs (list redis))
+    (synopsis "Minimalistic C client for Redis >= 1.2")
+    (description
+     "Hiredis is a minimalistic C client library for the Redis database.
+It is minimalistic because it just adds minimal support for the protocol, but
+at the same time it uses a high level printf-alike API in order to make it much
+higher level than otherwise suggested by its minimal code base and the lack of
+explicit bindings for every Redis command.
+Apart from supporting sending commands and receiving replies, it comes with a
+reply parser that is decoupled from the I/O layer. It is a stream parser
+designed for easy reusability, which can for instance be used in higher level
+language bindings for efficient reply parsing.")
+    (license license:bsd-3)))
+
+(define-public redox
+  (package
+    (name "redox")
+    (version "0.3") ;no official releases, according to HISTORY.md
+    (home-page "https://github.com/mpoquet/redox") ;this fork contains additionnal commits to generate pkg-config files
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit "e7904da79d5360ba22fbab64b96be167b6dda5f6")))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0mmxrjfidcm5fq233wsgjb9rj81hq78rn52c02vwfmz8ax9bc5yg"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:build-type "Release"
+       #:tests? #f))
+    (propagated-inputs (list libev hiredis))
+    (synopsis "Modern, asynchronous, and wicked fast C++11 client for Redis")
+    (description
+     "Redox is a C++ interface to the Redis key-value store that makes it easy
+     to write applications that are both elegant and high-performance.
+     Communication should be a means to an end, not something we spend a lot of
+     time worrying about. Redox takes care of the details so you can move on to
+     the interesting part of your project.")
+    (license license:asl2.0)))
+
+(define-public cpp-docopt
+  (package
+    (name "cpp-docopt")
+    (version "0.6.3")
+    (home-page "https://github.com/docopt/docopt.cpp")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "0cz3vv7g5snfbsqcf3q8bmd6kv5qp84gj3avwkn4vl00krw13bl7"))))
+    (build-system cmake-build-system)
+    (arguments
+     '(#:build-type "Release"
+       #:tests? #f))
+    (synopsis "C++11 port of docopt")
+    (description
+      "docopt helps you:
+- define the interface for your command-line app, and
+- automatically generate a parser for it.
+docopt is based on conventions that have been used for decades in help messages
+and man pages for describing a program's interface. An interface description in
+docopt is such a help message, but formalized.")
+    (license (list license:expat license:boost1.0))))

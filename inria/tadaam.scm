@@ -27,6 +27,7 @@
   #:use-module (gnu packages gcc)
   #:use-module (gnu packages maths)
   #:use-module (gnu packages autotools)
+  #:use-module (gnu packages perl)
   #:use-module (gnu packages xml)
   #:use-module (gnu packages linux)
   #:use-module (gnu packages admin)
@@ -478,6 +479,45 @@ are not benchmarked yet.")
    (description "Small library with routines to synchronize clocks over several
                 nodes with MPI.")
    (license license:lgpl2.1)))
+
+(define-public topomatch
+  (package
+    (name "topomatch")
+    (version "1.1")
+    (home-page "https://gitlab.inria.fr/ejeannot/topomatch")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url home-page)
+                    (commit (string-append "V" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1n0nfs1kmlq9bf1lvijf04vryslpv8cq99gn96rpmw8sjx7jbj14"))))
+    (build-system gnu-build-system)
+    (native-inputs (list pkg-config
+                         autoconf
+                         automake
+                         libtool
+                         `(,hwloc "lib")
+                         perl))
+    (propagated-inputs (list scotch-6))
+    (synopsis "Process mapping algorithms and tools for general topologies")
+    (description
+     "TopoMatch leverages on the Scotch library to handle any type of topologies and not only trees.
+Its main features are:
+- Handling any type of topologies (tgt Scotch format or hwloc format).
+- Handle large communication patterns (up to hundreds of thousands of processes and processing units) .
+- Manage binding constraints: you can specify a subset of the node onto which you want to do the mapping.
+- Manage oversubscribing: you can specify that more than one processes can be mapped onto a each processing unit.
+- Deal with logical numbering. Physical core numbering can be used with XML/HWLOC topologies.
+- Provide exhaustive search for small cases.
+- Adaptive algorithmic that provide a good trade-off between quality and speed.
+- Crucial sections of the code are multithreaded.
+- Optimize I/O to read large input files.
+- Portable on Unix-like systems (Linux, OS-X, etc.).
+- Many useful options (level of verbosity, topology optimization, partitioning, etc.).")
+    (license license:bsd-3)))
 
 (define-public mpi_sync_clocks
   mpi_sync_clocks-2022-06-01)

@@ -217,6 +217,18 @@ kernels are executed as efficiently as possible.")
      `(("python-wrapper" ,python-wrapper)
        ,@(package-native-inputs starpu)))))
 
+(define-public starpu+simgrid+fxt+static
+  (package
+    (inherit starpu+simgrid+fxt)
+    (name "starpu-simgrid-fxt-static")
+    (arguments
+      (substitute-keyword-arguments (package-arguments starpu)
+                                    ((#:configure-flags flags '())
+                                     `(cons "--enable-simgrid" (cons "--enable-mpi" (cons "--disable-shared" ,flags))))))
+    ;; some tests require python.
+    (native-inputs
+     `(("python-wrapper" ,python-wrapper)
+       ,@(package-native-inputs starpu)))))
 
 (define-public parcoach-1.2
   (package

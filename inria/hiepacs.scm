@@ -208,8 +208,8 @@ area (CPUs-GPUs, distributed nodes).")
    (inputs `(("simgrid" ,simgrid)
              ,@(package-inputs chameleon)))
    (propagated-inputs `(("starpu" ,starpu+simgrid+fxt+static)
-                        ("mpi" ,openmpi)
-                        ,@(delete `("starpu" ,starpu) (package-inputs chameleon))))))
+                        ,@(delete `("starpu" ,starpu) (package-inputs chameleon))
+                        ,@(delete `("mpi" ,openmpi) (package-inputs chameleon))))))
 
 (define-public chameleon+openmp
   (package

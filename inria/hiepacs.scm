@@ -196,7 +196,6 @@ area (CPUs-GPUs, distributed nodes).")
                         ,@(delete `("starpu" ,starpu) (package-inputs chameleon))
                         ,@(delete `("mpi" ,openmpi) (package-inputs chameleon))))))
 
-; Rely on 'mpif90' compiler from Openmpi because SimGrid 3.29 does not have 'smpif90'
 (define-public chameleon+simgrid+smpi
   (package
    (inherit chameleon)
@@ -204,11 +203,10 @@ area (CPUs-GPUs, distributed nodes).")
    (arguments
     (substitute-keyword-arguments (package-arguments chameleon)
                                   ((#:configure-flags flags '())
-                                   `(delete "-DCHAMELEON_USE_CUDA=ON" (delete "-DBUILD_SHARED_LIBS=ON" (cons "-DCHAMELEON_SIMULATION=ON" (cons "-DMPI_C_COMPILER=smpicc" (cons "-DMPI_CXX_COMPILER=smpicxx" (cons "-DMPI_Fortran_COMPILER=smpif90" ,flags)))))))))
+                                   `(delete "-DCHAMELEON_USE_CUDA=ON" (delete "-DBUILD_SHARED_LIBS=ON" (cons "-DCHAMELEON_SIMULATION=ON" (cons "-DCMAKE_C_COMPILER=smpicc" (cons "-DCMAKE_CXX_COMPILER=smpicxx" (cons "-DCMAKE_Fortran_COMPILER=smpif90" ,flags)))))))))
    (inputs `(("simgrid" ,simgrid)
              ,@(package-inputs chameleon)))
    (propagated-inputs `(("starpu" ,starpu+simgrid+fxt+static)
-
                         ,@(delete `("starpu" ,starpu) (package-inputs chameleon))
                         ,@(delete `("mpi" ,openmpi) (package-inputs chameleon))))))
 

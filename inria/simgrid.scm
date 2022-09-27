@@ -9,6 +9,7 @@
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (gnu packages boost)
   #:use-module (gnu packages documentation)
+  #:use-module (gnu packages gcc)
   #:use-module (gnu packages perl)
   #:use-module (gnu packages python)
   #:use-module (gnu packages pkg-config))
@@ -38,7 +39,9 @@
        ;; and said logs include timestamps, pointer values, file names, etc.
        #:tests? #f))
     (native-inputs
-     `(("perl" ,perl)
+     `(("gfortran" ,gfortran)
+       ("gfortran:lib" ,gfortran "lib")
+       ("perl" ,perl)
        ("python" ,python-wrapper)
        ("doxygen" ,doxygen)))
     (propagated-inputs

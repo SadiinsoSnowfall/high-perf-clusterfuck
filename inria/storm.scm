@@ -212,6 +212,7 @@ kernels are executed as efficiently as possible.")
     (inputs `(("simgrid" ,simgrid)
               ("fxt" ,fxt)
               ,@(package-inputs starpu)))
+    (propagated-inputs `(,@(delete `("mpi" ,openmpi) (package-propagated-inputs starpu))))
     ;; some tests require python.
     (native-inputs
      `(("python-wrapper" ,python-wrapper)

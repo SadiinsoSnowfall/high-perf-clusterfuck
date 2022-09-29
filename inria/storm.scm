@@ -1,7 +1,7 @@
 ;;; This module extends GNU Guix and is licensed under the same terms, those
 ;;; of the GNU GPL version 3 or (at your option) any later version.
 ;;;
-;;; Copyright © 2017, 2018, 2019, 2020, 2021 Inria
+;;; Copyright © 2017-2022 Inria
 
 (define-module (inria storm)
   #:use-module (guix)
@@ -135,27 +135,29 @@ kernels are executed as efficiently as possible.")
 
 (define (starpu-configure-flags package)
   ;; Return the standard configure flags for PACKAGE, a StarPU 1.3+ package.
-  (match (assoc "mpi" (package-propagated-inputs package))
-    (("mpi" mpi)
-     `(list "--enable-quick-check"
-            ,@(if (assoc "fxt" (package-inputs package)) ;optional fxt dependency
-                  '("--with-fxt")
-                  '())
-            ,@(if (assoc "simgrid" (package-inputs package)) ;optional simgrid
-                  '("--enable-simgrid"
-                    "--enable-maxcpus=1000"
-                    "--enable-maxcudadev=1000"
-                    "--enable-maxnodes=32")
-                  ;; For actual runs (simgrid OFF), we fix the maximum number of
-                  ;; CPU workers to 128 instead of letting starpu decide that
-                  ;; wrt to the actual topology it is built on, in order to
-                  ;; ensure a portable and reproducible cross-compilation. In
-                  ;; the future, it would be nice to give the opportunity to
-                  ;; change it at will when parametrized packages will be there.
-                  '("--enable-maxcpus=128"))
-            ,@(if (string=? (package-name mpi) "nmad")
+  `(list "--enable-quick-check"
+         ,@(if (assoc "fxt" (package-inputs package)) ;optional fxt dependency
+               '("--with-fxt")
+               '())
+         ,@(if (assoc "simgrid" (package-inputs package)) ;optional simgrid
+               '("--enable-simgrid"
+                 "--enable-maxcpus=1000"
+                 "--enable-maxcudadev=1000"
+                 "--enable-maxnodes=32")
+               ;; For actual runs (simgrid OFF), we fix the maximum number of
+               ;; CPU workers to 128 instead of letting starpu decide that
+               ;; wrt to the actual topology it is built on, in order to
+               ;; ensure a portable and reproducible cross-compilation. In
+               ;; the future, it would be nice to give the opportunity to
+               ;; change it at will when parametrized packages will be there.
+               '("--enable-maxcpus=128"))
+         ,@(match (assoc "mpi" (package-propagated-inputs package))
+             (("mpi" mpi)
+              (if (string=? (package-name mpi) "nmad")
                   '("--enable-nmad")
-                  '())))))
+                  '()))
+             (#f
+              '()))))
 
 (define-public starpu-1.3
   (package

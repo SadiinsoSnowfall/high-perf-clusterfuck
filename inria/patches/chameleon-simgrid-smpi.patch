@@ -1,0 +1,13 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 2c409a3f..afbb7722 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -85,7 +85,7 @@ FortranCInterface_HEADER(${CMAKE_CURRENT_BINARY_DIR}/include/chameleon/mangling.
+ ######################
+ 
+ # For fPIC when build static
+-set(CMAKE_POSITION_INDEPENDENT_CODE ON)
++# set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+ 
+ # Set the RPATH config
+ # --------------------

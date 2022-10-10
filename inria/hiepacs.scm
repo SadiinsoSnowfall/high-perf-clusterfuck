@@ -294,7 +294,8 @@ MPI one, an MPI+openmp one and a runtime-based starpu one.")
      (substitute-keyword-arguments (package-arguments chameleon)
                                    ((#:configure-flags flags '())
                                     `(cons "-DENABLE_MPI=ON" (cons "-DENABLE_STARPU=ON" (delete "-DCHAMELEON_USE_MPI=ON"
-,flags))))))))
+,flags))))))
+    (properties '((tunable? . #true)))))
 
 (define-public starpu-example-dgemm
   (package

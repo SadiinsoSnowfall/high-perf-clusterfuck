@@ -269,7 +269,7 @@ area (CPUs-GPUs, distributed nodes).")
     (inherit chameleon)
     (name "mini-chameleon")
     (version "0.2.0")
-    (home-page "https://gitlab.inria.fr/cours-mf/is328-students/")
+    (home-page "https://gitlab.inria.fr/solverstack/mini-examples/mini-chameleon/")
     (synopsis "Educational-purpose dense linear algebra solver")
     (description
      "Mini-chameleon is an educational purpose dense linear algebra solver.
@@ -289,7 +289,7 @@ MPI one, an MPI+openmp one and a runtime-based starpu one.")
               (file-name (string-append name "-" version "-checkout"))
               (sha256
                (base32
-                "1p37zdk7lwpfpvs47hzj8nbvl61pckj71a1krf82djhavg18hlyy"))))
+                "0hsfpi90i8d3hhbykwgfq4mgsr34ymiahxc8gla9ywhcw8ma59f8"))))
     (arguments
      (substitute-keyword-arguments (package-arguments chameleon)
                                    ((#:configure-flags flags '())

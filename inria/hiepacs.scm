@@ -305,8 +305,7 @@ MPI one, an MPI+openmp one and a runtime-based starpu one.")
     (home-page "https://gitlab.inria.fr/solverstack/mini-examples/starpu_example_dgemm/")
     (synopsis "StarPU example of a distributed gemm")
     (description
-     "This is just an example showing how to use starpu for implementing a
-distributed gemm.")
+     "Example showing how to use starpu for implementing a distributed gemm.")
     (license license:cecill-c)
     (source (origin
               (method git-fetch)
@@ -319,6 +318,49 @@ distributed gemm.")
               (sha256
                (base32
                 "1f8mcg4hcj45cyknb8v5jxba9qzkhimdl6rihf053la30jk72cvd"))))))
+
+(define-public starpu-example-cppgemm
+  (package
+   (name "starpu-example-cppgemm")
+   (version "0.1.0")
+   (home-page "https://github.com/Blixodus/starpu_gemm")
+   (synopsis "C++ StarPU example of a distributed gemm")
+   (description
+    "Example showing how to use starpu for implementing a distributed gemm in C++.")
+   (license license:cecill-c)
+   (source (origin
+            (method git-fetch)
+            (uri (git-reference
+                  (url home-page)
+                  (commit "5eb0a3deadd820cf543d1ed6a77a6901891868cd")
+                  (recursive? #t)))
+            (file-name (string-append name "-" version "-checkout"))
+            (sha256
+             (base32
+              "09mdb0by89gsknprp81lqrj9xgjgmk2ianv15nijs6zdmzkrnklp"))))
+    (build-system cmake-build-system)
+    (outputs '("debug" "out"))
+    (arguments
+     '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON")
+       #:tests? #f
+       #:phases  (modify-phases %standard-phases
+                                ;; Allow tests with more MPI processes than available CPU cores,
+                                ;; which is not allowed by default by OpenMPI
+                                (add-before 'check 'prepare-test-environment
+                                            (lambda _
+                                              (setenv "OMPI_MCA_rmaps_base_oversubscribe" "1") #t))
+                                ;; Some of the tests use StarPU, which expects $HOME
+                                ;; to be writable.
+                                (add-before 'check 'set-home
+                                            (lambda _
+                                              (setenv "HOME" (getcwd))
+                                              #t)))))
+    (inputs `(("lapack" ,openblas)))
+    (propagated-inputs `(("starpu" ,starpu)
+                         ("mpi" ,openmpi)))
+    (native-inputs `(("pkg-config" ,pkg-config)
+                     ("openssh" ,openssh)))))
+
 
 (define-public maphys
   (package

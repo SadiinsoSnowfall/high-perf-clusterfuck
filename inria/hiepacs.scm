@@ -182,40 +182,45 @@ area (CPUs-GPUs, distributed nodes).")
                      ("python" ,python)
                      ("openssh" ,openssh)))))
 
-(define-public chameleon+simgrid
+(define-public chameleon+simgrid+nosmpi
   (package
    (inherit chameleon)
-   (name "chameleon-simgrid")
+   (name "chameleon-simgrid-nosmpi")
    (arguments
     (substitute-keyword-arguments (package-arguments chameleon)
                                   ((#:configure-flags flags '())
                                    `(cons "-DCHAMELEON_SIMULATION=ON" (cons "-DCHAMELEON_USE_CUDA=ON" (delete "-DCHAMELEON_USE_MPI=ON" ,flags))))))
    (inputs `(("simgrid" ,simgrid)
              ,@(package-inputs chameleon)))
-   (propagated-inputs `(("starpu" ,starpu+simgrid+fxt+static)
+   (propagated-inputs `(("starpu" ,starpu+simgrid)
                         ,@(delete `("starpu" ,starpu) (package-inputs chameleon))
                         ,@(delete `("mpi" ,openmpi) (package-inputs chameleon))))))
 
-(define-public chameleon+simgrid+smpi
+(define-public chameleon+simgrid
   (package
-   (inherit chameleon+simgrid)
-   (name "chameleon-simgrid-smpi")
-   (home-page "https://gitlab.inria.fr/solverstack/chameleon")
-   (version "1.1.0")
-   (source (origin
-            (method git-fetch)
-            (uri (git-reference
-                  (url home-page)
-                  (commit "4db899ca30d29927018d83964b9b6d517269abe1")
-                  ;; We need the submodule in 'CMakeModules/morse_cmake'.
-                  (recursive? #t)))
-            (file-name (string-append name "-" version "-checkout"))
-            (sha256
-             (base32
-              "0mpnacmkn1287c003a6n3c4r0n395l6fnjilzi7z53lb34s8kaap"))
-            (patches (search-patches "inria/patches/chameleon-simgrid-smpi.patch"))))
+   (inherit chameleon+simgrid+nosmpi)
+   (name "chameleon-simgrid")
+   (source
+    (origin
+      (inherit (package-source chameleon+simgrid+nosmpi))
+      (patches (append (origin-patches (package-source chameleon+simgrid+nosmpi))
+                       (search-patches "inria/patches/chameleon-simgrid-smpi.patch")))))
+   ;; (home-page "https://gitlab.inria.fr/solverstack/chameleon")
+   ;; (version "1.1.0")
+   ;; (source (origin
+   ;;          (method git-fetch)
+   ;;          (uri (git-reference
+   ;;                (url home-page)
+   ;;                (commit "4db899ca30d29927018d83964b9b6d517269abe1")
+   ;;                ;; We need the submodule in 'CMakeModules/morse_cmake'.
+   ;;                (recursive? #t)))
+   ;;          (file-name (string-append name "-" version "-checkout"))
+   ;;          (sha256
+   ;;           (base32
+   ;;            "0mpnacmkn1287c003a6n3c4r0n395l6fnjilzi7z53lb34s8kaap"))
+   ;;          (patches (search-patches "inria/patches/chameleon-simgrid-smpi.patch"))))
    (arguments
-    (substitute-keyword-arguments (package-arguments chameleon+simgrid)
+    (substitute-keyword-arguments (package-arguments chameleon+simgrid+nosmpi)
                                   ((#:configure-flags flags '())
                                    `(delete "-DBUILD_SHARED_LIBS=ON" (cons "-DCHAMELEON_USE_MPI=ON" (cons "-DCMAKE_C_COMPILER=smpicc" (cons "-DCMAKE_CXX_COMPILER=smpicxx" (cons "-DCMAKE_Fortran_COMPILER=smpif90" ,flags))))))
                                   ((#:phases phases '%standard-phases)
@@ -224,10 +229,10 @@ area (CPUs-GPUs, distributed nodes).")
                                                                (lambda _
                                                                  ;; https://simgrid.org/doc/latest/app_smpi.html
                                                                  (setenv "SMPI_PRETEND_CC" "1")))
-                                                   (add-after 'configure 'configure-smpi
+                                                   (add-before 'build 'build-smpi
                                                                 (lambda _
                                                                   ;; https://simgrid.org/doc/latest/app_smpi.html
-                                                                  (setenv "SMPI_PRETEND_CC" "0")))))))))
+                                                                  (unsetenv "SMPI_PRETEND_CC")))))))))
 
 (define-public chameleon+openmp
   (package

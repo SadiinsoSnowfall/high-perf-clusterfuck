@@ -149,3 +149,11 @@ threads.")
 kernel land, or both.  It can record developer-specified events in compact
 \"traces\", with minimal run-time overhead.")
     (license license:gpl2+)))
+
+(define-public fxt+static
+  (package
+    (inherit fxt)
+    (name "fxt-static")
+    (arguments
+     '(#:configure-flags '("--enable-static=yes"
+                           "--enable-shared=no")))))

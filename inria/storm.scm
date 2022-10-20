@@ -210,7 +210,7 @@ kernels are executed as efficiently as possible.")
 (define-public starpu+simgrid
   (package
     (inherit starpu)
-    (name "starpu-simgrid-fxt")
+    (name "starpu-simgrid")
     (arguments
      (substitute-keyword-arguments (package-arguments starpu)
        ((#:configure-flags flags '())

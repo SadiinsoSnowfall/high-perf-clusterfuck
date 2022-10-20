@@ -58,3 +58,16 @@ MPI applications.")
     ;; 'COPYING' lists the licenses of pieces of software included in
     ;; SimGrid; they are all under non-copyleft licenses though.
     (license license:lgpl2.1+)))
+
+(define-public simgrid-32
+  (package
+    (inherit simgrid)
+    (name "simgrid")
+    (version "3.32")
+    (source (origin
+              (method url-fetch)
+              (uri
+               "https://framagit.org/simgrid/simgrid/uploads/c45f7fd6872b3b0d26b9ba2e607d6e3a/simgrid-3.32.tar.gz")
+              (sha256
+               (base32
+                "1w21lf5gmivybray9900vya1zsyr322vs3yjkpj08bsnh7mn8xw3"))))))

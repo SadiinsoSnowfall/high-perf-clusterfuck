@@ -155,5 +155,6 @@ kernel land, or both.  It can record developer-specified events in compact
     (inherit fxt)
     (name "fxt-static")
     (arguments
-     '(#:configure-flags '("--enable-static=yes"
+     '(#:configure-flags '("CFLAGS=-fPIC"
+                           "--enable-static=yes"
                            "--enable-shared=no")))))

@@ -337,12 +337,12 @@ MPI one, an MPI+openmp one and a runtime-based starpu one.")
             (method git-fetch)
             (uri (git-reference
                   (url home-page)
-                  (commit "5eb0a3deadd820cf543d1ed6a77a6901891868cd")
+                  (commit "c9f8467cfc55fc5b7ebcecb1a5b0b7cee501a146")
                   (recursive? #t)))
             (file-name (string-append name "-" version "-checkout"))
             (sha256
              (base32
-              "09mdb0by89gsknprp81lqrj9xgjgmk2ianv15nijs6zdmzkrnklp"))))
+              "0bxs48rqaj0lq36snn798gx6apvnk5mw5jkjqiwdgyclsjfg0c7y"))))
     (build-system cmake-build-system)
     (outputs '("debug" "out"))
     (arguments

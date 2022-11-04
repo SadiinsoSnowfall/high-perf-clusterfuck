@@ -1,7 +1,7 @@
 ;;; This module extends GNU Guix and is licensed under the same terms, those
 ;;; of the GNU GPL version 3 or (at your option) any later version.
 ;;;
-;;; Copyright © 2019, 2020, 2021 Inria
+;;; Copyright © 2019, 2020, 2021, 2022 Inria
 
 (define-module (inria staging)
   #:use-module (guix)
@@ -146,7 +146,7 @@ datasets of petascale size as well as on laptops for smaller data.")
        ("python-jinja2" ,python-jinja2)
        ("python-numpy" ,python-numpy)
        ("python-pyparsing" ,(S "python-pyparsing"))
-       ("python-setuptools" ,python-setuptools)
+       ("python-setuptools" ,(S "python-setuptools"))
        ("python-sympy" ,python-sympy)))
     (native-inputs
      `(("python-pytest" ,python-pytest)

@@ -50,19 +50,19 @@
 (define-public r-starvz
   (package
    (name "r-starvz")
-   (version "0.5.1")
+   (version "0.7.1")
    (home-page "https://github.com/schnorr/starvz")
    (source
     (origin
      (method git-fetch)
      (uri (git-reference
            (url home-page)
-           (commit "b789296a90e22ae8cd73a6a58df3ff2bd1ff02e3")
+           (commit "6f1ab3999831c6047d4f2a7a6a6a9692ee6b3793")
            (recursive? #f)))
      (file-name (string-append name "-" version "-checkout"))
      (sha256
       (base32
-       "0idms0b61nx8djhpapa0f3015ff3yjz6xmbikjpxdsz0xvrjx4q3"))))
+       "1356y5rq2hb5n8cdrnp6a086di6hil6wbv7vjdrmg17lrz9jng6d"))))
    (properties
     `((upstream-name . "starvz")))
    (build-system r-build-system)

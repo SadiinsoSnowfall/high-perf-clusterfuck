@@ -1479,12 +1479,12 @@ for manual interpretation.")
              (base32
               "0xbw4zkd5bk0m4mj0snxw19ig0yy5fvj5lphs0hwhq44cdxm77s6"))))
    (build-system python-build-system)
-   (propagated-inputs `(("mpi" ,openmpi)
-                        ("ssh" ,openssh)
-                        ("python" ,python)
-                        ("python-numpy" ,python-numpy)
-                        ("python-scipy" ,python-scipy)
-                        ("python-mpi4py" ,python-mpi4py)))
+   (propagated-inputs (list openmpi
+                            openssh
+                            python
+                            python-numpy
+                            python-scipy
+                            python-mpi4py))
     (description
      "Linear algebra package implementing advanced parallel domain decomposition
 methods.")

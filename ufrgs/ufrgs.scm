@@ -67,39 +67,39 @@
     `((upstream-name . "starvz")))
    (build-system r-build-system)
    (propagated-inputs
-    `(("awk" ,gawk)
-      ("bash" ,bash)
-      ("coreutils" ,coreutils)
-      ("gcc-toolchain" ,gcc-toolchain)
-      ("grep" ,grep)
-      ("gzip" ,gzip)
-      ("pageng" ,pageng)
-      ("pmtool" ,pmtool)
-      ("r-arrow" ,r-arrow-cpp)
-      ("r-bh" ,r-bh)
-      ("r-car" ,r-car)
-      ("r-data-tree" ,r-data-tree)
-      ("r-dplyr" ,r-dplyr)
-      ("r-flexmix" ,r-flexmix)
-      ("r-ggplot2" ,r-ggplot2)
-      ("r-gtools" ,r-gtools)
-      ("r-lpsolve" ,r-lpsolve)
-      ("r-magrittr" ,r-magrittr)
-      ("r-patchwork" ,r-patchwork)
-      ("r-purrr" ,r-purrr)
-      ("r-rcolorbrewer" ,r-rcolorbrewer)
-      ("r-rcpp" ,r-rcpp)
-      ("r-readr" ,r-readr)
-      ("r-rlang" ,r-rlang)
-      ("r-stringr" ,r-stringr)
-      ("r-tibble" ,r-tibble)
-      ("r-tidyr" ,r-tidyr)
-      ("r-yaml" ,r-yaml)
-      ("r-zoo" ,r-zoo)
-      ("rectutils" ,recutils)
-      ("sed" ,sed)
-      ("starpu" ,starpu+fxt)
-      ("which" ,which)))
+    (list gawk
+          bash
+          coreutils
+          gcc-toolchain
+          grep
+          gzip
+          pageng
+          pmtool
+          r-arrow-cpp
+          r-bh
+          r-car
+          r-data-tree
+          r-dplyr
+          r-flexmix
+          r-ggplot2
+          r-gtools
+          r-lpsolve
+          r-magrittr
+          r-patchwork
+          r-purrr
+          r-rcolorbrewer
+          r-rcpp
+          r-readr
+          r-rlang
+          r-stringr
+          r-tibble
+          r-tidyr
+          r-yaml
+          r-zoo
+          recutils
+          sed
+          starpu+fxt
+          which))
    (synopsis
     "R-Based Visualization Techniques for Task-Based Applications")
    (description
@@ -132,27 +132,27 @@ computing) platforms.")
    (inputs
     (list zlib rhash))
    (propagated-inputs
-    `(("r-assertthat" ,r-assertthat)
-      ("r-bit64" ,r-bit64)
-      ("r-purrr" ,r-purrr)
-      ("r-r6" ,r-r6)
-      ("r-rcpp" ,r-rcpp)
-      ("r-cpp11" ,r-cpp11)
-      ("r-rlang" ,r-rlang)
-      ("r-tidyselect" ,r-tidyselect)
-      ("r-vctrs" ,r-vctrs)
-      ;; Extra dependencies required for a compilation including the Apache
-      ;; Arrow C++ libraries
-      ("arrow:lib" ,apache-arrow "lib")
-      ("arrow:include" ,apache-arrow "include")
-      ("thrift:lib" ,apache-thrift "lib")
-      ("lz4" ,lz4)
-      ("zstd:lib" ,zstd "lib")
-      ("utf8proc" ,utf8proc)
-      ("perl" ,perl)
-      ("python3" ,python)
-      ("python" ,python-2.7)
-      ("thrift" ,apache-thrift)))
+    (list r-assertthat
+          r-bit64
+          r-purrr
+          r-r6
+          r-rcpp
+          r-cpp11
+          r-rlang
+          r-tidyselect
+          r-vctrs
+          ;; Extra dependencies required for a compilation including the Apache
+          ;; Arrow C++ libraries
+          `(,apache-arrow "lib")
+          `(,apache-arrow "include")
+          `(,apache-thrift "lib")
+          lz4
+          `(,zstd "lib")
+          utf8proc
+          perl
+          python
+          python-2.7
+          apache-thrift))
    (native-inputs
     (list pkg-config r-knitr))
    (home-page "https://github.com/apache/arrow/")

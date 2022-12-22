@@ -403,9 +403,8 @@ loaded.")
        "1ny3lgfi1qpqyckxsixpr39df0gqlsqaq9w0sjj4q9fvmqvz5bql"))))
    (build-system python-build-system)
    (propagated-inputs
-    `(("PyYAML" ,python-pyyaml-5)
-      ("python-dash-bootstrap-components" ,python-dash-bootstrap-components)
-      ("python-dash-defer-js-import" ,python-dash-defer-js-import)))
+    (list python-pyyaml-5 python-dash-bootstrap-components
+          python-dash-defer-js-import))
    (home-page "https://github.com/jm-cc/gcvb")
    (synopsis
     "Python 3 module aiming at facilitating non-regression, validation and

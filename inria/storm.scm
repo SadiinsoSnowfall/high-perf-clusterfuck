@@ -94,14 +94,13 @@
                                         (find-files "." "^test-suite\\.log$"))
                               #f))))))))
     (native-inputs
-     `(("gfortran" ,gfortran)
-       ("pkg-config" ,pkg-config)
-       ("gdb" ,gdb)
-       ("libtool" ,libtool)
-       ("autoconf" ,autoconf)
-       ("automake" ,automake)))                             ;used upon test failure
-    (inputs `(("fftw" ,fftw)
-              ("fftwf" ,fftwf)))
+     (list gfortran
+           pkg-config
+           gdb
+           libtool
+           autoconf
+           automake))                             ;used upon test failure
+    (inputs (list fftw fftwf))
     (propagated-inputs  `(("hwloc" ,hwloc-1 "lib")
                           ("mpi" ,openmpi-with-mpi1-compat)))
     (synopsis "Run-time system for heterogeneous computing")
@@ -129,9 +128,8 @@ kernels are executed as efficiently as possible.")
               (base32 "1mlpc0zn1ra8b7whv1vfqxh6n935aj05c8n7sxgv8dky22bj56qw"))))
     (native-inputs
      ;; Some tests require bc and Gnuplot.
-     `(("bc" ,bc)
-       ("gnuplot" ,gnuplot)
-       ,@(package-native-inputs starpu-1.1)))))
+     (modify-inputs (package-native-inputs starpu-1.1)
+       (prepend bc gnuplot)))))
 
 (define (starpu-configure-flags package)
   ;; Return the standard configure flags for PACKAGE, a StarPU 1.3+ package.
@@ -200,12 +198,12 @@ kernels are executed as efficiently as possible.")
   (package
     (inherit starpu)
     (name "starpu-fxt")
-    (inputs `(("fxt" ,fxt)
-              ,@(package-inputs starpu)))
+    (inputs (modify-inputs (package-inputs starpu)
+              (prepend fxt)))
     ;; some tests require python.
     (native-inputs
-     `(("python-wrapper" ,python-wrapper)
-       ,@(package-native-inputs starpu)))))
+     (modify-inputs (package-native-inputs starpu)
+       (prepend python-wrapper)))))
 
 (define-public starpu+simgrid
   (package
@@ -221,8 +219,8 @@ kernels are executed as efficiently as possible.")
     (propagated-inputs `(,@(delete `("mpi" ,openmpi) (package-propagated-inputs starpu))))
     ;; some tests require python.
     (native-inputs
-     `(("python-wrapper" ,python-wrapper)
-       ,@(package-native-inputs starpu)))))
+     (modify-inputs (package-native-inputs starpu)
+       (prepend python-wrapper)))))
 
 (define-public parcoach-1.2
   (package
@@ -240,12 +238,9 @@ kernels are executed as efficiently as possible.")
          "14l90xddz8qx6jp7dkvys1k8mdg2dp5jwg62y94y8i7yx0qi4pxi"))))
     (build-system cmake-build-system)
     (native-inputs
-     `(("clang" ,clang-9)
-       ("clang-toolchain" ,clang-toolchain-9)
-       ("python" ,python-3)))
+     (list clang-9 clang-toolchain-9 python-3))
     (inputs
-     `(("llvm" ,llvm-9)
-       ("openmpi" ,openmpi)))
+     (list llvm-9 openmpi))
     (arguments
      `(#:tests? #f
        #:phases

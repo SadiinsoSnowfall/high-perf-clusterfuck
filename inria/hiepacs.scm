@@ -66,9 +66,7 @@ architectures.")
                              "-DPARSEC_GPU_WITH_CUDA=OFF"
                              "-DPARSEC_DIST_WITH_MPI=OFF")
          #:tests? #f))
-      (inputs `(("hwloc" ,hwloc)
-                ("bison" ,bison)
-                ("flex" ,flex)))
+      (inputs (list hwloc bison flex))
       (native-inputs `(("gfortran" ,gfortran)
                        ("python" ,python-2))))))
 
@@ -119,8 +117,8 @@ of the available resources.")
                #t)))
          ;; No target for tests
          #:tests? #f))
-      (propagated-inputs `(("hwloc" ,hwloc "lib")))
-      (native-inputs `(("gfortran" ,gfortran))))))
+      (propagated-inputs (list `(,hwloc "lib")))
+      (native-inputs (list gfortran)))))
 
 (define-public chameleon
   (package
@@ -177,10 +175,7 @@ area (CPUs-GPUs, distributed nodes).")
     (inputs `(("lapack" ,openblas)))
     (propagated-inputs `(("starpu" ,starpu)
                          ("mpi" ,openmpi)))
-    (native-inputs `(("pkg-config" ,pkg-config)
-                     ("gfortran" ,gfortran)
-                     ("python" ,python)
-                     ("openssh" ,openssh)))))
+    (native-inputs (list pkg-config gfortran python openssh))))
 
 (define-public chameleon+simgrid+nosmpi
   (package
@@ -190,8 +185,8 @@ area (CPUs-GPUs, distributed nodes).")
     (substitute-keyword-arguments (package-arguments chameleon)
                                   ((#:configure-flags flags '())
                                    `(cons "-DCHAMELEON_SIMULATION=ON" (cons "-DCHAMELEON_USE_CUDA=ON" (delete "-DCHAMELEON_USE_MPI=ON" ,flags))))))
-   (inputs `(("simgrid" ,simgrid)
-             ,@(package-inputs chameleon)))
+   (inputs (modify-inputs (package-inputs chameleon)
+             (prepend simgrid)))
    (propagated-inputs `(("starpu" ,starpu+simgrid)
                         ,@(delete `("starpu" ,starpu) (package-inputs chameleon))
                         ,@(delete `("mpi" ,openmpi) (package-inputs chameleon))))))
@@ -363,8 +358,7 @@ MPI one, an MPI+openmp one and a runtime-based starpu one.")
     (inputs `(("lapack" ,openblas)))
     (propagated-inputs `(("starpu" ,starpu)
                          ("mpi" ,openmpi)))
-    (native-inputs `(("pkg-config" ,pkg-config)
-                     ("openssh" ,openssh)))))
+    (native-inputs (list pkg-config openssh))))
 
 
 (define-public maphys
@@ -434,8 +428,7 @@ MPI one, an MPI+openmp one and a runtime-based starpu one.")
               ("fabulous" ,fabulous)
               ("paddle", paddle)
               ("metis" ,metis)))
-    (native-inputs `(("gfortran" ,gfortran)
-                     ("pkg-config" ,pkg-config)))
+    (native-inputs (list gfortran pkg-config))
     (synopsis "Sparse matrix hybrid solver")
     (description
      "MaPHyS (Massively Parallel Hybrid Solver) is a parallel linear solver
@@ -498,8 +491,7 @@ moderate number of blocks which ensures a reasonable convergence behavior.")
     (inputs `(("openmpi" ,openmpi)
               ("ssh" ,openssh)
               ("pt-scotch" ,pt-scotch-6)))
-    (native-inputs `(("gfortran" ,gfortran)
-                     ("pkg-config" ,pkg-config)))
+    (native-inputs (list gfortran pkg-config))
     (synopsis "Parallel Algebraic Domain Decomposition for Linear systEms")
     (description
      "This  software’s goal is  to propose  a parallel
@@ -537,10 +529,8 @@ moderate number of blocks which ensures a reasonable convergence behavior.")
                            "-DFABULOUS_BUILD_EXAMPLES=ON"
                            "-DFABULOUS_BUILD_TESTS=OFF")
                          #:tests? #f))
-     (inputs `(("openblas" ,openblas)
-               ("lapack" ,lapack)))
-     (native-inputs `(("gfortran" ,gfortran)
-                      ("pkg-config" ,pkg-config)))
+     (inputs (list openblas lapack))
+     (native-inputs (list gfortran pkg-config))
      (synopsis "Fast Accurate Block Linear krylOv Solver")
      (description
       "Library implementing Block-GMres with Inexact Breakdown and Deflated Restarting,
@@ -730,7 +720,7 @@ such as: namespaces, templates, exceptions, etc.")
     ;; tests would need testsweeper https://bitbucket.org/icl/testsweeper
     ;;'(#:configure-flags '("-DBLASPP_BUILD_TESTS=ON")))
     (build-system cmake-build-system)
-    (propagated-inputs `(("openblas" ,openblas))) ;; technically only blas
+    (propagated-inputs (list openblas)) ;; technically only blas
     (license license:bsd-3)))
 
 (define-public lapackpp
@@ -761,7 +751,7 @@ etc.")
                         #:tests? #f))
     ;; tests would need testsweeper https://bitbucket.org/icl/testsweeper
     (build-system cmake-build-system)
-    (inputs `(("blaspp" ,blaspp)))
+    (inputs (list blaspp))
     (license license:bsd-3)))
 
 (define-public pastix-6
@@ -822,8 +812,7 @@ etc.")
        ;;   ValueError: Attempted relative import in non-package
        #:tests? #f))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("gfortran" ,gfortran)))
+     (list pkg-config gfortran))
     (inputs
      `(("gfortran:lib" ,gfortran "lib")           ;for 'gcc … -lgfortran'
        ("openblas" ,openblas)
@@ -915,8 +904,7 @@ memory footprint and/or the time-to-solution.")
        ;;   ValueError: Attempted relative import in non-package
        #:tests? #f))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("gfortran" ,gfortran)))
+     (list pkg-config gfortran))
     (inputs
      `(("gfortran:lib" ,gfortran "lib")           ;for 'gcc … -lgfortran'
        ("openblas" ,openblas)
@@ -932,8 +920,7 @@ memory footprint and/or the time-to-solution.")
        ("python-numpy" ,python-numpy)
        ;;("python-scipy" ,python-scipy)
        ))
-    (propagated-inputs `(("hwloc" ,hwloc "lib")
-                         ("scotch" ,scotch)))
+    (propagated-inputs (list `(,hwloc "lib") scotch))
     (synopsis "Sparse matrix direct solver")
     (description
      "PaStiX (Parallel Sparse matriX package) is a scientific library that
@@ -1248,9 +1235,7 @@ CTAGS    = $(CTAGSPROG)
    `(("gfortran:lib" ,gfortran "lib")
      ("openblas" ,openblas)))
   (native-inputs
-   `(("pkg-config" ,pkg-config)
-     ("gfortran" ,gfortran)
-     ("perl" ,perl)))
+   (list pkg-config gfortran perl))
   (propagated-inputs
    `(("openmpi" ,openmpi-with-mpi1-compat)
      ("hwloc" ,hwloc-1 "lib")
@@ -1310,8 +1295,8 @@ this limitation.")
        ;; FIXME: no make test available for now in pmtool
        #:tests? #f))
 
-    (inputs `(("recutils" ,recutils)))
-    (native-inputs `(("gcc-toolchain" ,gcc-toolchain)))))
+    (inputs (list recutils))
+    (native-inputs (list gcc-toolchain))))
 
 (define-public scalable-python
   (package
@@ -1359,7 +1344,7 @@ this limitation.")
     "Modified python 2.7.13. Scalable Python performs the I/O operations used
 e.g. by import statements in a single process and uses MPI to transmit data
 to/from all other processes.")
-   (propagated-inputs `(("openmpi" ,openmpi)))
+   (propagated-inputs (list openmpi))
    ))
 
 ;; Fix python2-sympy
@@ -1434,7 +1419,7 @@ benchmarked application, benchmark data is stored in a format that allows JUBE
 to deduct the desired information.  This data can be parsed by automatic pre-
 and post-processing scripts that draw information and store it more densely
 for manual interpretation.")
-    (propagated-inputs `(("python-pyyaml" ,python-pyyaml)))
+    (propagated-inputs (list python-pyyaml))
     (license license:gpl3+)))
 
 (define-public scalfmm
@@ -1473,13 +1458,10 @@ for manual interpretation.")
                                           (setenv "OMPI_MCA_rmaps_base_oversubscribe" "1") #t)))
                         ))
    (build-system cmake-build-system)
-   (inputs `(("openblas" ,openblas)
-             ("fftw" ,fftw)
-             ("fftwf" ,fftwf)
-             ))
+   (inputs (list openblas fftw fftwf))
    (propagated-inputs `(("mpi" ,openmpi)
                         ("ssh" ,openssh)))
-   (native-inputs `(("pkg-config" ,pkg-config)))
+   (native-inputs (list pkg-config))
    (properties '((tunable? . #true)))))
 
 (define-public ddmpy

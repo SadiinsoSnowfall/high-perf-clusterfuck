@@ -45,7 +45,7 @@
        ("python" ,python-wrapper)
        ("doxygen" ,doxygen)))
     (propagated-inputs
-     `(("boost" ,boost)))
+     (list boost))
     ;; XXX: 'smpicc' and 'smpicxx' retain references to GCC.
     (home-page "https://simgrid.org/")
     (synopsis "Distributed system simulator")

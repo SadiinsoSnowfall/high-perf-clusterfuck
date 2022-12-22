@@ -42,10 +42,7 @@
  (properties `((upstream-name . "rlist")))
  (build-system r-build-system)
  (propagated-inputs
-  `(("r-data-table" ,r-data-table)
-    ("r-jsonlite" ,r-jsonlite)
-    ("r-xml" ,r-xml)
-    ("r-yaml" ,r-yaml)))
+  (list r-data-table r-jsonlite r-xml r-yaml))
  (home-page "https://renkun.me/rlist")
  (synopsis
   "A Toolbox for Non-Tabular Data Manipulation")

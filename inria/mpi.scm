@@ -90,8 +90,7 @@
        ("rdma-core" ,rdma-core)
        ("valgrind" ,valgrind)))
     (native-inputs
-     `(("pkg-config" ,pkg-config)
-       ("perl" ,perl)))
+     (list pkg-config perl))
     (outputs '("out" "debug"))
     (arguments
      `(#:configure-flags `("--enable-mpi-ext=affinity" ;cr doesn't work
@@ -159,5 +158,6 @@ software vendors, application developers and computer science researchers.")
         `(cons "--enable-mpi1-compatibility" ,flags))))
 
     ;; Depend on hwloc 1.x because that's what users of this package expect.
-    (inputs `(("hwloc" ,hwloc-1 "lib")
-              ,@(alist-delete "hwloc" (package-inputs openmpi))))))
+    (inputs (modify-inputs (package-inputs openmpi)
+              (delete "hwloc")
+              (prepend `(,hwloc-1 "lib"))))))

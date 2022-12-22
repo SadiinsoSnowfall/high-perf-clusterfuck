@@ -58,8 +58,6 @@ software for teaching undergraduate, and potentially graduate level operating
 systems courses. As this stage, the package only processes the kernel part (but
 not the ./test/ part).")
     (license license:bsd-3)
-    (inputs `(("grep" ,grep)
-              ("sed" ,sed)
-              ("bash", bash)))))
+    (inputs (list grep sed bash))))
 
 

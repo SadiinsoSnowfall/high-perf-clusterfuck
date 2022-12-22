@@ -61,8 +61,7 @@
 				                                    (setenv "OMPI_MCA_rmaps_base_oversubscribe" "1") #t)))
       #:tests? #f))
 
-   (native-inputs `(("gfortran" ,gfortran)
-                    ("pkg-config" ,pkg-config)))
+   (native-inputs (list gfortran pkg-config))
    (inputs `(("metis" ,metis)
              ("openblas" ,openblas)
              ("perl" ,perl)
@@ -71,7 +70,7 @@
              ;; ("suitesparse" ,suitesparse) ;; for colamd; it would ideally be suitesparse:colamdonly
              ("wget" ,wget)
              ))
-   (propagated-inputs `(("starpu" ,starpu)))
+   (propagated-inputs (list starpu))
    (synopsis "Sparse QR direct solver (experimental package for distributed memroy version)")
    (description
     "qr_mumps is a software package for the solution of sparse, linear systems

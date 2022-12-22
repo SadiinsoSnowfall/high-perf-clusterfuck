@@ -45,15 +45,15 @@
                                  )
          #:tests? #f))
       (inputs
-       `(("qtbase" ,(S "qtbase@5"))
-         ("mesa" ,mesa)
-         ("glew" ,glew)
-         ("glu" ,glu)
-         ("glm" ,glm)
-         ("qtcharts" ,(S "qtcharts@5"))
-         ("qtsvg" ,(S "qtsvg@5"))))
+       (list (S "qtbase@5")
+             mesa
+             glew
+             glu
+             glm
+             (S "qtcharts@5")
+             (S "qtsvg@5")))
       (native-inputs
-       `(("qttools" ,(S "qttools@5"))))
+       (list (S "qttools@5")))
       (synopsis "Visualize program execution traces")
       (description
        "ViTE is a trace explorer.  It is a tool to visualize execution traces

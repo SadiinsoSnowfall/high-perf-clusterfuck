@@ -37,22 +37,22 @@
                     ;; Set the test environment for Open MPI.
                     ,%openmpi-setup))))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("unzip" ,unzip)
-       ("bison" ,bison)
-       ("flex" ,flex)
-       ("gfortran" ,gfortran)))
+     (list autoconf
+           automake
+           unzip
+           bison
+           flex
+           gfortran))
     (inputs
      ;; FIXME: Tests under 'examples/eigen', built when ARPACK is available,
      ;; fail.
-     `( ;; ("arpack-ng" ,arpack-ng)
-       ;; petsc-openmpi
-       ("gsl" ,gsl)
-       ("ipopt" ,ipopt)
-       ("nlopt" ,nlopt)
-       ("openmpi" ,openmpi)
-       ("lapack" ,lapack)))
+     (list ;; ("arpack-ng" ,arpack-ng)
+           ;; petsc-openmpi
+           gsl
+           ipopt
+           nlopt
+           openmpi
+           lapack))
     (properties `((tunable? . #true)))
     (home-page "https://freefem.org/")
     (synopsis "High-level multiphysics finite element library")

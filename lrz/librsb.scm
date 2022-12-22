@@ -31,11 +31,7 @@
                 "1d3xq5s6hy33qcq3ca846fl1zc8kszs7kbirf4mcljpr22j29h1z"))
               ))
     (build-system gnu-build-system)
-    (inputs `(("m4", m4)
-	      ("libtool", libtool)
-	      ("autoconf", autoconf)
-	      ("automake", automake)
-        ("which", which)))
+    (inputs (list m4 libtool autoconf automake which))
     (synopsis "librsb: A shared memory parallel sparse matrix computations library for the Recursive Sparse Blocks format")
     (description
      "librsb is a library for sparse matrix computations featuring the Recursive Sparse Blocks (RSB) matrix format. This format allows cache efficient and multi-threaded (that is, shared memory parallel) operations on large sparse matrices. The most common operations necessary to iterative solvers are available, e.g.: matrix-vector multiplication, triangular solution, rows/columns scaling, diagonal extraction / setting, blocks extraction, norm computation, formats conversion. The RSB format is especially well suited for symmetric and transposed multiplication variants. Most numerical kernels code is auto generated, and the supported numerical types can be chosen by the user at build time. librsb can also be built serially (without OpenMP parallelism), if required.

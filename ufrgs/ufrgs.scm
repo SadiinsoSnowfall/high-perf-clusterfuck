@@ -130,8 +130,7 @@ computing) platforms.")
    (properties `((upstream-name . "arrow")))
    (build-system r-build-system)
    (inputs
-    `(("zlib" ,zlib)
-      ("rhash" ,rhash)))
+    (list zlib rhash))
    (propagated-inputs
     `(("r-assertthat" ,r-assertthat)
       ("r-bit64" ,r-bit64)
@@ -155,8 +154,7 @@ computing) platforms.")
       ("python" ,python-2.7)
       ("thrift" ,apache-thrift)))
    (native-inputs
-    `(("pkg-config" ,pkg-config)
-      ("r-knitr" ,r-knitr)))
+    (list pkg-config r-knitr))
    (home-page "https://github.com/apache/arrow/")
    (synopsis "Integration to 'Apache' 'Arrow'")
    (description
@@ -218,12 +216,6 @@ collaboration between INF/UFRGS and INRIA.")
    (outputs
     '("debug" "out"))
    (inputs
-    `(("asciidoc" ,asciidoc)
-      ("boost" ,boost)
-      ("r" ,r)
-      ("recutils" ,recutils)))
+    (list asciidoc boost r recutils))
    (native-inputs
-    `(("gcc-toolchain" ,gcc-toolchain)
-      ("bison" ,bison)
-      ("flex" ,flex)
-      ("perl" ,perl)))))
+    (list gcc-toolchain bison flex perl))))

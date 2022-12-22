@@ -75,9 +75,7 @@
        ;; FIXME: There are test failures in bundled libraries.
        #:tests? #f))
     (native-inputs
-     `(("autoconf" ,autoconf)
-       ("automake" ,automake)
-       ("libtool" ,libtool)))
+     (list autoconf automake libtool))
     (inputs `(("litl" ,litl)
               ("gfortran" ,gfortran)
               ("libiberty" ,libiberty)            ;for bfd
@@ -141,7 +139,7 @@ threads.")
                 "1wpbmax4jzc454ilz9vay0a63ilxsav910rvqizg5naw2y9qsz9i"))))
     (build-system gnu-build-system)
     (native-inputs
-     `(("perl" ,perl) ("help2man" ,help2man)))
+     (list perl help2man))
     (home-page "https://savannah.nongnu.org/projects/fkt")
     (synopsis "Efficient recording of program execution traces")
     (description

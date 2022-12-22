@@ -27,7 +27,7 @@
         (base32 "11rfn0byy0k0321w7fjgpa785ik1nrk1j6d0y4j0j4a8gys5hjr5"))))
      (build-system emacs-build-system)
      (propagated-inputs
-      `(("emacs-org" ,emacs-org)))
+      (list emacs-org))
      (home-page "https://github.com/mtekman/org-tanglesync.el")
      (synopsis "Sync Org source blocks with tangled external files")
      (description "Tangled blocks provide a nice way of exporting code into
@@ -54,7 +54,7 @@ from.")
               "1fwwvp4jvdx8namdy0nb68c2jj3nfw7adwp7vk2c2b5cp6fc6cl7"))))
    (build-system emacs-build-system)
    (propagated-inputs
-    `(("emacs-s" ,emacs-s)))
+    (list emacs-s))
    (synopsis "JSON export back end for Emacs Org mode")
    (description "Usage: (require 'ox-json') somewhere and then use the
 org-export-dispatch interactive command and select the J key for JSON export.
@@ -79,8 +79,7 @@ backend argument.")
          "0csamnvilkcs101m27p45300h8ijg7n04cf1mr47n62yj4ph8yzn"))))
     (build-system emacs-build-system)
     (propagated-inputs
-     `(("emacs-dash" ,emacs-dash)
-       ("emacs-s" ,emacs-s)))
+     (list emacs-dash emacs-s))
     (home-page "https://github.com/jkitchin/ox-ipynb")
     (synopsis "ox-ipynb — Convert an org-file to an ipynb")
     (description

@@ -41,10 +41,7 @@
          )
        )
       (propagated-inputs
-       `(
-         ("gfortran" , gfortran)
-         ("perl" , perl)
-         ("openmpi", openmpi)))
+       (list gfortran perl openmpi))
 (synopsis
        "OpenCoArrays Fortran")
       (description

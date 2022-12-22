@@ -35,7 +35,7 @@
     ;; Broken tests or cyclic dependecies with other packages.
     '(#:tests? #f))
    (propagated-inputs
-    `(("python-requests" ,python-requests)))
+    (list python-requests))
    (home-page
     "https://github.com/percy/python-percy-client")
    (synopsis
@@ -57,7 +57,7 @@
        "039hf9knvl4s3hp21bzwsp1g5ri9gxsh504dp48lc6nr1av35byy"))))
    (build-system python-build-system)
    (propagated-inputs
-    `(("python-urllib3" ,python-urllib3)))
+    (list python-urllib3))
    (home-page
     "https://github.com/SeleniumHQ/selenium/")
    (synopsis "Python bindings for Selenium")
@@ -80,8 +80,7 @@
     ;; Broken tests or cyclic dependecies with other packages.
     '(#:tests? #f))
    (propagated-inputs
-    `(("python-six" ,python-six)
-      ("python-termcolor" ,python-termcolor)))
+    (list python-six python-termcolor))
    (home-page
     "https://github.com/google/python-fire")
    (synopsis
@@ -268,7 +267,7 @@
        "1cxdbdiyxkspg7vkchfmaqr7c6q79gwvakna3fjcc6nivps971j6"))))
    (build-system python-build-system)
    (propagated-inputs
-    `(("python-flask" ,python-flask)))
+    (list python-flask))
    (home-page
     "https://libwilliam.github.io/flask-compress/")
    (synopsis
@@ -289,35 +288,34 @@
        "0qqfpm3v7df0jr18bw87fg10yv3znzjpf1jqd7znnh13y9irv60f"))))
    (build-system python-build-system)
    (propagated-inputs
-    `(("python-dash-core-components" ,python-dash-core-components)
-      ("python-dash-html-components" ,python-dash-html-components)
-      ("python-dash-renderer" ,python-dash-renderer)
-      ("python-dash-table" ,python-dash-table)
-      ("python-flask" ,python-flask)
-      ("python-flask-compress" ,python-flask-compress)
-      ("python-future" ,python-future)
-      ("python-plotly" ,python-plotly)))
+    (list python-dash-core-components
+          python-dash-html-components
+          python-dash-renderer
+          python-dash-table
+          python-flask
+          python-flask-compress
+          python-future
+          python-plotly))
    (native-inputs
-    `(("python-astroid" ,python-astroid)
-      ("python-beautifulsoup4" ,python-beautifulsoup4)
-      ("python-coloredlogs" ,python-coloredlogs)
-      ("python-dash-dangerously-set-inner-html"
-       ,python-dash-dangerously-set-inner-html)
-      ("python-dash-flow-example" ,python-dash-flow-example)
-      ("python-fire" ,python-fire)
-      ("python-flake8" ,python-flake8)
-      ("python-lxml" ,python-lxml)
-      ("python-mock" ,python-mock)
-      ("python-percy" ,python-percy)
-      ("python-pylint" ,python-pylint)
-      ("python-pytest" ,python-pytest)
-      ("python-pytest-mock" ,python-pytest-mock)
-      ("python-pytest-sugar" ,python-pytest-sugar)
-      ("python-pyyaml" ,python-pyyaml)
-      ("python-requests" ,python-requests)
-      ("python-selenium" ,python-selenium)
-      ("python-virtualenv" ,python-virtualenv)
-      ("python-waitress" ,python-waitress)))
+    (list python-astroid
+          python-beautifulsoup4
+          python-coloredlogs
+          python-dash-dangerously-set-inner-html
+          python-dash-flow-example
+          python-fire
+          python-flake8
+          python-lxml
+          python-mock
+          python-percy
+          python-pylint
+          python-pytest
+          python-pytest-mock
+          python-pytest-sugar
+          python-pyyaml
+          python-requests
+          python-selenium
+          python-virtualenv
+          python-waitress))
    (home-page "https://plot.ly/dash")
    (synopsis
     "A Python framework for building reactive web-apps. Developed by Plotly.")
@@ -340,7 +338,7 @@
     ;; Broken tests or cyclic dependecies with other packages.
     '(#:tests? #f))
    (propagated-inputs
-    `(("python-dash" ,python-dash)))
+    (list python-dash))
    (home-page
     "https://dash-bootstrap-components.opensource.faculty.ai/")
    (synopsis
@@ -368,7 +366,7 @@
     ;; Broken tests or cyclic dependecies with other packages.
     '(#:tests? #f))
    (propagated-inputs
-    `(("python-dash" ,python-dash)))
+    (list python-dash))
    (home-page #f)
    (synopsis "Dash component library")
    (description "Dash Defer JS Import is a Dash component library. Its purpose

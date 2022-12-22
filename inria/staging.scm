@@ -58,22 +58,22 @@
     ;; 'VTK_CXX_COMPILER' as the absolute file name of 'c++'.  Remove that so
     ;; we don't keep a reference to GCC.
     (native-inputs
-     `(("qttools" ,(S "qttools@5"))))
+     (list (S "qttools@5")))
     (inputs
-     `(("qtbase" ,(S "qtbase@5"))
-       ("qtsvg" ,(S "qtsvg@5"))
-       ("qtx11extras" ,(S "qtx11extras@5"))
-       ("qtxmlpatterns" ,(S "qtxmlpatterns@5"))
-       ("libx11" ,libx11)
-       ("libxt" ,libxt)
-       ("mesa" ,mesa)
-       ("glu" ,glu)
-       ("python" ,python)
-       ("python-numpy" ,python-numpy)
-       ;; ("utf8cpp" ,utf8cpp)
-       ("vtk" ,vtk)
-       ("hdf5" ,hdf5)
-       ("protobuf" ,protobuf)))
+     (list (S "qtbase@5")
+           (S "qtsvg@5")
+           (S "qtx11extras@5")
+           (S "qtxmlpatterns@5")
+           libx11
+           libxt
+           mesa
+           glu
+           python
+           python-numpy
+           ;; ("utf8cpp" ,utf8cpp)
+           vtk
+           hdf5
+           protobuf))
     (synopsis "Data analysis and visualization application")
     (description
      "ParaView is a data analysis and visualization application.  It allows
@@ -142,15 +142,14 @@ datasets of petascale size as well as on laptops for smaller data.")
        ;; AttributeError: 'Config' object has no attribute 'fail_for_not_implemented'
        #:tests? #f))
     (propagated-inputs
-     `(("python-cython" ,python-cython)
-       ("python-jinja2" ,python-jinja2)
-       ("python-numpy" ,python-numpy)
-       ("python-pyparsing" ,(S "python-pyparsing"))
-       ("python-setuptools" ,(S "python-setuptools"))
-       ("python-sympy" ,python-sympy)))
+     (list python-cython
+           python-jinja2
+           python-numpy
+           (S "python-pyparsing")
+           (S "python-setuptools")
+           python-sympy))
     (native-inputs
-     `(("python-pytest" ,python-pytest)
-       ("python-pytest-xdist" ,python-pytest-xdist)))
+     (list python-pytest python-pytest-xdist))
     (home-page "http://www.briansimulator.org/")
     (synopsis "Clock-driven simulator for spiking neural networks")
     (description

@@ -85,7 +85,7 @@
                                      ;; to satisfy StarPU.
                                      (setenv "HOME" (getcwd)) #t)))))
      (native-inputs
-      `(("pkg-config" ,pkg-config)))
+      (list pkg-config))
      (inputs
       `(("mpi" ,openmpi)
         ("lapack" ,openblas)

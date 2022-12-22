@@ -30,10 +30,8 @@
                                 #t)))))
 
     ;; Things only needed for tests.
-    (native-inputs `(("python-pytest" ,python-pytest)))
-    (inputs `(("pybind11", pybind11)
-              ("python-numpy", python-numpy)
-              ("python-scipy", python-scipy)))
+    (native-inputs (list python-pytest))
+    (inputs (list pybind11 python-numpy python-scipy))
     (synopsis "PyAMG library for python.")
     (description "PyAMG is a library of Algebraic Multigrid (AMG) solvers with a convenient Python interface.")
     (home-page "https://github.com/pyamg/pyamg")
@@ -72,15 +70,9 @@
 
                #:tests? #f))
 
-   (native-inputs `(("python-pytest" ,python-pytest)
-                    ("python-cython",python-cython)
-                    ("gfortran" ,gfortran)))
-   (inputs `(("gmp", gmp)
-             ("mpfr", mpfr)
-             ("openblas" ,openblas)))
-   (propagated-inputs `(("python-numpy" ,python-numpy)
-                        ("python-scipy" ,python-scipy)
-                        ("python-six" ,python-six)))
+   (native-inputs (list python-pytest python-cython gfortran))
+   (inputs (list gmp mpfr openblas))
+   (propagated-inputs (list python-numpy python-scipy python-six))
 
    (synopsis
     "TTPY: Python implementation of the Tensor Train (TT) - Toolbox.")
@@ -174,9 +166,7 @@
      ;; The 'check' phase is producing a 'not a test' error! 
      '(#:tests? #f))
     (inputs
-     `(("python-pytorch" ,python-pytorch)
-       ("python-pillow" ,python-pillow6)
-       ("python-scipy" ,python-scipy)))
+     (list python-pytorch python-pillow6 python-scipy))
     (home-page "https://github.com/pytorch/vision")
     (synopsis "image and video datasets and models for torch deep learning")
     (description "image and video datasets and models for torch deep learning")
@@ -200,9 +190,7 @@
      ;; Looks like the tests require network connection.
      '(#:tests? #f))
     (inputs
-     `(("python-pytorch" ,python-pytorch)
-       ("python-pillow" ,python-pillow6)
-       ("python-scipy" ,python-scipy)))
+     (list python-pytorch python-pillow6 python-scipy))
     (home-page
       "https://github.com/rtqichen/torchdiffeq")
     (synopsis

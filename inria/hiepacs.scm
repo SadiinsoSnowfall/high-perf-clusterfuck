@@ -67,8 +67,7 @@ architectures.")
                              "-DPARSEC_DIST_WITH_MPI=OFF")
          #:tests? #f))
       (inputs (list hwloc bison flex))
-      (native-inputs `(("gfortran" ,gfortran)
-                       ("python" ,python-2))))))
+      (native-inputs (list gfortran python-2)))))
 
 (define-public parsec+mpi
   (package
@@ -78,8 +77,8 @@ architectures.")
      (substitute-keyword-arguments (package-arguments parsec)
                                    ((#:configure-flags flags '())
                                     `(cons "-DPARSEC_DIST_WITH_MPI=ON" (delete "-DPARSEC_DIST_WITH_MPI=OFF" ,flags)))))
-    (propagated-inputs `(("mpi" ,openmpi)
-                         ,@(package-inputs parsec)))))
+    (propagated-inputs (modify-inputs (package-inputs parsec)
+                         (prepend openmpi)))))
 
 (define-public quark
   (let ((commit "db4aef9a66a00487d849cf8591927dcebe18ef2f")
@@ -172,9 +171,8 @@ area (CPUs-GPUs, distributed nodes).")
                                             (lambda _
                                               (setenv "HOME" (getcwd))
                                               #t)))))
-    (inputs `(("lapack" ,openblas)))
-    (propagated-inputs `(("starpu" ,starpu)
-                         ("mpi" ,openmpi)))
+    (inputs (list openblas))
+    (propagated-inputs (list starpu openmpi))
     (native-inputs (list pkg-config gfortran python openssh))))
 
 (define-public chameleon+simgrid+nosmpi
@@ -187,9 +185,10 @@ area (CPUs-GPUs, distributed nodes).")
                                    `(cons "-DCHAMELEON_SIMULATION=ON" (cons "-DCHAMELEON_USE_CUDA=ON" (delete "-DCHAMELEON_USE_MPI=ON" ,flags))))))
    (inputs (modify-inputs (package-inputs chameleon)
              (prepend simgrid)))
-   (propagated-inputs `(("starpu" ,starpu+simgrid)
-                        ,@(delete `("starpu" ,starpu) (package-inputs chameleon))
-                        ,@(delete `("mpi" ,openmpi) (package-inputs chameleon))))))
+   (propagated-inputs
+    (modify-inputs (package-propagated-inputs chameleon)
+      (delete "starpu")
+      (prepend starpu+simgrid)))))
 
 (define-public chameleon+simgrid
   (package
@@ -237,8 +236,9 @@ area (CPUs-GPUs, distributed nodes).")
     (substitute-keyword-arguments (package-arguments chameleon)
                                   ((#:configure-flags flags '())
                                    `(cons "-DCHAMELEON_SCHED=OPENMP" (delete "-DCHAMELEON_USE_MPI=ON" ,flags)))))
-   (propagated-inputs `(,@(delete `("starpu" ,starpu) (package-inputs chameleon))
-                        ,@(delete `("mpi" ,openmpi) (package-inputs chameleon))))))
+   (propagated-inputs
+    (modify-inputs (package-propagated-inputs chameleon)
+      (delete "starpu" "openmpi")))))
 
 (define-public chameleon+quark
   (package
@@ -248,9 +248,10 @@ area (CPUs-GPUs, distributed nodes).")
     (substitute-keyword-arguments (package-arguments chameleon)
                                   ((#:configure-flags flags '())
                                    `(cons "-DCHAMELEON_SCHED=QUARK" (delete "-DCHAMELEON_USE_MPI=ON" ,flags)))))
-   (propagated-inputs `(("quark" ,quark)
-             ,@(delete `("starpu" ,starpu) (package-inputs chameleon))
-             ,@(delete `("mpi" ,openmpi) (package-inputs chameleon))))))
+   (propagated-inputs
+    (modify-inputs (package-propagated-inputs chameleon)
+      (prepend quark)
+      (delete "starpu" "openmpi")))))
 
 (define-public chameleon+parsec
   (package
@@ -260,9 +261,10 @@ area (CPUs-GPUs, distributed nodes).")
     (substitute-keyword-arguments (package-arguments chameleon)
                                   ((#:configure-flags flags '())
                                    `(cons "-DCHAMELEON_SCHED=PARSEC" (delete "-DCHAMELEON_USE_MPI=ON" ,flags)))))
-   (propagated-inputs `(("parsec" ,parsec)
-             ,@(delete `("starpu" ,starpu) (package-inputs chameleon))
-             ,@(delete `("mpi" ,openmpi) (package-inputs chameleon))))))
+   (propagated-inputs
+    (modify-inputs (package-propagated-inputs chameleon)
+      (prepend parsec)
+      (delete "starpu" "openmpi")))))
 
 (define-public mini-chameleon
   (package
@@ -355,9 +357,8 @@ MPI one, an MPI+openmp one and a runtime-based starpu one.")
                                             (lambda _
                                               (setenv "HOME" (getcwd))
                                               #t)))))
-    (inputs `(("lapack" ,openblas)))
-    (propagated-inputs `(("starpu" ,starpu)
-                         ("mpi" ,openmpi)))
+    (inputs (list openblas))
+    (propagated-inputs (list starpu openmpi))
     (native-inputs (list pkg-config openssh))))
 
 
@@ -416,18 +417,18 @@ MPI one, an MPI+openmp one and a runtime-based starpu one.")
                     (lambda _
                       (setenv "OMPI_MCA_rmaps_base_oversubscribe" "1"))))))
 
-    (inputs `(("hwloc" ,hwloc "lib")
-              ("openmpi" ,openmpi)
-              ("ssh" ,openssh)
-              ("scalapack" ,scalapack)
-              ("openblas" ,openblas)
-              ;; ("lapack" ,lapack)
-              ("scotch" ,pt-scotch-6)
-              ("mumps" ,mumps-openmpi)
-              ("pastix" ,pastix-6.0.3)
-              ("fabulous" ,fabulous)
-              ("paddle", paddle)
-              ("metis" ,metis)))
+    (inputs (list `(,hwloc "lib")
+                  openmpi
+                  openssh
+                  scalapack
+                  openblas
+                  ;; ("lapack" ,lapack)
+                  pt-scotch-6
+                  mumps-openmpi
+                  pastix-6.0.3
+                  fabulous
+                  paddle
+                  metis))
     (native-inputs (list gfortran pkg-config))
     (synopsis "Sparse matrix hybrid solver")
     (description
@@ -488,9 +489,7 @@ moderate number of blocks which ensures a reasonable convergence behavior.")
                       ;; Allow tests with more MPI processes than available CPU cores,
                       ;; which is not allowed by default by OpenMPI
                       (setenv "OMPI_MCA_rmaps_base_oversubscribe" "1"))))))
-    (inputs `(("openmpi" ,openmpi)
-              ("ssh" ,openssh)
-              ("pt-scotch" ,pt-scotch-6)))
+    (inputs (list openmpi openssh pt-scotch-6))
     (native-inputs (list gfortran pkg-config))
     (synopsis "Parallel Algebraic Domain Decomposition for Linear systEms")
     (description
@@ -598,18 +597,17 @@ is implemented in MPI.")
                       ;; which is not allowed by default by OpenMPI
                       (setenv "OMPI_MCA_rmaps_base_oversubscribe" "1") #t)))))
     (build-system cmake-build-system)
-    (propagated-inputs `(("blaspp" ,blaspp)
-                         ("lapackpp" ,lapackpp)
-                         ("pastix" ,pastix)
-                         ("mumps" ,mumps-openmpi)
-                         ("arpack", arpack-ng-3.8)
-                         ("paddle", paddle)
-                         ("pt-scotch" ,pt-scotch-6) ;; not clear why it must be here
-                         ("fabulous", fabulous)
-                         ("mpi" ,openmpi)
-                         ("ssh" ,openssh)))
-    (native-inputs `(("gfortran" ,gfortran)
-                     ("pkg-config" ,pkg-config)))
+    (propagated-inputs (list blaspp
+                             lapackpp
+                             pastix
+                             mumps-openmpi
+                             arpack-ng-3.8
+                             paddle
+                             pt-scotch-6 ;; not clear why it must be here
+                             fabulous
+                             openmpi
+                             openssh))
+    (native-inputs (list gfortran pkg-config))
     (properties '((tunable? . #true)))))
 
 (define scotch-6-instead-of-scotch-7

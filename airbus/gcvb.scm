@@ -1,7 +1,7 @@
 ;;; This module extends GNU Guix and is licensed under the same terms, those
 ;;; of the GNU GPL version 3 or (at your option) any later version.
 ;;;
-;;; Copyright © 2017, 2019, 2020, 2021 Inria
+;;; Copyright © 2017, 2019, 2020, 2021, 2022 Inria
 
 (define-module (airbus gcvb)
   #:use-module (guix)
@@ -438,8 +438,7 @@ metrics of your computation with references that can be a file, depends of the
     ;; here.
     '(#:tests? #f))
    (propagated-inputs
-    `(("PyYAML" ,python-pyyaml-5)
-      ("python-dash-bootstrap-components" ,python-dash-bootstrap-components)))
+    (list python-pyyaml-5 python-dash-bootstrap-components))
    (home-page "https://github.com/felsocim/gcvb")
    (synopsis
     "Python 3 module aiming at facilitating non-regression, validation and
@@ -459,9 +458,8 @@ original gcvb by jm-cc.")
    (inherit gcvb-felsocim)
    (name "gcvb-minimal-felsocim")
    (propagated-inputs
-    `(,@(delete
-         `("python-dash-bootstrap-components" ,python-dash-bootstrap-components)
-         (package-propagated-inputs gcvb-felsocim))))
+    (modify-inputs (package-propagated-inputs gcvb-felsocim)
+      (delete "python-dash-bootstrap-components")))
    (synopsis
     "Python 3 module aiming at facilitating non-regression, validation and
 benchmarking of simulation codes (felsocim's fork). This is a minimal version

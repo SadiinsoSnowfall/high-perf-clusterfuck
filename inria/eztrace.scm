@@ -76,16 +76,16 @@
        #:tests? #f))
     (native-inputs
      (list autoconf automake libtool))
-    (inputs `(("litl" ,litl)
-              ("gfortran" ,gfortran)
-              ("libiberty" ,libiberty)            ;for bfd
-              ("zlib" ,zlib)                      ;for bfd
+    (inputs (list litl
+                  gfortran
+                  libiberty ;for bfd
+                  zlib ;for bfd
 
-              ;; Pptrace needs 'bfd_get_section', which is no longer
-              ;; available in Binutils 2.34.
-              ("binutils-2.33" ,binutils-2.33)
+                  ;; Pptrace needs 'bfd_get_section', which is no longer
+                  ;; available in Binutils 2.34.
+                  binutils-2.33
 
-              ("openmpi" ,openmpi)))
+                  openmpi))
     (synopsis "Collect program execution traces")
     (description
      "EZTrace is a tool that aims at generating automatically execution trace

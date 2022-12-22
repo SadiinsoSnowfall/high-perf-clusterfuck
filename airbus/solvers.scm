@@ -43,8 +43,7 @@
      (arguments
       '(#:configure-flags '("-DBUILD_EXAMPLES=ON")))
      (inputs
-      `(("jemalloc" ,jemalloc)
-        ("lapack" ,openblas)))
+      (list jemalloc openblas))
      (synopsis "A hierarchical matrix C/C++ library including an LU solver.")
      (description #f)
      (license license:gpl2))))
@@ -87,12 +86,12 @@
      (native-inputs
       (list pkg-config))
      (inputs
-      `(("mpi" ,openmpi)
-        ("lapack" ,openblas)
-        ("openssh" ,openssh)
-        ("starpu" ,starpu)
-        ("chameleon" ,chameleon)
-        ("hmat-oss" ,hmat-oss)))
+      (list openmpi
+            openblas
+            openssh
+            starpu
+            chameleon
+            hmat-oss))
      (synopsis
       "A simple application for testing dense and sparse solvers with pseudo-FEM
 or pseudo-BEM matrices.")

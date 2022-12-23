@@ -430,9 +430,7 @@ the MPI_THREAD_MULTIPLE multi-threading level.")
                  (delete 'check)))) ; no make check in mpibenchmark
    (native-inputs (list pkg-config autoconf automake))
    (inputs
-    `(("hwloc" ,hwloc "lib")
-      ("gnuplot" ,gnuplot)
-      ("openmpi" ,nmad)))
+    (list `(,hwloc "lib") gnuplot nmad))
    (synopsis "MPI overlap benchmark")
    (description "MadMPI benchmark contains the following benchmark series:
 - base send/recv benchmark, used for reference (mpi_bench_base);
@@ -474,7 +472,7 @@ are not benchmarked yet.")
    (native-inputs
     (list pkg-config autoconf automake))
    (inputs
-    `(("mpi" ,openmpi))) ; Every packet requiring mpi use openmpi, so use it, it will be simpler to then change with `--with-input=openmpi=nmad`
+    (list openmpi)) ; Every packet requiring mpi use openmpi, so use it, it will be simpler to then change with `--with-input=openmpi=nmad`
    (synopsis "Distributed synchronized clocks over MPI")
    (description "Small library with routines to synchronize clocks over several
                 nodes with MPI.")

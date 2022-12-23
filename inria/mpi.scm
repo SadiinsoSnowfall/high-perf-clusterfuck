@@ -50,8 +50,7 @@
                                            ;; which is not allowed by default by OpenMPI
                                            (setenv "OMPI_MCA_rmaps_base_oversubscribe" "1") #t)))))
    (build-system cmake-build-system)
-   (propagated-inputs `(("mpi" ,openmpi)
-                        ("ssh" ,openssh)))))
+   (propagated-inputs (list openmpi openssh))))
 
 (define-public openmpi-curta
   ;; Open MPI package matching the version of Open MPI on the Curta

@@ -39,11 +39,8 @@
        ;; and said logs include timestamps, pointer values, file names, etc.
        #:tests? #f))
     (native-inputs
-     `(("gfortran" ,gfortran)
-       ("gfortran:lib" ,gfortran "lib")
-       ("perl" ,perl)
-       ("python" ,python-wrapper)
-       ("doxygen" ,doxygen)))
+     (list gfortran
+           `(,gfortran "lib") perl python-wrapper doxygen))
     (propagated-inputs
      (list boost))
     ;; XXX: 'smpicc' and 'smpicxx' retain references to GCC.

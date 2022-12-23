@@ -812,25 +812,25 @@ etc.")
     (native-inputs
      (list pkg-config gfortran))
     (inputs
-     `(("gfortran:lib" ,gfortran "lib")           ;for 'gcc … -lgfortran'
-       ("openblas" ,openblas)
-       ;; ("lapack" ,lapack)         ;must be built with '-DLAPACKE_WITH_TMG=ON'
+     (list `(,gfortran "lib") ;for 'gcc … -lgfortran'
+           openblas
+           ;; ("lapack" ,lapack)         ;must be built with '-DLAPACKE_WITH_TMG=ON'
 
-       ;; Python bindings and Python tests. Python3
-       ("python" ,python)
+           ;; Python bindings and Python tests. Python3
+           python
 
-       ("python-numpy" ,python-numpy)
-       ;;("python-scipy" ,python-scipy)
-       ))
-    (propagated-inputs `(("hwloc" ,hwloc "lib")
-                         ("scotch" ,scotch)
-                         ;; The following are optional dependencies.
+           python-numpy
+           ;;("python-scipy" ,python-scipy)
+           ))
+    (propagated-inputs (list `(,hwloc "lib")
+                             scotch
 
-                         ;;GM: somehow these two are needed in propagated-inputs
-                         ;;in order to compile maphys++ (otherwise cmake fails
-                         ;;to find them)
-                         ("parsec" ,parsec+mpi)
-                         ("starpu" ,starpu)))
+                             ;; The following are optional dependencies.
+                             ;;GM: somehow these two are needed in propagated-inputs
+                             ;;in order to compile maphys++ (otherwise cmake fails
+                             ;;to find them)
+                             parsec+mpi
+                             starpu))
     (synopsis "Sparse matrix direct solver")
     (description
      "PaStiX (Parallel Sparse matriX package) is a scientific library that
@@ -904,20 +904,20 @@ memory footprint and/or the time-to-solution.")
     (native-inputs
      (list pkg-config gfortran))
     (inputs
-     `(("gfortran:lib" ,gfortran "lib")           ;for 'gcc … -lgfortran'
-       ("openblas" ,openblas)
-       ;; ("lapack" ,lapack)         ;must be built with '-DLAPACKE_WITH_TMG=ON'
+     (list `(,gfortran "lib") ;for 'gcc … -lgfortran'
+           openblas
+           ;; ("lapack" ,lapack)         ;must be built with '-DLAPACKE_WITH_TMG=ON'
 
-       ;; The following are optional dependencies.
-       ("parsec" ,parsec+mpi)
-       ("starpu" ,starpu)
+           ;; The following are optional dependencies.
+           parsec+mpi
+           starpu
 
-       ;; Python bindings and Python tests. Python3
-       ("python" ,python)
+           ;; Python bindings and Python tests. Python3
+           python
 
-       ("python-numpy" ,python-numpy)
-       ;;("python-scipy" ,python-scipy)
-       ))
+           python-numpy
+           ;;("python-scipy" ,python-scipy)
+           ))
     (propagated-inputs (list `(,hwloc "lib") scotch))
     (synopsis "Sparse matrix direct solver")
     (description
@@ -1230,15 +1230,12 @@ CTAGS    = $(CTAGSPROG)
                                (invoke "make" "examples")
                                (invoke "./example/bin/simple" "-lap" "100"))))))
   (inputs
-   `(("gfortran:lib" ,gfortran "lib")
-     ("openblas" ,openblas)))
+   (list `(,gfortran "lib") openblas))
   (native-inputs
    (list pkg-config gfortran perl))
   (propagated-inputs
-   `(("openmpi" ,openmpi-with-mpi1-compat)
-     ("hwloc" ,hwloc-1 "lib")
-     ("openssh" ,openssh)
-     ("scotch32" ,scotch32)))
+   (list openmpi-with-mpi1-compat
+         `(,hwloc-1 "lib") openssh scotch32))
   (outputs '( "out" "debug" ))
   (synopsis "Sparse matrix direct solver (version 5)")
   (description
@@ -1383,8 +1380,7 @@ to/from all other processes.")
     '(#:configure-flags '("-DBUILD_SHARED_LIBS=ON"
                           "-DICB=ON")))
    (inputs
-    `(("lapack" ,lapack)
-      ("fortran" ,gfortran)))
+    (list lapack gfortran))
    (synopsis "Fortran subroutines for solving eigenvalue problems")
    (description
     "ARPACK-NG is a collection of Fortran77 subroutines designed to solve
@@ -1457,8 +1453,7 @@ for manual interpretation.")
                         ))
    (build-system cmake-build-system)
    (inputs (list openblas fftw fftwf))
-   (propagated-inputs `(("mpi" ,openmpi)
-                        ("ssh" ,openssh)))
+   (propagated-inputs (list openmpi openssh))
    (native-inputs (list pkg-config))
    (properties '((tunable? . #true)))))
 

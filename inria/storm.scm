@@ -101,8 +101,7 @@
            autoconf
            automake))                             ;used upon test failure
     (inputs (list fftw fftwf))
-    (propagated-inputs  `(("hwloc" ,hwloc-1 "lib")
-                          ("mpi" ,openmpi-with-mpi1-compat)))
+    (propagated-inputs  (list `(,hwloc-1 "lib") openmpi-with-mpi1-compat))
     (synopsis "Run-time system for heterogeneous computing")
     (description
      "StarPU is a run-time system that offers support for heterogeneous
@@ -181,11 +180,11 @@ kernels are executed as efficiently as possible.")
                             (substitute* "min-dgels/base/make.inc"
                               (("/bin/sh")  (which "sh")))
                             #t)))))))
-   (propagated-inputs  `(("mpi" ,openmpi)
-                         ("hwloc" ,hwloc "lib")  ;hwloc 2.x
-                         ,@(fold alist-delete
-                                 (package-propagated-inputs starpu-1.2)
-                                 '("mpi" "hwloc"))))))
+   (propagated-inputs  (modify-inputs (package-propagated-inputs starpu-1.2)
+                         (delete "mpi" "hwloc")
+                         (prepend openmpi
+                                  `(,hwloc "lib") ;hwloc 2.x
+                                  )))))
 
 ; next release of StarPU will have an optional dependency on tadaam/mpi_sync_clocks: don't forget to add it !
 
@@ -213,9 +212,8 @@ kernels are executed as efficiently as possible.")
      (substitute-keyword-arguments (package-arguments starpu)
        ((#:configure-flags flags '())
         `(cons "--enable-simgrid" (cons "--enable-mpi" (cons "--disable-shared" ,flags))))))
-    (inputs `(("simgrid" ,simgrid)
-              ("fxt" ,fxt+static)
-              ,@(package-inputs starpu)))
+    (inputs (modify-inputs (package-inputs starpu)
+              (prepend simgrid fxt+static)))
     (propagated-inputs `(,@(delete `("mpi" ,openmpi) (package-propagated-inputs starpu))))
     ;; some tests require python.
     (native-inputs

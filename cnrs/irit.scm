@@ -31,14 +31,16 @@
   (package
    (name "qr_mumps")
    (version "3.0.4")
-   (home-page "http://buttari.perso.enseeiht.fr/qr_mumps/")
+   (home-page "https://gitlab.com/qr_mumps/qr_mumps")
    (source (origin
-            (method url-fetch)
-            (uri
-             (string-append home-page "releases/qr_mumps-" version ".tgz"))
+            (method git-fetch)
+            (uri (git-reference
+                  (url home-page)
+                  (commit "0a074a68b07b83d4b4284d07aa5a28dea71ab0c0")))
+            (file-name (string-append name "-" version "-checkout"))
             (sha256
              (base32
-              "0cgjpps1q8kirmyhspzgw0n5vgmalwbzlqp1an97qncgqpf291gp"))))
+              "13zlrdl40zcvjag5d2l0dvy4zpbrrdqi3a5k80fpl11fyzqmkr6l"))))
    (build-system cmake-build-system)
    (arguments
     '(#:configure-flags  (list
@@ -51,22 +53,22 @@
                           "-DQRM_WITH_STARPU=ON"
                           "-DQRM_ORDERING_SCOTCH=ON"
                           "-DQRM_ORDERING_METIS=ON"
-			                    "-DQRM_WITH_MPI=ON"
+                          "-DQRM_WITH_MPI=ON"
                           )
-      #:phases (modify-phases %standard-phases
-                              (add-before 'check 'prepare-test-environment
-			                                    (lambda _
-				                                    (setenv "HOME" (getcwd)) ;; StarPU expects $HOME to be writable.
-	                                          (setenv "OMP_NUM_THREADS" "1")
-				                                    (setenv "OMPI_MCA_rmaps_base_oversubscribe" "1") #t)))
-      #:tests? #f))
+                         #:phases (modify-phases %standard-phases
+                                                 (add-before 'check 'prepare-test-environment
+                                                             (lambda _
+                                                               (setenv "HOME" (getcwd)) ;; StarPU expects $HOME to be writable.
+                                                               (setenv "OMP_NUM_THREADS" "1")
+                                                               (setenv "OMPI_MCA_rmaps_base_oversubscribe" "1") #t)))
+                         #:tests? #f))
 
    (native-inputs (list gfortran pkg-config))
    (inputs `(("metis" ,metis)
              ("openblas" ,openblas)
              ("perl" ,perl)
              ("scotch32" ,scotch32)
-	           ("ssh" ,openssh)
+             ("ssh" ,openssh)
              ;; ("suitesparse" ,suitesparse) ;; for colamd; it would ideally be suitesparse:colamdonly
              ("wget" ,wget)
              ))

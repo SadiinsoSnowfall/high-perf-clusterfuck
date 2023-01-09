@@ -24,6 +24,7 @@
   #:use-module (gnu packages python-xyz)
   #:use-module (gnu packages ssh)
   #:use-module (gnu packages perl)
+  #:use-module (gnu packages pretty-print)
   #:use-module (inria mpi)
   #:use-module (inria storm)
   #:use-module (inria tadaam)
@@ -357,7 +358,7 @@ MPI one, an MPI+openmp one and a runtime-based starpu one.")
                                             (lambda _
                                               (setenv "HOME" (getcwd))
                                               #t)))))
-    (inputs (list openblas))
+    (inputs (list fmt openblas))
     (propagated-inputs (list starpu openmpi))
     (native-inputs (list pkg-config openssh))))
 
